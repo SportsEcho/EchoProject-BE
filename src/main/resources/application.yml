@@ -1,0 +1,27 @@
+spring:
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+    defer-datasource-initialization: true
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/Echo_db
+    username: ${your_username}
+    password: ${your_password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  h2:
+    console:
+      enabled: false
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 2MB
+
+jwt:
+  secret_key: ${jwt.secret_key}
