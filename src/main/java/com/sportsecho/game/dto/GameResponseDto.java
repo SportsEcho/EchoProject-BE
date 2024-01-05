@@ -1,16 +1,33 @@
 package com.sportsecho.game.dto;
 
+import java.util.Map;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Builder
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class GameResponseDto {
-    private Long id;
     private String sportType;
     private String teamA;
     private String teamB;
     private LocalDateTime gameDateTime;
     private String location;
-    // 댓글 관련 필드 추가 예정
+
+    public static GameResponseDto fromMap(Map<String, Object> gameData) {
+        return GameResponseDto.builder()
+            .sportType((String) gameData.get("sportType"))
+            .teamA((String) gameData.get("teamA"))
+            .teamB((String) gameData.get("teamB"))
+            .gameDateTime(LocalDateTime.parse((String) gameData.get("gameDateTime")))
+            .location((String) gameData.get("location"))
+            .build();
+    }
 }
+

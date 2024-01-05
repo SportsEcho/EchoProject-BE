@@ -1,10 +1,12 @@
 package com.sportsecho.game.controller;
 
 import com.sportsecho.common.dto.ApiResponse;
+import com.sportsecho.common.dto.ResponseCode;
 import com.sportsecho.game.dto.GameResponseDto;
 import com.sportsecho.game.service.GameService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +26,8 @@ public class GameController {
 
     @GetMapping("/{sportType}")
     public ResponseEntity<ApiResponse<List<GameResponseDto>>> getGamesBySport(@PathVariable String sportType) {
-        ApiResponse<List<GameResponseDto>> games = gameService.getGamesBySport(sportType);
-        return ResponseEntity.ok(games);
+        ApiResponse<List<GameResponseDto>> response = gameService.getGamesBySport(sportType);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
+

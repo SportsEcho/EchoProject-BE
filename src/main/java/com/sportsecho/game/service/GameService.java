@@ -4,7 +4,6 @@ import com.sportsecho.common.dto.ApiResponse;
 import com.sportsecho.common.dto.ResponseCode;
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.game.dto.GameResponseDto;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,14 +24,14 @@ public class GameService {
         ResponseEntity<ApiResponse> response = restTemplate.getForEntity(apiUrl, ApiResponse.class);
 
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-            List<GameResponseDto> gameList = convertToGamesponseDtoList(response.getBody().getData());
+            List<GameResponseDto> gameList = convertToGameResponseDtoList(response.getBody().getData());
             return ApiResponse.of(ResponseCode.OK, gameList);
         } else {
             throw new GlobalException(ErrorCode.EXTERNAL_API_ERROR);
         }
     }
 
-    private List<GameResponseDto> convertToGamesponseDtoList(Object apiResponseData) {
+    private List<GameResponseDto> convertToGameResponseDtoList(Object apiResponseData) {
         if (!(apiResponseData instanceof List<?>)) {
             throw new GlobalException(ErrorCode.INVALID_API_RESPONSE);
         }
@@ -41,24 +40,14 @@ public class GameService {
         List<GameResponseDto> gameResponseDtos = new ArrayList<>();
 
         for (Object responseData : responseDataList) {
-            // JSON 객체를 Map으로 캐스팅할 수 있도록 처리해야 함
             Map<String, Object> gameData = (Map<String, Object>) responseData;
-
-            GameResponseDto gameResponseDto = new GameResponseDto();
-            gameResponseDto.setTeamA((String) gameData.get("teamA"));
-            gameResponseDto.setTeamB((String) gameData.get("teamB"));
-            gameResponseDto.setGameDateTime(LocalDateTime.parse((String) gameData.get("gameDateTime")));
-            gameResponseDto.setLocation((String) gameData.get("location"));
-
-            gameResponseDtos.add(gameResponseDto);
+            gameResponseDtos.add(GameResponseDto.fromMap(gameData));
         }
 
         return gameResponseDtos;
     }
 
-
     private String determineApiUrl(String sportType) {
-        // sportType에 따라 다른 API URL 반환
         switch (sportType.toLowerCase()) {
             case "football":
                 return "https://api-football-v1.p.rapidapi.com/v3/timezone";
