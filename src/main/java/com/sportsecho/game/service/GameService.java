@@ -25,8 +25,8 @@ public class GameService {
         ResponseEntity<ApiResponse> response = restTemplate.getForEntity(apiUrl, ApiResponse.class);
 
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-            List<GameResponseDto> games = convertToGamesponseDtoList(response.getBody().getData());
-            return ApiResponse.of(ResponseCode.OK, games);
+            List<GameResponseDto> gameList = convertToGamesponseDtoList(response.getBody().getData());
+            return ApiResponse.of(ResponseCode.OK, gameList);
         } else {
             throw new GlobalException(ErrorCode.EXTERNAL_API_ERROR);
         }
