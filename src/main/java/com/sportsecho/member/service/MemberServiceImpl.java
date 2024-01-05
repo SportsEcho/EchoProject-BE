@@ -72,7 +72,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member withdrawal(Member member) {
+    public Member deleteMember(Member member) {
         memberRepository.delete(member);
         return member;
     }

@@ -25,5 +25,5 @@ public interface MemberService {
      * @param member 삭제할 Member 객체
      * @return 삭제된 Member 정보
      * */
-    Member withdrawal(Member member);
+    Member deleteMember(Member member);
 }
