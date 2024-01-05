@@ -23,11 +23,19 @@ public class Comment extends TimeStamp {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "match_id")
-    private Game match;
+    @JoinColumn(name = "game_id")
+    private Game game;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private Member member; // 댓글을 남긴 멤버
+    private Member member;
+
+    public Comment(Member member, Game game, String username, String content) {
+        this.member = member;
+        this.game = game;
+        this.username = username;
+        this.content = content;
+        this.createdAt = LocalDateTime.now();
+    }
 
 }
