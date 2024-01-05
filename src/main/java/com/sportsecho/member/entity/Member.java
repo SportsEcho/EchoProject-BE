@@ -1,24 +1,32 @@
 package com.sportsecho.member.entity;
 
-import com.sportsecho.cart.entity.Cart;
 import com.sportsecho.comment.entity.Comment;
 import com.sportsecho.common.time.TimeStamp;
-import com.sportsecho.order.entity.Order;
-import jakarta.persistence.*;
+import com.sportsecho.memberProduct.entity.MemberProduct;
+import com.sportsecho.purchase.entity.Purchase;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends TimeStamp {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "memeber_id")
     private Long id;
 
@@ -39,10 +47,10 @@ public class Member extends TimeStamp {
     private final List<Comment> commentList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<Cart> cartList = new ArrayList<>();
+    private final List<MemberProduct> memberProductList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<Order> productList = new ArrayList<>();
+    private final List<Purchase> productList = new ArrayList<>();
 
     @Builder
     public Member(String memberName, String email, String password) {

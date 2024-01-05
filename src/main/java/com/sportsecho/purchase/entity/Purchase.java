@@ -1,9 +1,14 @@
-package com.sportsecho.order.entity;
+package com.sportsecho.purchase.entity;
 
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.product.entity.Product;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Order extends TimeStamp {
+public class Purchase extends TimeStamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,21 +38,21 @@ public class Order extends TimeStamp {
     private Product product;
 
     @Builder
-    public Order(Integer totalPrice, String address, String phone){
+    public Purchase(Integer totalPrice, String address, String phone) {
         this.totalPrice = totalPrice;
         this.address = address;
         this.phone = phone;
     }
 
-    public Order create(Integer totalPrice, String address, String phone) {
-        return Order.builder()
-                .totalPrice(totalPrice)
-                .address(address)
-                .phone(phone)
-                .build();
+    public Purchase create(Integer totalPrice, String address, String phone) {
+        return Purchase.builder()
+            .totalPrice(totalPrice)
+            .address(address)
+            .phone(phone)
+            .build();
     }
 
-    public void update(Integer totalPrice, String address, String phone){
+    public void update(Integer totalPrice, String address, String phone) {
         this.address = address;
         this.phone = phone;
     }
