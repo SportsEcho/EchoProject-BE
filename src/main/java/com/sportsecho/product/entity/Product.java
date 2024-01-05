@@ -4,6 +4,7 @@ import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.hotdeal.entity.Hotdeal;
 import com.sportsecho.memberProduct.entity.MemberProduct;
 import com.sportsecho.purchase.entity.Purchase;
+import com.sportsecho.purchaseProduct.entity.PurchaseProduct;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,15 +39,14 @@ public class Product extends TimeStamp {
     @Column(name = "imageUrl", nullable = false)
     private String imageUrl;
 
-    @ManyToOne
-    @JoinColumn(name = "cart_id", referencedColumnName = "id")
-    private MemberProduct memberProduct;
-
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Hotdeal hotdeal;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Purchase> purchaseList = new ArrayList<>();
+    @OneToMany(mappedBy = "purchase_product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PurchaseProduct> PurchaseProductList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member_product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberProduct> memberProductList = new ArrayList<>();
 
     @Builder
     public Product(String title, String content, String imageUrl) {
