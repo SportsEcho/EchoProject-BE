@@ -9,21 +9,21 @@ import java.util.Collection;
 
 public class MemberDetailsImpl implements UserDetails {
 
-    private final Member user;
+    private final Member member;
 
-    public MemberDetailsImpl(Member user) {
-        this.user = user;
+    public MemberDetailsImpl(Member member) {
+        this.member = member;
     }
 
-    public Member getUser() {
-        return user;
+    public Member getMember() {
+        return member;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         //authority: CUSTOMER, SELLER
-        String authority = user.getRole().toString();
+        String authority = member.getRole().toString();
 
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
         Collection<GrantedAuthority> authorities = new ArrayList<>();
@@ -34,12 +34,12 @@ public class MemberDetailsImpl implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return member.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return member.getEmail();
     }
 
     @Override
