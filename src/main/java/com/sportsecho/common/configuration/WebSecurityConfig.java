@@ -40,12 +40,12 @@ public class WebSecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
         httpSecurity.sessionManagement(sess ->
-                sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
         httpSecurity.authorizeHttpRequests(auth -> auth
-                .requestMatchers(publicEndPoints()).permitAll()
-                .anyRequest().authenticated());
+            .requestMatchers(publicEndPoints()).permitAll()
+            .anyRequest().authenticated());
 
         //JwtFilter 설정
         httpSecurity.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -55,7 +55,7 @@ public class WebSecurityConfig {
 
     public RequestMatcher publicEndPoints() {
         return new OrRequestMatcher(
-            new AntPathRequestMatcher("/api")
+            new AntPathRequestMatcher("/api/**")
         );
     }
 }
