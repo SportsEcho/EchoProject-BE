@@ -1,6 +1,8 @@
 package com.sportsecho.common.jwt;
 
 
+import com.sportsecho.global.exception.ErrorCode;
+import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.entity.MemberRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class JwtUtil {
 
+    private final String AUTHORIZATION_HEADER = "Authorization";
     private final String BEARER_PREFIX = "Bearer ";
     private final String AUTHORIZATION_KEY = "auth";
 
@@ -54,27 +57,37 @@ public class JwtUtil {
     }
 
     public String getToken(HttpServletRequest request) {
-        String authorization = request.getHeader("Authorization");
-        return authorization.substring(BEARER_PREFIX.length());
+        return request.getHeader(AUTHORIZATION_HEADER);
     }
 
-//    public Claims getAllClaims(String token) {
-//        try {
-//            return Jwts
-//                .parserBuilder()
-//                .setSigningKey(key)
-//                .build()
-//                .parseClaimsJws(token)
-//                .getBody();
-//        } catch (SecurityException | MalformedJwtException | SignatureException e) {
-//            log.error("ERROR: {}", "Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
-//        } catch (ExpiredJwtException e) {
-//            log.error("ERROR: {}", "Expired JWT token, 만료된 JWT token 입니다.");
-//        } catch (UnsupportedJwtException e) {
-//            log.error("ERROR: {}", "Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
-//        } catch (IllegalArgumentException e) {
-//            log.error("ERROR: {}", "JWT claims is empty, 잘못된 JWT 토큰 입니다.");
-//        }
-//    }
+    public String substringToken(String tokenValue) {
+        if(tokenValue.startsWith(BEARER_PREFIX)) {
+            return tokenValue.substring(BEARER_PREFIX.length());
+        }
 
+        //tokenValue가 Bearer로 시작하지 않는 경우
+        throw new GlobalException(ErrorCode.ILLEGAL_ARGUMENT_EXCEPTION);
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return true;
+        } catch (SecurityException | MalformedJwtException | SignatureException e) {
+            throw new GlobalException(ErrorCode.SIGNATURE_EXCEPTION);
+        } catch (ExpiredJwtException e) {
+            throw new GlobalException(ErrorCode.EXPIRED_TOKEN_EXCEPTION);
+        } catch (UnsupportedJwtException e) {
+            throw new GlobalException(ErrorCode.UNSUPPORTED_JWT_EXCEPTION);
+        } catch (IllegalArgumentException e) {
+            throw new GlobalException(ErrorCode.ILLEGAL_ARGUMENT_EXCEPTION);
+        }
+    }
+
+    public String getSubject(String token) {
+        Claims body = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+
+        //return member email
+        return body.getSubject();
+    }
 }
