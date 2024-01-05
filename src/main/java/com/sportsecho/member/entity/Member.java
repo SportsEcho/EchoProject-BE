@@ -3,7 +3,7 @@ package com.sportsecho.member.entity;
 import com.sportsecho.cart.entity.Cart;
 import com.sportsecho.comment.entity.Comment;
 import com.sportsecho.common.time.TimeStamp;
-import com.sportsecho.order.entity.Order;
+import com.sportsecho.puchase.entity.Purchase;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -42,7 +42,7 @@ public class Member extends TimeStamp {
     private final List<Cart> cartList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<Order> productList = new ArrayList<>();
+    private final List<Purchase> productList = new ArrayList<>();
 
     @Builder
     public Member(String memberName, String email, String password) {

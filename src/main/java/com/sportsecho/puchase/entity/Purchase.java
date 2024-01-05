@@ -1,4 +1,4 @@
-package com.sportsecho.order.entity;
+package com.sportsecho.puchase.entity;
 
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.member.entity.Member;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Order extends TimeStamp {
+public class Purchase extends TimeStamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,14 +33,14 @@ public class Order extends TimeStamp {
     private Product product;
 
     @Builder
-    public Order(Integer totalPrice, String address, String phone){
+    public Purchase(Integer totalPrice, String address, String phone){
         this.totalPrice = totalPrice;
         this.address = address;
         this.phone = phone;
     }
 
-    public Order create(Integer totalPrice, String address, String phone) {
-        return Order.builder()
+    public Purchase create(Integer totalPrice, String address, String phone) {
+        return Purchase.builder()
                 .totalPrice(totalPrice)
                 .address(address)
                 .phone(phone)

@@ -1,7 +1,7 @@
 package com.sportsecho.comment.entity;
 
 import com.sportsecho.common.time.TimeStamp;
-import com.sportsecho.match.entity.Match;
+import com.sportsecho.game.entity.Game;
 import com.sportsecho.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,7 +24,7 @@ public class Comment extends TimeStamp {
 
     @ManyToOne
     @JoinColumn(name = "match_id")
-    private Match match;
+    private Game game;
 
     @ManyToOne
     @JoinColumn(name = "member_id")

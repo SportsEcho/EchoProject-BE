@@ -3,7 +3,7 @@ package com.sportsecho.product.entity;
 import com.sportsecho.cart.entity.Cart;
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.hotdeal.entity.Hotdeal;
-import com.sportsecho.order.entity.Order;
+import com.sportsecho.puchase.entity.Purchase;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,8 +37,8 @@ public class Product extends TimeStamp {
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Hotdeal hotdeal;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Order> orderList = new ArrayList<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Purchase> purchaseList = new ArrayList<>();
 
     @Builder
     public Product(String title, String content, String imageUrl) {

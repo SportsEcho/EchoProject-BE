@@ -1,4 +1,4 @@
-package com.sportsecho.match.entity;
+package com.sportsecho.game.entity;
 
 import com.sportsecho.comment.entity.Comment;
 import com.sportsecho.common.time.TimeStamp;
@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Table(name = "match")
 @NoArgsConstructor
-public class Match extends TimeStamp {
+public class Game extends TimeStamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
