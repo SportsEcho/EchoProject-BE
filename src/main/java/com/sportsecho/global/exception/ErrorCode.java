@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
     DUPLICATED_USER_NAME(HttpStatus.CONFLICT, "사용자 이름이 중복되었습니다"),
+    INVALID_AUTH(HttpStatus.UNAUTHORIZED, "로그인 정보가 유효하지 않습니다"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다"),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 유효하지 않습니다"),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다"),
