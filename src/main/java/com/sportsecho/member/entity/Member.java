@@ -1,6 +1,5 @@
 package com.sportsecho.member.entity;
 
-import com.sportsecho.cart.entity.Cart;
 import com.sportsecho.comment.entity.Comment;
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.memberProduct.entity.MemberProduct;
