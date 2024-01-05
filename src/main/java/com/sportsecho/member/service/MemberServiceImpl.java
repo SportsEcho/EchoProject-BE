@@ -18,6 +18,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+/**
+ * Response 방식 확정되면 Response 수정
+ * */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
