@@ -12,13 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Cart {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     private Integer productsQuantity;
 
     @ManyToOne
+    @MapsId
     @JoinColumn(name = "member_id")
     private Member member;
 

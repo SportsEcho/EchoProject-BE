@@ -3,7 +3,10 @@ package com.sportsecho.puchase.entity;
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.product.entity.Product;
+import com.sportsecho.puchaseProduct.entity.PurchaseProduct;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +34,9 @@ public class Purchase extends TimeStamp {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PurchaseProduct> purchaseProductList = new ArrayList<>();
 
     @Builder
     public Purchase(Integer totalPrice, String address, String phone){

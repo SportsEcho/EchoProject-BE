@@ -3,7 +3,9 @@ package com.sportsecho.product.entity;
 import com.sportsecho.cart.entity.Cart;
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.hotdeal.entity.Hotdeal;
+import com.sportsecho.product.dto.response.ProductResponseDto;
 import com.sportsecho.puchase.entity.Purchase;
+import com.sportsecho.puchaseProduct.entity.PurchaseProduct;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,6 +32,9 @@ public class Product extends TimeStamp {
     @Column(name = "imageUrl", nullable = false)
     private String imageUrl;
 
+    @Column(name = "price", nullable = false)
+    private int price;
+
     @ManyToOne
     @JoinColumn(name = "cart_id", referencedColumnName = "id")
     private Cart cart;
@@ -40,18 +45,23 @@ public class Product extends TimeStamp {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Purchase> purchaseList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PurchaseProduct> purchaseProductList = new ArrayList<>();
+
     @Builder
-    public Product(String title, String content, String imageUrl) {
+    public Product(String title, String content, String imageUrl, int price) {
         this.title = title;
         this.content = content;
         this.imageUrl = imageUrl;
+        this.price = price;
     }
 
-    public static Product create(String title, String content) {
+    public static Product create(String title, String content, int price) {
         return Product.builder()
-                .content(content)
-                .content(content)
-                .build();
+            .content(content)
+            .content(content)
+            .price(price)
+            .build();
     }
 
     public Product update(String title, String content, String imageUrl) {
@@ -63,5 +73,14 @@ public class Product extends TimeStamp {
 
     public void updateProductImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public ProductResponseDto toProductResponseDto(Product product) {
+        return new ProductResponseDto(
+            product.getTitle(),
+            product.getContent(),
+            product.getImageUrl(),
+            product.getPrice()
+        );
     }
 }
