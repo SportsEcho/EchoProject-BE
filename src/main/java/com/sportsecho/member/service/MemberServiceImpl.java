@@ -55,24 +55,20 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void login(MemberRequestDto request, HttpServletResponse response) {
-        Authentication authentication;
-
-        //ID, PW 검증
         try {
-            authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    request.getEmail(), request.getPassword()
-                )
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
             );
+
+            Member member = ((MemberDetailsImpl) authentication.getPrincipal()).getMember();
+
+            String token = jwtUtil.generateToken(member.getEmail(), member.getRole());
+
+            response.setHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+
         } catch(BadCredentialsException e) {
             throw new GlobalException(ErrorCode.INVALID_AUTH);
         }
-
-        Member member = ((MemberDetailsImpl) authentication.getPrincipal()).getMember();
-
-        String token = jwtUtil.generateToken(member.getEmail(), member.getRole());
-
-        response.setHeader("Authorization", token);
     }
 
     @Override

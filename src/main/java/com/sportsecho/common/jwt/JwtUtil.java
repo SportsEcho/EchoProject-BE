@@ -25,10 +25,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class JwtUtil {
 
-    private final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String AUTHORIZATION_HEADER = "Authorization";
+
     private final String BEARER_PREFIX = "Bearer ";
     private final String AUTHORIZATION_KEY = "auth";
-
     private final Long TOKEN_TIME = 60 * 60 * 1000L;
 
     private Key key;
