@@ -45,10 +45,11 @@ public class Member extends TimeStamp {
     private final List<Order> productList = new ArrayList<>();
 
     @Builder
-    public Member(String memberName, String email, String password) {
+    public Member(String memberName, String email, String password, MemberRole role) {
         this.memberName = memberName;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     public Member update(String memberName, String password) {
