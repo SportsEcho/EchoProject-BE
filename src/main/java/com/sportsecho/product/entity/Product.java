@@ -42,10 +42,10 @@ public class Product extends TimeStamp {
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Hotdeal hotdeal;
 
-    @OneToMany(mappedBy = "purchase_product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseProduct> PurchaseProductList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member_product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberProduct> memberProductList = new ArrayList<>();
 
     @Builder

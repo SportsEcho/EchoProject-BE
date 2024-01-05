@@ -2,13 +2,17 @@ package com.sportsecho.purchase.entity;
 
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.member.entity.Member;
-import com.sportsecho.product.entity.Product;
+import com.sportsecho.purchaseProduct.entity.PurchaseProduct;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,9 +37,8 @@ public class Purchase extends TimeStamp {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PurchaseProduct> purchaseProductList = new ArrayList<>();
 
     @Builder
     public Purchase(Integer totalPrice, String address, String phone) {
