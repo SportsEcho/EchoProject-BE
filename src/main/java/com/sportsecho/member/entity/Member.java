@@ -1,8 +1,8 @@
 package com.sportsecho.member.entity;
 
-import com.sportsecho.cart.entity.Cart;
 import com.sportsecho.comment.entity.Comment;
 import com.sportsecho.common.time.TimeStamp;
+import com.sportsecho.memberProduct.entity.MemberProduct;
 import com.sportsecho.purchase.entity.Purchase;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -47,7 +47,7 @@ public class Member extends TimeStamp {
     private final List<Comment> commentList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<Cart> cartList = new ArrayList<>();
+    private final List<MemberProduct> memberProductList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Purchase> productList = new ArrayList<>();
