@@ -72,6 +72,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public Member deleteMember(Member member) {
         memberRepository.delete(member);
         return member;
