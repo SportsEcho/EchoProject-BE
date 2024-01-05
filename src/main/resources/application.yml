@@ -25,3 +25,10 @@ spring:
 
 jwt:
   secret_key: ${jwt.secret_key}
+
+api-keys:
+  football: ${football-api-key}
+
+  basketball: ${basketball-api-key}
+
+  baseball: ${baseball-api-key}
