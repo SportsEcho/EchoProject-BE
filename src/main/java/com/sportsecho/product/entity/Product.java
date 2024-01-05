@@ -3,14 +3,22 @@ package com.sportsecho.product.entity;
 import com.sportsecho.cart.entity.Cart;
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.hotdeal.entity.Hotdeal;
-import com.sportsecho.order.entity.Order;
-import jakarta.persistence.*;
+import com.sportsecho.purchase.entity.Purchase;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity
@@ -38,7 +46,7 @@ public class Product extends TimeStamp {
     private Hotdeal hotdeal;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Order> orderList = new ArrayList<>();
+    private List<Purchase> purchaseList = new ArrayList<>();
 
     @Builder
     public Product(String title, String content, String imageUrl) {
@@ -49,9 +57,9 @@ public class Product extends TimeStamp {
 
     public static Product create(String title, String content) {
         return Product.builder()
-                .content(content)
-                .content(content)
-                .build();
+            .content(content)
+            .content(content)
+            .build();
     }
 
     public Product update(String title, String content, String imageUrl) {
