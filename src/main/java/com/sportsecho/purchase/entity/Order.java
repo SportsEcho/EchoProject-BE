@@ -1,4 +1,4 @@
-package com.sportsecho.order.entity;
+package com.sportsecho.purchase.entity;
 
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.member.entity.Member;

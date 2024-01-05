@@ -3,7 +3,7 @@ package com.sportsecho.product.entity;
 import com.sportsecho.cart.entity.Cart;
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.hotdeal.entity.Hotdeal;
-import com.sportsecho.order.entity.Order;
+import com.sportsecho.purchase.entity.Order;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
