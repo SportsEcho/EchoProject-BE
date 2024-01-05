@@ -1,10 +1,17 @@
 package com.sportsecho.game.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Builder
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class GameRequestDto {
     private String sportType;
     private String teamA;
