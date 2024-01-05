@@ -8,29 +8,25 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.sportsecho.global.exception.ErrorCode;
+@RequiredArgsConstructor
 @Service
 public class GameService {
 
     private final RestTemplate restTemplate;
-
-    @Autowired
-    public GameService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
 
     public ApiResponse<List<GameResponseDto>> getGamesBySport(String sportType) {
         String apiUrl = determineApiUrl(sportType);
         ResponseEntity<ApiResponse> response = restTemplate.getForEntity(apiUrl, ApiResponse.class);
 
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-            List<GameResponseDto> matches = convertToGamesponseDtoList(response.getBody().getData());
-            return ApiResponse.of(ResponseCode.OK, matches);
+            List<GameResponseDto> games = convertToGamesponseDtoList(response.getBody().getData());
+            return ApiResponse.of(ResponseCode.OK, games);
         } else {
             throw new GlobalException(ErrorCode.EXTERNAL_API_ERROR);
         }

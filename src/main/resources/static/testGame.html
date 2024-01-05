@@ -107,7 +107,7 @@
       url: '/api/games/' + sportType,
       method: 'GET',
       success: function(response) {
-        displayMatches(response.data);
+        displayGames(response.data);
       },
       error: function(error) {
         console.error("Error loading games: ", error);
@@ -116,7 +116,7 @@
     });
   }
 
-  function displayMatches(games) {
+  function displayGames(games) {
     var gamesContainer = $('#games');
     gamesContainer.empty();
 
