@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Table(name = "matchs")
+@Table(name = "game")
 @NoArgsConstructor
 public class Game extends TimeStamp {
     @Id
@@ -21,10 +21,10 @@ public class Game extends TimeStamp {
     private String sportType; // 축구, 농구, 야구 구분
     private String teamA;
     private String teamB;
-    private LocalDateTime matchDateTime; // 경기 일시
+    private LocalDateTime gameDateTime; // 경기 일시
     private String location; // 경기 장소
 
-    @OneToMany(mappedBy = "match")
+    @OneToMany(mappedBy = "game")
     private List<Comment> comments = new ArrayList<>();
 
 }

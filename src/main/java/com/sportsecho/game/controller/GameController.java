@@ -12,19 +12,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/matches")
+@RequestMapping("/api/games")
 public class GameController {
 
-    private final GameService matchService;
+    private final GameService gameService;
 
     @Autowired
-    public GameController(GameService matchService) {
-        this.matchService = matchService;
+    public GameController(GameService gameService) {
+        this.gameService = gameService;
     }
 
     @GetMapping("/{sportType}")
-    public ResponseEntity<ApiResponse<List<GameResponseDto>>> getMatchesBySport(@PathVariable String sportType) {
-        ApiResponse<List<GameResponseDto>> matches = matchService.getMatchesBySport(sportType);
-        return ResponseEntity.ok(matches);
+    public ResponseEntity<ApiResponse<List<GameResponseDto>>> getGamesBySport(@PathVariable String sportType) {
+        ApiResponse<List<GameResponseDto>> games = gameService.getGamesBySport(sportType);
+        return ResponseEntity.ok(games);
     }
 }

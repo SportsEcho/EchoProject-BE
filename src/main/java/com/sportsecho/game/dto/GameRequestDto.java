@@ -9,7 +9,7 @@ public class GameRequestDto {
     private String sportType;
     private String teamA;
     private String teamB;
-    private LocalDateTime matchDateTime;
+    private LocalDateTime gameDateTime;
     private String location;
 }
 

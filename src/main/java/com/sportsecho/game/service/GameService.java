@@ -24,40 +24,40 @@ public class GameService {
         this.restTemplate = restTemplate;
     }
 
-    public ApiResponse<List<GameResponseDto>> getMatchesBySport(String sportType) {
+    public ApiResponse<List<GameResponseDto>> getGamesBySport(String sportType) {
         String apiUrl = determineApiUrl(sportType);
         ResponseEntity<ApiResponse> response = restTemplate.getForEntity(apiUrl, ApiResponse.class);
 
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-            List<GameResponseDto> matches = convertToMatchResponseDtoList(response.getBody().getData());
+            List<GameResponseDto> matches = convertToGamesponseDtoList(response.getBody().getData());
             return ApiResponse.of(ResponseCode.OK, matches);
         } else {
             throw new GlobalException(ErrorCode.EXTERNAL_API_ERROR);
         }
     }
 
-    private List<GameResponseDto> convertToMatchResponseDtoList(Object apiResponseData) {
+    private List<GameResponseDto> convertToGamesponseDtoList(Object apiResponseData) {
         if (!(apiResponseData instanceof List<?>)) {
             throw new GlobalException(ErrorCode.INVALID_API_RESPONSE);
         }
 
         List<?> responseDataList = (List<?>) apiResponseData;
-        List<GameResponseDto> matchResponseDtos = new ArrayList<>();
+        List<GameResponseDto> gameResponseDtos = new ArrayList<>();
 
         for (Object responseData : responseDataList) {
             // JSON 객체를 Map으로 캐스팅할 수 있도록 처리해야 함
-            Map<String, Object> matchData = (Map<String, Object>) responseData;
+            Map<String, Object> gameData = (Map<String, Object>) responseData;
 
-            GameResponseDto matchResponseDto = new GameResponseDto();
-            matchResponseDto.setTeamA((String) matchData.get("teamA"));
-            matchResponseDto.setTeamB((String) matchData.get("teamB"));
-            matchResponseDto.setMatchDateTime(LocalDateTime.parse((String) matchData.get("matchDateTime")));
-            matchResponseDto.setLocation((String) matchData.get("location"));
+            GameResponseDto gameResponseDto = new GameResponseDto();
+            gameResponseDto.setTeamA((String) gameData.get("teamA"));
+            gameResponseDto.setTeamB((String) gameData.get("teamB"));
+            gameResponseDto.setGameDateTime(LocalDateTime.parse((String) gameData.get("gameDateTime")));
+            gameResponseDto.setLocation((String) gameData.get("location"));
 
-            matchResponseDtos.add(matchResponseDto);
+            gameResponseDtos.add(gameResponseDto);
         }
 
-        return matchResponseDtos;
+        return gameResponseDtos;
     }
 
 

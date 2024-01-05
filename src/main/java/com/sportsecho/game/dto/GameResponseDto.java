@@ -10,7 +10,7 @@ public class GameResponseDto {
     private String sportType;
     private String teamA;
     private String teamB;
-    private LocalDateTime matchDateTime;
+    private LocalDateTime gameDateTime;
     private String location;
     // 댓글 관련 필드 추가 예정
 }
