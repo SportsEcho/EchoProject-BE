@@ -46,7 +46,8 @@ public class CommentController {
     // 댓글 수정
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<CommentResponseDto> updateComment(@PathVariable Long commentId, @RequestBody CommentRequestDto commentDto) {
-        // 댓글 수정 로직
+        CommentResponseDto responseDto = commentService.updateComment(commentId, commentDto);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     // 댓글 삭제
