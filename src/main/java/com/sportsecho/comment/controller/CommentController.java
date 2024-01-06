@@ -39,7 +39,8 @@ public class CommentController {
     // 게임별 댓글 조회
     @GetMapping("/comments")
     public ResponseEntity<List<CommentResponseDto>> getCommentsByGame(@PathVariable Long gameId) {
-        // 댓글 조회 로직
+        List<CommentResponseDto> comments = commentService.getCommentsByGame(gameId);
+        return ResponseEntity.status(HttpStatus.OK).body(comments);
     }
 
     // 댓글 수정
