@@ -5,7 +5,6 @@ import com.sportsecho.common.dto.ResponseCode;
 import com.sportsecho.game.dto.GameResponseDto;
 import com.sportsecho.game.exception.GameErrorCode;
 import com.sportsecho.game.mapper.GameMapper;
-import com.sportsecho.global.exception.ErrorCode;
 import com.sportsecho.global.exception.GlobalException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +34,11 @@ public class GameService {
     }
 
     private List<GameResponseDto> convertToGameResponseDtoList(List<Map<String, Object>> responseDataList) {
-        List<GameResponseDto> gameResponseDtos = new ArrayList<>();
+        List<GameResponseDto> gameList = new ArrayList<>();
         for (Map<String, Object> gameData : responseDataList) {
-            gameResponseDtos.add(GameMapper.INSTANCE.mapToDto(gameData));
+            gameList.add(GameMapper.INSTANCE.mapToDto(gameData));
         }
-        return gameResponseDtos;
+        return gameList;
     }
 
     private String determineApiUrl(String sportType) {

@@ -3,7 +3,6 @@ package com.sportsecho.game.controller;
 import com.sportsecho.comment.dto.CommentResponseDto;
 import com.sportsecho.comment.service.CommentService;
 import com.sportsecho.common.dto.ApiResponse;
-import com.sportsecho.common.dto.ResponseCode;
 import com.sportsecho.game.dto.GameResponseDto;
 import com.sportsecho.game.service.GameService;
 import java.util.List;

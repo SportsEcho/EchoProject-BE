@@ -1,10 +1,8 @@
 package com.sportsecho.game.dto;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-
-import java.time.LocalDateTime;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
