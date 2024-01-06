@@ -61,9 +61,19 @@ public class CommentService {
             .collect(Collectors.toList());
     }
 
-    // 댓글 수정
-    public Comment updateComment(Long commentId, CommentRequestDto commentDto) {
-        // 댓글 수정 로직
+    @Transactional
+    public CommentResponseDto updateComment(Long commentId, CommentRequestDto commentDto) {
+        Comment comment = commentRepository.findById(commentId)
+            .orElseThrow(() -> new GlobalException(CommentErrorCode.COMMENT_NOT_FOUND));
+
+        comment.updateContent(commentDto.getContent());
+        commentRepository.save(comment);
+
+        return new CommentResponseDto(
+            comment.getId(),
+            comment.getContent(),
+            comment.getMemberName(),
+            comment.getCreatedAt());
     }
 
     // 댓글 삭제
