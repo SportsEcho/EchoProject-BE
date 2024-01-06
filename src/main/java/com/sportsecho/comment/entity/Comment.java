@@ -36,4 +36,7 @@ public class Comment extends TimeStamp {
 
     @Column(name = "member_name")
     private String memberName; // 댓글 작성자 이름
+    public void updateContent(String content) {
+        this.content = content;
+    }
 }
