@@ -14,28 +14,17 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class Comment extends TimeStamp {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
     private String content;
-    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "game_id")
     private Game game;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
-
-    public Comment(Member member, Game game, String username, String content) {
-        this.member = member;
-        this.game = game;
-        this.username = username;
-        this.content = content;
-        this.createdAt = LocalDateTime.now();
-    }
-
+    @Column(name = "member_name")
+    private String memberName; // 댓글 작성자 이름
 }
