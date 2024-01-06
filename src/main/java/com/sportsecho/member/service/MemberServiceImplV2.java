@@ -59,7 +59,7 @@ public class MemberServiceImplV2 implements MemberService {
     }
 
     @Override
-    public void login(MemberRequestDto request, HttpServletResponse response) {
+    public ApiResponse<Void> login(MemberRequestDto request, HttpServletResponse response) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
@@ -74,6 +74,11 @@ public class MemberServiceImplV2 implements MemberService {
         } catch(BadCredentialsException e) {
             throw new GlobalException(ErrorCode.INVALID_AUTH);
         }
+
+        return ApiResponse.of(
+            ResponseCode.OK,
+            null
+        );
     }
 
     @Override
