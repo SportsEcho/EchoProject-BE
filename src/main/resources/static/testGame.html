@@ -65,17 +65,17 @@
       padding-right: 20px;
       color: #ffffff;
     }
-    .game {
+    .match {
       background: #ffffff;
       padding: 20px;
       margin-top: 20px;
       border: 1px #eaeaea solid;
     }
-    .game h3 {
+    .match h3 {
       margin-top: 0;
       color: #333;
     }
-    .game p {
+    .match p {
       margin-bottom: 10px;
     }
   </style>
@@ -84,52 +84,52 @@
 <header>
   <div class="container">
     <div id="branding">
-      <h1><span class="highlight">Sports</span> Game Schedule</h1>
+      <h1><span class="highlight">Sports</span> Match Schedule</h1>
     </div>
     <nav>
       <ul>
-        <li><a href="javascript:void(0);" onclick="loadGames('football')">축구</a></li>
-        <li><a href="javascript:void(0);" onclick="loadGames('basketball')">농구</a></li>
-        <li><a href="javascript:void(0);" onclick="loadGames('baseball')">야구</a></li>
+        <li><a href="javascript:void(0);" onclick="loadMatches('football')">축구</a></li>
+        <li><a href="javascript:void(0);" onclick="loadMatches('basketball')">농구</a></li>
+        <li><a href="javascript:void(0);" onclick="loadMatches('baseball')">야구</a></li>
       </ul>
     </nav>
   </div>
 </header>
 
 <div class="container">
-  <div id="games"></div>
+  <div id="matches"></div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
-  function loadGames(sportType) {
+  function loadMatches(sportType) {
     $.ajax({
-      url: '/api/games/' + sportType,
+      url: '/api/matches/' + sportType,
       method: 'GET',
       success: function(response) {
-        displayGames(response.data);
+        displayMatches(response.data);
       },
       error: function(error) {
-        console.error("Error loading games: ", error);
+        console.error("Error loading matches: ", error);
         alert("경기 정보를 불러오는데 실패했습니다.");
       }
     });
   }
 
-  function displayGames(games) {
-    var gamesContainer = $('#games');
-    gamesContainer.empty();
+  function displayMatches(matches) {
+    var matchesContainer = $('#matches');
+    matchesContainer.empty();
 
-    games.forEach(function(game) {
-      var gameHtml = `
-                    <div class="games">
-                        <h3>${game.teamA} vs ${game.teamB}</h3>
-                        <p>경기 시간: ${game.gameDateTime}</p>
-                        <p>장소: ${game.location}</p>
+    matches.forEach(function(match) {
+      var matchHtml = `
+                    <div class="match">
+                        <h3>${match.teamA} vs ${match.teamB}</h3>
+                        <p>경기 시간: ${match.matchDateTime}</p>
+                        <p>장소: ${match.location}</p>
                         <!-- 댓글 기능 추가 가능 -->
                     </div>
                 `;
-      gamesContainer.append(gameHtml);
+      matchesContainer.append(matchHtml);
     });
   }
 </script>
