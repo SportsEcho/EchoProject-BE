@@ -3,6 +3,7 @@ package com.sportsecho.game.service;
 import com.sportsecho.common.dto.ApiResponse;
 import com.sportsecho.common.dto.ResponseCode;
 import com.sportsecho.game.dto.GameResponseDto;
+import com.sportsecho.game.exception.GameErrorCode;
 import com.sportsecho.game.mapper.GameMapper;
 import com.sportsecho.global.exception.ErrorCode;
 import com.sportsecho.global.exception.GlobalException;
@@ -29,7 +30,7 @@ public class GameService {
             List<GameResponseDto> gameList = convertToGameResponseDtoList(responseDataList);
             return ApiResponse.of(ResponseCode.OK, gameList);
         } else {
-            throw new GlobalException(ErrorCode.EXTERNAL_API_ERROR);
+            throw new GlobalException(GameErrorCode.EXTERNAL_API_ERROR);
         }
     }
 
