@@ -4,7 +4,9 @@ import com.sportsecho.comment.dto.CommentRequestDto;
 import com.sportsecho.comment.dto.CommentResponseDto;
 import com.sportsecho.comment.service.CommentService;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,8 +30,10 @@ public class CommentController {
 
     // 게임별 댓글 추가
     @PostMapping("/comments")
-    public ResponseEntity<CommentResponseDto> addComment(@PathVariable Long gameId, @RequestBody CommentRequestDto commentDto) {
-        // 댓글 추가 로직
+    public ResponseEntity<CommentResponseDto> addComment(@PathVariable Long gameId, @RequestBody CommentRequestDto commentDto, Authentication authentication) {
+        String userEmail = authentication.getName();
+        CommentResponseDto responseDto = commentService.addComment(gameId, commentDto, userEmail);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     // 게임별 댓글 조회
