@@ -1,8 +1,11 @@
 package com.sportsecho.member.controller;
 
+import com.sportsecho.common.dto.ApiResponse;
 import com.sportsecho.member.dto.MemberRequestDto;
+import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.MemberDetailsImpl;
-import com.sportsecho.member.service.MemberServiceImpl;
+import com.sportsecho.member.service.MemberServiceImplV1;
+import com.sportsecho.member.service.MemberServiceImplV2;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,26 +25,33 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/member")
 public class MemberController {
 
-    private final MemberServiceImpl memberService;
+    private final MemberServiceImplV2 memberService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody MemberRequestDto request) {
-        memberService.signup(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+    public ResponseEntity<ApiResponse<MemberResponseDto>> signup(
+        @RequestBody MemberRequestDto request
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+            memberService.signup(request)
+        );
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(
+    public ResponseEntity<ApiResponse<Void>> login(
         @RequestBody MemberRequestDto request, HttpServletResponse response
     ) {
-        memberService.login(request, response);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(
+            memberService.login(request, response)
+        );
     }
 
     @DeleteMapping("")
-    public ResponseEntity<?> deleteMember(@AuthenticationPrincipal MemberDetailsImpl memberDetails) {
+    public ResponseEntity<ApiResponse<MemberResponseDto>> deleteMember(
+        @AuthenticationPrincipal MemberDetailsImpl memberDetails
+    ) {
         memberService.deleteMember(memberDetails.getMember());
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(
+            memberService.deleteMember(memberDetails.getMember())
+        );
     }
-
 }
