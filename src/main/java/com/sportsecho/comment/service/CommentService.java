@@ -10,9 +10,10 @@ import com.sportsecho.game.repository.GameRepository;
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.repository.MemberRepository;
-import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CommentService {
@@ -27,8 +28,6 @@ public class CommentService {
         this.gameRepository = gameRepository;
         this.memberRepository = memberRepository;
     }
-    // 생성자 주입
-
     // 댓글 추가
     @Transactional
     public CommentResponseDto addComment(Long gameId, CommentRequestDto commentDto, String userEmail) {
@@ -50,8 +49,16 @@ public class CommentService {
     }
 
     // 댓글 조회
+    @Transactional(readOnly = true)
     public List<CommentResponseDto> getCommentsByGame(Long gameId) {
-        // 게임별 댓글 조회 로직
+        List<Comment> comments = commentRepository.findByGameId(gameId);
+        return comments.stream()
+            .map(comment -> new CommentResponseDto(
+                comment.getId(),
+                comment.getContent(),
+                comment.getMemberName(),
+                comment.getCreatedAt()))
+            .collect(Collectors.toList());
     }
 
     // 댓글 수정
