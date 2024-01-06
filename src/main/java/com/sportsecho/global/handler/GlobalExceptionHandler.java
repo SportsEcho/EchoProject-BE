@@ -12,17 +12,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ExternalApiException.class)
     public ResponseEntity<String> handleExternalApiException(ExternalApiException e) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_GATEWAY)
-                .body(e.getMessage());
+        HttpStatus status = e.getErrorCode().getStatus();
+        return ResponseEntity.status(status).body(e.getMessage());
     }
+
     @ExceptionHandler(CommentException.class)
     public ResponseEntity<Object> handleCommentException(CommentException e) {
         HttpStatus status = e.getErrorCode().getStatus();
-        String message = e.getErrorCode().getMsg();
-
-        return ResponseEntity
-            .status(status)
-            .body(message);
+        return ResponseEntity.status(status).body(e.getErrorCode().getMsg());
     }
 }
