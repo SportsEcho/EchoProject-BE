@@ -2,17 +2,26 @@ package com.sportsecho.comment.entity;
 
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.game.entity.Game;
-import com.sportsecho.member.entity.Member;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comments")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor // 기본 생성자
+@AllArgsConstructor // 전체 인자를 가지는 생성자
+@Builder // 빌더 패턴 적용
 public class Comment extends TimeStamp {
 
     @Id
