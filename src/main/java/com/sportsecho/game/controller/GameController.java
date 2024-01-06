@@ -1,5 +1,7 @@
 package com.sportsecho.game.controller;
 
+import com.sportsecho.comment.dto.CommentResponseDto;
+import com.sportsecho.comment.service.CommentService;
 import com.sportsecho.common.dto.ApiResponse;
 import com.sportsecho.common.dto.ResponseCode;
 import com.sportsecho.game.dto.GameResponseDto;
@@ -18,16 +20,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class GameController {
 
     private final GameService gameService;
-
+    private final CommentService commentService;
     @Autowired
-    public GameController(GameService gameService) {
+    public GameController(GameService gameService, CommentService commentService) {
         this.gameService = gameService;
+        this.commentService = commentService;
     }
 
     @GetMapping("/{sportType}")
     public ResponseEntity<ApiResponse<List<GameResponseDto>>> getGamesBySport(@PathVariable String sportType) {
         ApiResponse<List<GameResponseDto>> response = gameService.getGamesBySport(sportType);
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+    // 경기별 댓글 조회 API
+    @GetMapping("/{gameId}/comments")
+    public ResponseEntity<List<CommentResponseDto>> getCommentsByGame(@PathVariable Long gameId) {
+        List<CommentResponseDto> comments = commentService.getCommentsByGame(gameId);
+        return ResponseEntity.status(HttpStatus.OK).body(comments);
     }
 }
 
