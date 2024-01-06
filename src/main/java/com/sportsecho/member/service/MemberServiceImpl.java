@@ -1,12 +1,16 @@
 package com.sportsecho.member.service;
 
+import com.sportsecho.common.dto.ApiResponse;
+import com.sportsecho.common.dto.ResponseCode;
 import com.sportsecho.common.jwt.JwtUtil;
 import com.sportsecho.global.exception.ErrorCode;
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.dto.MemberRequestDto;
+import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberDetailsImpl;
 import com.sportsecho.member.entity.MemberRole;
+import com.sportsecho.member.mapper.MemberMapper;
 import com.sportsecho.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +39,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Member signup(MemberRequestDto request) {
+    public ApiResponse<MemberResponseDto> signup(MemberRequestDto request) {
 
         //email duplicate check
         if(memberRepository.findByEmail(request.getEmail()).isPresent())
@@ -48,9 +52,16 @@ public class MemberServiceImpl implements MemberService {
                 .role(MemberRole.CUSTOMER)
                 .build();
 
+
         memberRepository.save(member);
 
-        return member;
+        return ApiResponse.of(
+            ResponseCode.OK,
+            MemberResponseDto.builder()
+                .memberName(member.getMemberName())
+                .email(member.getEmail())
+                .build()
+        );
     }
 
     @Override
@@ -73,8 +84,15 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Member deleteMember(Member member) {
+    public ApiResponse<MemberResponseDto> deleteMember(Member member) {
         memberRepository.delete(member);
-        return member;
+
+        return ApiResponse.of(
+            ResponseCode.OK,
+            MemberResponseDto.builder()
+                .memberName(member.getMemberName())
+                .email(member.getEmail())
+                .build()
+        );
     }
 }

@@ -23,7 +23,7 @@ public interface MemberService {
      * @param response Jwt 토큰을 담아서 전달하기 위한 HttpServletResponse
      * @param request Member 로그인 요청 정보
      * */
-    ApiResponse<MemberResponseDto> login(MemberRequestDto request, HttpServletResponse response);
+    void login(MemberRequestDto request, HttpServletResponse response);
 
     /**
      * Member 삭제
