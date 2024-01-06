@@ -22,14 +22,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 /**
- * Response 방식 확정되면 Response 수정
+ * V2 업데이트 내용
+ * - V1에서 builder로 생성하던 MemberEntity를 MemberMapper를 통해 생성
+ * - V1에서 builder로 생성해 반환하던 MemberResponseDto를 MemberMapper를 통해 생성
  * */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class MemberServiceImpl implements MemberService {
+public class MemberServiceImplV2 implements MemberService {
 
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
@@ -45,22 +46,15 @@ public class MemberServiceImpl implements MemberService {
         if(memberRepository.findByEmail(request.getEmail()).isPresent())
             throw new GlobalException(ErrorCode.DUPLICATED_USER_NAME);
 
-        Member member = Member.builder()
-                .memberName(request.getMemberName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(MemberRole.CUSTOMER)
-                .build();
-
+        //MemberMapper를 이용한 Entity 생성
+        Member member = MemberMapper.MAPPER.toEntity(request);
+        member.passwordEncode(passwordEncoder);
 
         memberRepository.save(member);
 
         return ApiResponse.of(
-            ResponseCode.OK,
-            MemberResponseDto.builder()
-                .memberName(member.getMemberName())
-                .email(member.getEmail())
-                .build()
+            ResponseCode.CREATED,
+            MemberMapper.MAPPER.toResponseDto(member)
         );
     }
 
@@ -89,10 +83,7 @@ public class MemberServiceImpl implements MemberService {
 
         return ApiResponse.of(
             ResponseCode.OK,
-            MemberResponseDto.builder()
-                .memberName(member.getMemberName())
-                .email(member.getEmail())
-                .build()
+            MemberMapper.MAPPER.toResponseDto(member)
         );
     }
 }
