@@ -3,16 +3,16 @@ package com.sportsecho.comment.service;
 import com.sportsecho.comment.dto.CommentRequestDto;
 import com.sportsecho.comment.dto.CommentResponseDto;
 import com.sportsecho.comment.entity.Comment;
+import com.sportsecho.comment.exception.CommentErrorCode;
 import com.sportsecho.comment.repository.CommentRepository;
 import com.sportsecho.game.entity.Game;
 import com.sportsecho.game.repository.GameRepository;
-import com.sportsecho.global.exception.ErrorCode;
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.repository.MemberRepository;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CommentService {
@@ -33,10 +33,10 @@ public class CommentService {
     @Transactional
     public CommentResponseDto addComment(Long gameId, CommentRequestDto commentDto, String userEmail) {
         Game game = gameRepository.findById(gameId)
-            .orElseThrow(() -> new GlobalException(ErrorCode.GAME_NOT_FOUND));
+            .orElseThrow(() -> new GlobalException(CommentErrorCode.GAME_NOT_FOUND));
 
         Member member = memberRepository.findByEmail(userEmail)
-            .orElseThrow(() -> new GlobalException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new GlobalException(CommentErrorCode.MEMBER_NOT_FOUND));
 
         Comment comment = Comment.builder()
             .content(commentDto.getContent())
