@@ -1,7 +1,5 @@
 package com.sportsecho.member.service;
 
-import com.sportsecho.common.dto.ApiResponse;
-import com.sportsecho.common.dto.ResponseCode;
 import com.sportsecho.common.jwt.JwtUtil;
 import com.sportsecho.global.exception.ErrorCode;
 import com.sportsecho.global.exception.GlobalException;
@@ -35,7 +33,7 @@ public class MemberServiceImplV1 implements MemberService {
 
     @Override
     @Transactional
-    public ApiResponse<MemberResponseDto> signup(MemberRequestDto request) {
+    public MemberResponseDto signup(MemberRequestDto request) {
 
         //email duplicate check
         if(memberRepository.findByEmail(request.getEmail()).isPresent())
@@ -51,17 +49,14 @@ public class MemberServiceImplV1 implements MemberService {
 
         memberRepository.save(member);
 
-        return ApiResponse.of(
-            ResponseCode.OK,
-            MemberResponseDto.builder()
-                .memberName(member.getMemberName())
-                .email(member.getEmail())
-                .build()
-        );
+        return MemberResponseDto.builder()
+            .memberName(member.getMemberName())
+            .email(member.getEmail())
+            .build();
     }
 
     @Override
-    public ApiResponse<Void> login(MemberRequestDto request, HttpServletResponse response) {
+    public void login(MemberRequestDto request, HttpServletResponse response) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
@@ -76,34 +71,22 @@ public class MemberServiceImplV1 implements MemberService {
         } catch(BadCredentialsException e) {
             throw new GlobalException(ErrorCode.INVALID_AUTH);
         }
-
-        return ApiResponse.of(
-            ResponseCode.OK,
-            null
-        );
     }
 
     @Override
-    public ApiResponse<Void> logout(Member member, HttpServletRequest request) {
-        return null;
-    }
+    public void logout(Member member, HttpServletRequest request) {}
 
     @Override
-    public ApiResponse<Void> refresh(HttpServletRequest request) {
-        return null;
-    }
+    public void refresh(HttpServletRequest request) {}
 
     @Override
     @Transactional
-    public ApiResponse<MemberResponseDto> deleteMember(Member member) {
+    public MemberResponseDto deleteMember(Member member) {
         memberRepository.delete(member);
 
-        return ApiResponse.of(
-            ResponseCode.OK,
-            MemberResponseDto.builder()
-                .memberName(member.getMemberName())
-                .email(member.getEmail())
-                .build()
-        );
+        return MemberResponseDto.builder()
+            .memberName(member.getMemberName())
+            .email(member.getEmail())
+            .build();
     }
 }

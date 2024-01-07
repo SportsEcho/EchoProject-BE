@@ -1,7 +1,5 @@
 package com.sportsecho.member.service;
 
-import com.sportsecho.common.dto.ApiResponse;
-import com.sportsecho.common.dto.ResponseCode;
 import com.sportsecho.common.jwt.JwtUtil;
 import com.sportsecho.common.redis.RedisUtil;
 import com.sportsecho.global.exception.ErrorCode;
@@ -42,7 +40,7 @@ public class MemberServiceImplV2 implements MemberService {
 
     @Override
     @Transactional
-    public ApiResponse<MemberResponseDto> signup(MemberRequestDto request) {
+    public MemberResponseDto signup(MemberRequestDto request) {
 
         //email duplicate check
         if(memberRepository.findByEmail(request.getEmail()).isPresent())
@@ -54,14 +52,12 @@ public class MemberServiceImplV2 implements MemberService {
 
         memberRepository.save(member);
 
-        return ApiResponse.of(
-            ResponseCode.CREATED,
-            MemberMapper.MAPPER.toResponseDto(member)
-        );
+
+        return MemberMapper.MAPPER.toResponseDto(member);
     }
 
     @Override
-    public ApiResponse<Void> login(MemberRequestDto request, HttpServletResponse response) {
+    public void login(MemberRequestDto request, HttpServletResponse response) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
@@ -80,15 +76,10 @@ public class MemberServiceImplV2 implements MemberService {
         } catch(BadCredentialsException e) {
             throw new GlobalException(ErrorCode.INVALID_AUTH);
         }
-
-        return ApiResponse.of(
-            ResponseCode.OK,
-            null
-        );
     }
 
     @Override
-    public ApiResponse<Void> logout(Member member, HttpServletRequest request) {
+    public void logout(Member member, HttpServletRequest request) {
         String refreshToken = jwtUtil.getRefreshToken(request);
 
         //redis에 refreshToken이 존재하는 경우
@@ -103,33 +94,22 @@ public class MemberServiceImplV2 implements MemberService {
         } else {
             //throw new GlobalException(JwtErrorCode.TOKEN_NOT_FOUND);
         }
-
-        return ApiResponse.of(
-            ResponseCode.OK,
-            null
-        );
     }
 
     @Override
-    public ApiResponse<Void> refresh(HttpServletRequest request) {
+    public void refresh(HttpServletRequest request) {
         String refreshToken = jwtUtil.getRefreshToken(request);
 
         //redis에 refreshToken이 존재하는 경우
         if(redisUtil.isExist(refreshToken)) {
 
         }
-
-        return null;
     }
 
     @Override
     @Transactional
-    public ApiResponse<MemberResponseDto> deleteMember(Member member) {
+    public MemberResponseDto deleteMember(Member member) {
         memberRepository.delete(member);
-
-        return ApiResponse.of(
-            ResponseCode.OK,
-            MemberMapper.MAPPER.toResponseDto(member)
-        );
+        return MemberMapper.MAPPER.toResponseDto(member);
     }
 }
