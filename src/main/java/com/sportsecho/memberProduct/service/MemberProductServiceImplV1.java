@@ -9,6 +9,7 @@ import com.sportsecho.memberProduct.mapper.MemberProductMapper;
 import com.sportsecho.memberProduct.repository.MemberProductRepository;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.repository.ProductRepository;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -29,19 +30,46 @@ public class MemberProductServiceImplV1 implements MemberProductService {
         Member member) {
 
         Product product = findProduct(productId);
-        MemberProduct memberProduct = MemberProductMapper.INSTANCE.toEntity(requestDto, member,
-            product);
+        Optional<MemberProduct> memberProduct = memberProductRepository.findByProductIdAndMemberId(
+            productId, member.getId());
+        MemberProductResponseDto responseDto;
 
-        memberProductRepository.save(memberProduct);
-        member.getMemberProductList().add(memberProduct);
-        product.getMemberProductList().add(memberProduct);
+        if (memberProduct.isPresent()) {
+            memberProduct.get().updateQuantity(requestDto.getProductsQuantity());
+            responseDto = MemberProductMapper.INSTANCE.toResponseDto(memberProduct.get());
+        } else {
+            MemberProduct savedMemberProduct = MemberProductMapper.INSTANCE.toEntity(
+                requestDto, member, product);
+            memberProductRepository.save(savedMemberProduct);
+            responseDto = MemberProductMapper.INSTANCE.toResponseDto(savedMemberProduct);
+        }
 
-        return MemberProductMapper.INSTANCE.toResponseDto(memberProduct);
+        return responseDto;
+    }
+
+    @Override
+    @Transactional
+    public void deleteCart(Long productId, Member member) {
+        MemberProduct memberProduct = findMemberProduct(productId, member.getId());
+        checkMember(member.getId(), memberProduct);
+        memberProductRepository.delete(memberProduct);
     }
 
     private Product findProduct(Long productId) {
-        return productRepository.findById(productId).orElseThrow(() ->
-            new NullPointerException("상품이 존재하지 않습니다.")
-        );
+        return productRepository.findById(productId)
+            .orElseThrow(() -> new NullPointerException("상품이 존재하지 않습니다.")
+            );
+    }
+
+    private MemberProduct findMemberProduct(Long productId, Long memberId) {
+        return memberProductRepository.findByProductIdAndMemberId(productId, memberId)
+            .orElseThrow(() -> new NullPointerException("장바구니에 상품이 존재하지 않습니다.")
+            );
+    }
+
+    private void checkMember(Long memberId, MemberProduct memberProduct) {
+        if (!memberId.equals(memberProduct.getMember().getId())) {
+            throw new IllegalArgumentException("본인만 수정/삭제 가능합니다.");
+        }
     }
 }

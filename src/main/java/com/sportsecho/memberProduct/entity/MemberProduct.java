@@ -38,7 +38,7 @@ public class MemberProduct {
         this.product = product;
     }
 
-    public void update(Integer productsQuantity) {
-        this.productsQuantity = productsQuantity;
+    public void updateQuantity(Integer productsQuantity) {
+        this.productsQuantity += productsQuantity;
     }
 }

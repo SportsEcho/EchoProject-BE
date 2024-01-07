@@ -16,4 +16,6 @@ public interface MemberProductService {
      */
     MemberProductResponseDto addCart(Long productId, MemberProductRequestDto requestDto,
         Member member);
+
+    void deleteCart(Long productId, Member member);
 }
