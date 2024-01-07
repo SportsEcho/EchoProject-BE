@@ -7,6 +7,7 @@ import com.sportsecho.member.entity.MemberDetailsImpl;
 import com.sportsecho.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<MemberResponseDto>> signup(
-        @RequestBody MemberRequestDto request
+        @Valid @RequestBody MemberRequestDto request
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
             ApiResponse.of(
@@ -80,7 +81,7 @@ public class MemberController {
         memberService.refresh(request, response);
         return ResponseEntity.status(HttpStatus.OK).body(
             ApiResponse.of(
-                "갱신토큰 재발급 성공",
+                "접근토큰 재발급 성공",
                 200,
                 null
             )
