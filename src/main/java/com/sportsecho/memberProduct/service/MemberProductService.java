@@ -3,6 +3,7 @@ package com.sportsecho.memberProduct.service;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.memberProduct.dto.MemberProductRequestDto;
 import com.sportsecho.memberProduct.dto.MemberProductResponseDto;
+import java.util.List;
 
 public interface MemberProductService {
 
@@ -16,6 +17,13 @@ public interface MemberProductService {
      */
     MemberProductResponseDto addCart(Long productId, MemberProductRequestDto requestDto,
         Member member);
+
+    /***
+     * 장바구니 조회 API
+     * @param member 유저 정보
+     * @return 장바구니 목록
+     */
+    List<MemberProductResponseDto> getCart(Member member);
 
     /***
      * 장바구니 상품 삭제 API

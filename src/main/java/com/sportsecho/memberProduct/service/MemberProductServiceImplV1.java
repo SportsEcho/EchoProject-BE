@@ -9,6 +9,7 @@ import com.sportsecho.memberProduct.mapper.MemberProductMapper;
 import com.sportsecho.memberProduct.repository.MemberProductRepository;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.repository.ProductRepository;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -45,6 +46,18 @@ public class MemberProductServiceImplV1 implements MemberProductService {
         }
 
         return responseDto;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<MemberProductResponseDto> getCart(Member member) {
+
+        List<MemberProduct> memberProductList = memberProductRepository.findByMemberId(
+            member.getId());
+
+        return memberProductList.stream()
+            .map(MemberProductMapper.INSTANCE::toResponseDto)
+            .toList();
     }
 
     @Override
