@@ -62,18 +62,22 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponseDto updateComment(Long commentId, CommentRequestDto commentDto) {
+    public CommentResponseDto updateComment(Long commentId, CommentRequestDto commentDto, String userEmail) {
         Comment comment = commentRepository.findById(commentId)
             .orElseThrow(() -> new GlobalException(CommentErrorCode.COMMENT_NOT_FOUND));
 
-        comment.updateContent(commentDto.getContent());
+        if (!comment.getMember().getEmail().equals(userEmail)) {
+            throw new GlobalException(CommentErrorCode.UNAUTHORIZED_COMMENT_ACCESS);
+        }
 
+        comment.updateContent(commentDto.getContent());
         return new CommentResponseDto(
             comment.getId(),
             comment.getContent(),
             comment.getMember().getMemberName(),
             comment.getCreatedAt());
     }
+
 
     // 댓글 삭제
     @Transactional
