@@ -2,8 +2,10 @@ package com.sportsecho.game.service;
 
 import com.sportsecho.common.dto.ApiResponse;
 import com.sportsecho.common.dto.ResponseCode;
-import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.game.dto.GameResponseDto;
+import com.sportsecho.game.mapper.GameMapper;
+import com.sportsecho.global.exception.ErrorCode;
+import com.sportsecho.global.exception.GlobalException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import com.sportsecho.global.exception.ErrorCode;
 @RequiredArgsConstructor
 @Service
 public class GameService {
@@ -24,26 +25,19 @@ public class GameService {
         ResponseEntity<ApiResponse> response = restTemplate.getForEntity(apiUrl, ApiResponse.class);
 
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-            List<GameResponseDto> gameList = convertToGameResponseDtoList(response.getBody().getData());
+            List<Map<String, Object>> responseDataList = (List<Map<String, Object>>) response.getBody().getData();
+            List<GameResponseDto> gameList = convertToGameResponseDtoList(responseDataList);
             return ApiResponse.of(ResponseCode.OK, gameList);
         } else {
             throw new GlobalException(ErrorCode.EXTERNAL_API_ERROR);
         }
     }
 
-    private List<GameResponseDto> convertToGameResponseDtoList(Object apiResponseData) {
-        if (!(apiResponseData instanceof List<?>)) {
-            throw new GlobalException(ErrorCode.INVALID_API_RESPONSE);
-        }
-
-        List<?> responseDataList = (List<?>) apiResponseData;
+    private List<GameResponseDto> convertToGameResponseDtoList(List<Map<String, Object>> responseDataList) {
         List<GameResponseDto> gameResponseDtos = new ArrayList<>();
-
-        for (Object responseData : responseDataList) {
-            Map<String, Object> gameData = (Map<String, Object>) responseData;
-            gameResponseDtos.add(GameResponseDto.fromMap(gameData));
+        for (Map<String, Object> gameData : responseDataList) {
+            gameResponseDtos.add(GameMapper.INSTANCE.mapToDto(gameData));
         }
-
         return gameResponseDtos;
     }
 
