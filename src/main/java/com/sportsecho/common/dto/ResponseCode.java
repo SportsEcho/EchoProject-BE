@@ -8,9 +8,10 @@ import lombok.Getter;
 public enum ResponseCode {
 
     // 200 OK
-    OK(200, "요청성공")
+    OK(200, "요청성공"),
 
     // 201 CREATED
+    CREATED(201, "생성성공")
 
 
     ;
