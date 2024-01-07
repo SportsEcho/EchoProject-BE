@@ -4,6 +4,7 @@ import com.sportsecho.common.dto.ApiResponse;
 import com.sportsecho.member.dto.MemberRequestDto;
 import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.Member;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public interface MemberService {
@@ -21,6 +22,19 @@ public interface MemberService {
      * @param request Member 로그인 요청 정보
      * */
     ApiResponse<Void> login(MemberRequestDto request, HttpServletResponse response);
+
+    /**
+     * Member 로그아웃
+     * @param member 로그아웃 요청 Member
+     * @param request 사용자의 RefreshToken을 전달받기 위한 HttpServletRequest
+     * */
+    ApiResponse<Void> logout(Member member, HttpServletRequest request);
+
+    /**
+     * RefreshToken 재발급
+     * @param request 사용자의 RefreshToken을 전달받기 위한 HttpServletRequest
+     * */
+    ApiResponse<Void> refresh(HttpServletRequest request);
 
     /**
      * Member 삭제

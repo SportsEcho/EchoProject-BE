@@ -10,9 +10,9 @@ import com.sportsecho.member.dto.MemberRequestDto;
 import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberDetailsImpl;
-import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.member.mapper.MemberMapper;
 import com.sportsecho.member.repository.MemberRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -85,6 +85,41 @@ public class MemberServiceImplV2 implements MemberService {
             ResponseCode.OK,
             null
         );
+    }
+
+    @Override
+    public ApiResponse<Void> logout(Member member, HttpServletRequest request) {
+        String refreshToken = jwtUtil.getRefreshToken(request);
+
+        //redis에 refreshToken이 존재하는 경우
+        if(redisUtil.isExist(refreshToken)) {
+
+            //현재 접속중인 사용자가 로그아웃을 요청한 사용자인지 확인
+            if(member.getEmail().equals(redisUtil.getEmail(refreshToken))) {
+                redisUtil.removeToken(refreshToken);
+            } else {
+                //throw new GlobalException(JwtErrorCode.INVALID_REQUEST);
+            }
+        } else {
+            //throw new GlobalException(JwtErrorCode.TOKEN_NOT_FOUND);
+        }
+
+        return ApiResponse.of(
+            ResponseCode.OK,
+            null
+        );
+    }
+
+    @Override
+    public ApiResponse<Void> refresh(HttpServletRequest request) {
+        String refreshToken = jwtUtil.getRefreshToken(request);
+
+        //redis에 refreshToken이 존재하는 경우
+        if(redisUtil.isExist(refreshToken)) {
+
+        }
+
+        return null;
     }
 
     @Override

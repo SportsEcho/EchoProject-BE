@@ -11,6 +11,7 @@ import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberDetailsImpl;
 import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.member.repository.MemberRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -80,6 +81,16 @@ public class MemberServiceImplV1 implements MemberService {
             ResponseCode.OK,
             null
         );
+    }
+
+    @Override
+    public ApiResponse<Void> logout(Member member, HttpServletRequest request) {
+        return null;
+    }
+
+    @Override
+    public ApiResponse<Void> refresh(HttpServletRequest request) {
+        return null;
     }
 
     @Override
