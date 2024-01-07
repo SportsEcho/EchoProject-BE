@@ -26,10 +26,12 @@ import org.springframework.stereotype.Service;
 public class JwtUtil {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String REFRESH_AUTHORIZATION_HEADER = "RefreshAuthorization";
 
     private final String BEARER_PREFIX = "Bearer ";
     private final String AUTHORIZATION_KEY = "auth";
-    private final Long TOKEN_TIME = 60 * 60 * 1000L;
+    private final Long ACCESS_TIME = 60 * 60 * 1000L;
+    private final Long REFRESH_TIME = 7 * 24 * 60 * 60 * 1000L;
 
     private Key key;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -43,17 +45,29 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String generateToken(String email, MemberRole role) {
+    public String generateAccessToken(String email, MemberRole role) {
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(email)
                         .claim(AUTHORIZATION_KEY, role)
-                        .setExpiration(new Date(date.getTime() + TOKEN_TIME))
+                        .setExpiration(new Date(date.getTime() + ACCESS_TIME))
                         .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm)
                         .compact();
+    }
+
+    public String generateRefreshToken() {
+        Date date = new Date();
+
+        //refresh token 내부에는 사용자의 정보를 담지 않는다.
+        return BEARER_PREFIX +
+            Jwts.builder()
+                .setExpiration(new Date(date.getTime() + REFRESH_TIME))
+                .setIssuedAt(date)
+                .signWith(key, signatureAlgorithm)
+                .compact();
     }
 
     public String getToken(HttpServletRequest request) {
