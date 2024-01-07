@@ -12,6 +12,7 @@ import com.sportsecho.member.mapper.MemberMapper;
 import com.sportsecho.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -70,8 +71,8 @@ public class MemberServiceImplV2 implements MemberService {
             String accessToken = jwtUtil.generateAccessToken(member.getEmail(), member.getRole());
             String refreshToken = jwtUtil.generateRefreshToken();
 
-            response.setHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
-            response.setHeader(JwtUtil.REFRESH_AUTHORIZATION_HEADER, refreshToken);
+            //ResponseHeader에 토큰 추가
+            setTokenHeader(response, accessToken, refreshToken);
 
             redisUtil.saveRefreshToken(refreshToken, member.getEmail());
 
@@ -99,12 +100,20 @@ public class MemberServiceImplV2 implements MemberService {
     }
 
     @Override
-    public void refresh(HttpServletRequest request) {
+    public void refresh(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = jwtUtil.getRefreshToken(request);
 
         //redis에 refreshToken이 존재하는 경우
         if(redisUtil.isExist(refreshToken)) {
+            Member member = memberRepository.findByEmail(redisUtil.getEmail(refreshToken))
+                .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
 
+            //accessToken 발급
+            String accessToken = jwtUtil.generateAccessToken(member.getEmail(), member.getRole());
+
+            setTokenHeader(response, accessToken, refreshToken);
+        } else {
+            //throw new GlobalException(JwtErrorCode.TOKEN_NOT_FOUND);
         }
     }
 
@@ -113,5 +122,10 @@ public class MemberServiceImplV2 implements MemberService {
     public MemberResponseDto deleteMember(Member member) {
         memberRepository.delete(member);
         return MemberMapper.MAPPER.toResponseDto(member);
+    }
+
+    private void setTokenHeader(HttpServletResponse response, String accessToken, String refreshToken) {
+        response.setHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
+        response.setHeader(JwtUtil.REFRESH_AUTHORIZATION_HEADER, refreshToken);
     }
 }

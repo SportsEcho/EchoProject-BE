@@ -74,9 +74,10 @@ public class MemberController {
 
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<Void>> refresh(
-        HttpServletRequest request
+        HttpServletRequest request,
+        HttpServletResponse response
     ) {
-        memberService.refresh(request);
+        memberService.refresh(request, response);
         return ResponseEntity.status(HttpStatus.OK).body(
             ApiResponse.of(
                 "갱신토큰 재발급 성공",

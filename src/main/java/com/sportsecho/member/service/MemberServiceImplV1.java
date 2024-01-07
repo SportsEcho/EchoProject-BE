@@ -79,7 +79,7 @@ public class MemberServiceImplV1 implements MemberService {
     public void logout(Member member, HttpServletRequest request) {}
 
     @Override
-    public void refresh(HttpServletRequest request) {}
+    public void refresh(HttpServletRequest request, HttpServletResponse response) {}
 
     @Override
     @Transactional
