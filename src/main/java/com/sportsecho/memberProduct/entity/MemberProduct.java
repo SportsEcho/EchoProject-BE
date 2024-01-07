@@ -32,14 +32,10 @@ public class MemberProduct {
     private Product product;
 
     @Builder
-    public MemberProduct(Integer productsQuantity) {
+    public MemberProduct(Integer productsQuantity, Member member, Product product) {
         this.productsQuantity = productsQuantity;
-    }
-
-    public MemberProduct create(Integer productsQuantity) {
-        return MemberProduct.builder()
-            .productsQuantity(productsQuantity)
-            .build();
+        this.member = member;
+        this.product = product;
     }
 
     public void update(Integer productsQuantity) {
