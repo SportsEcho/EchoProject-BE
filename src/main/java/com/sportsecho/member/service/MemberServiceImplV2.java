@@ -3,6 +3,7 @@ package com.sportsecho.member.service;
 import com.sportsecho.common.dto.ApiResponse;
 import com.sportsecho.common.dto.ResponseCode;
 import com.sportsecho.common.jwt.JwtUtil;
+import com.sportsecho.common.redis.RedisUtil;
 import com.sportsecho.global.exception.ErrorCode;
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.dto.MemberRequestDto;
@@ -34,6 +35,7 @@ public class MemberServiceImplV2 implements MemberService {
 
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
+    private final RedisUtil redisUtil;
 
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
@@ -67,9 +69,13 @@ public class MemberServiceImplV2 implements MemberService {
 
             Member member = ((MemberDetailsImpl) authentication.getPrincipal()).getMember();
 
-            String token = jwtUtil.generateToken(member.getEmail(), member.getRole());
+            String accessToken = jwtUtil.generateAccessToken(member.getEmail(), member.getRole());
+            String refreshToken = jwtUtil.generateRefreshToken();
 
-            response.setHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+            response.setHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
+            response.setHeader(JwtUtil.REFRESH_AUTHORIZATION_HEADER, refreshToken);
+
+            redisUtil.saveRefreshToken(refreshToken, member.getEmail());
 
         } catch(BadCredentialsException e) {
             throw new GlobalException(ErrorCode.INVALID_AUTH);

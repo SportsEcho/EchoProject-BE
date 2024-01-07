@@ -68,7 +68,7 @@ public class MemberServiceImplV1 implements MemberService {
 
             Member member = ((MemberDetailsImpl) authentication.getPrincipal()).getMember();
 
-            String token = jwtUtil.generateToken(member.getEmail(), member.getRole());
+            String token = jwtUtil.generateAccessToken(member.getEmail(), member.getRole());
 
             response.setHeader(JwtUtil.AUTHORIZATION_HEADER, token);
 
