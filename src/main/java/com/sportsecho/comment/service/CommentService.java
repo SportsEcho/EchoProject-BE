@@ -40,12 +40,12 @@ public class CommentService {
         Comment comment = Comment.builder()
             .content(commentDto.getContent())
             .game(game)
-            .memberName(member.getMemberName())
+            .member(member)
             .build();
 
         commentRepository.save(comment);
 
-        return new CommentResponseDto(comment.getId(), comment.getContent(), comment.getMemberName(), comment.getCreatedAt());
+        return new CommentResponseDto(comment.getId(), comment.getContent(), member.getMemberName(), comment.getCreatedAt());
     }
 
     // 댓글 조회
@@ -56,7 +56,7 @@ public class CommentService {
             .map(comment -> new CommentResponseDto(
                 comment.getId(),
                 comment.getContent(),
-                comment.getMemberName(),
+                comment.getMember().getMemberName(),
                 comment.getCreatedAt()))
             .collect(Collectors.toList());
     }
@@ -71,7 +71,7 @@ public class CommentService {
         return new CommentResponseDto(
             comment.getId(),
             comment.getContent(),
-            comment.getMemberName(),
+            comment.getMember().getMemberName(),
             comment.getCreatedAt());
     }
 
