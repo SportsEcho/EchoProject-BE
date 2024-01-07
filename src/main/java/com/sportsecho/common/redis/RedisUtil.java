@@ -4,21 +4,17 @@ import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Slf4j(topic = "RedisUtil")
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Slf4j(topic = "RedisUtil")
 public class RedisUtil {
 
     private final RedisTemplate<String, String> userRedisTemplate;
 
     private final Long REFRESH_TIME = 7 * 24 * 60 * 60 * 1000L;
 
-    @Transactional
     public void saveRefreshToken(String refreshToken, String email) {
         //redis에 refreshToken 저장
         userRedisTemplate.opsForValue().set(refreshToken, email);
