@@ -8,7 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +20,7 @@ public class MemberProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer productsQuantity;
+    private int productsQuantity;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
@@ -31,14 +30,7 @@ public class MemberProduct {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @Builder
-    public MemberProduct(Integer productsQuantity, Member member, Product product) {
-        this.productsQuantity = productsQuantity;
-        this.member = member;
-        this.product = product;
-    }
-
-    public void updateQuantity(Integer productsQuantity) {
+    public void updateQuantity(int productsQuantity) {
         this.productsQuantity += productsQuantity;
     }
 }

@@ -55,6 +55,12 @@ public class MemberProductServiceImplV1 implements MemberProductService {
         memberProductRepository.delete(memberProduct);
     }
 
+    @Override
+    @Transactional
+    public void deleteAllCart(Member member) {
+        memberProductRepository.deleteByMemberId(member.getId());
+    }
+
     private Product findProduct(Long productId) {
         return productRepository.findById(productId)
             .orElseThrow(() -> new NullPointerException("상품이 존재하지 않습니다.")

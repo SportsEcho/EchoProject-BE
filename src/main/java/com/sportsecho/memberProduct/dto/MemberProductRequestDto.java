@@ -5,6 +5,5 @@ import lombok.Getter;
 @Getter
 public class MemberProductRequestDto {
 
-    private Integer productsQuantity;
-
+    private int productsQuantity;
 }

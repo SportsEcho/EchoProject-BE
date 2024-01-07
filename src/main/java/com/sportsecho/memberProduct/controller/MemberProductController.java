@@ -47,4 +47,15 @@ public class MemberProductController {
         return ResponseEntity.status(HttpStatus.OK).body(
             ApiResponse.of("장바구니에서 삭제되었습니다.", 200, null));
     }
+
+    @DeleteMapping("/carts")
+    public ResponseEntity<ApiResponse<Void>> deleteAllCart(
+        @AuthenticationPrincipal MemberDetailsImpl memberDetails
+    ) {
+
+        memberProductService.deleteAllCart(memberDetails.getMember());
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+            ApiResponse.of("장바구니를 비웠습니다.", 200, null));
+    }
 }

@@ -17,5 +17,16 @@ public interface MemberProductService {
     MemberProductResponseDto addCart(Long productId, MemberProductRequestDto requestDto,
         Member member);
 
+    /***
+     * 장바구니 상품 삭제 API
+     * @param productId 상품 Id
+     * @param member 유저 정보
+     */
     void deleteCart(Long productId, Member member);
+
+    /***
+     * 장바구니 비우기 API
+     * @param member 유저 정보
+     */
+    void deleteAllCart(Member member);
 }
