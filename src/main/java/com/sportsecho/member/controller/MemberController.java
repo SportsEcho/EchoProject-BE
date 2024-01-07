@@ -49,7 +49,6 @@ public class MemberController {
     public ResponseEntity<ApiResponse<MemberResponseDto>> deleteMember(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails
     ) {
-        memberService.deleteMember(memberDetails.getMember());
         return ResponseEntity.status(HttpStatus.OK).body(
             memberService.deleteMember(memberDetails.getMember())
         );
