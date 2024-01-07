@@ -53,6 +53,7 @@ public class CommentController {
     // 댓글 삭제
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
-        // 댓글 삭제 로직
+        commentService.deleteComment(commentId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
