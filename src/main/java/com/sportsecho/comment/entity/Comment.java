@@ -2,6 +2,7 @@ package com.sportsecho.comment.entity;
 
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.game.entity.Game;
+import com.sportsecho.member.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,9 +20,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "comments")
 @Getter
-@NoArgsConstructor // 기본 생성자
-@AllArgsConstructor // 전체 인자를 가지는 생성자
-@Builder // 빌더 패턴 적용
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Comment extends TimeStamp {
 
     @Id
@@ -34,8 +35,10 @@ public class Comment extends TimeStamp {
     @JoinColumn(name = "game_id")
     private Game game;
 
-    @Column(name = "member_name")
-    private String memberName; // 댓글 작성자 이름
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     public void updateContent(String content) {
         this.content = content;
     }
