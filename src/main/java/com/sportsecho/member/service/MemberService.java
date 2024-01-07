@@ -6,9 +6,6 @@ import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.Member;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- * Response 방식 확정되면 Response 수정
- * */
 public interface MemberService {
 
     /**

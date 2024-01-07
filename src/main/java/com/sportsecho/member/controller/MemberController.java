@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Response 방식 확정되면 Response 수정
- * */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/member")
