@@ -67,7 +67,6 @@ public class CommentService {
             .orElseThrow(() -> new GlobalException(CommentErrorCode.COMMENT_NOT_FOUND));
 
         comment.updateContent(commentDto.getContent());
-        commentRepository.save(comment);
 
         return new CommentResponseDto(
             comment.getId(),
