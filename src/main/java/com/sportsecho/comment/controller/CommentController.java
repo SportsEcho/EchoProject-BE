@@ -51,9 +51,11 @@ public class CommentController {
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<CommentResponseDto> updateComment(
         @PathVariable Long commentId,
-        @RequestBody CommentRequestDto commentDto) {
+        @RequestBody CommentRequestDto commentDto,
+        Authentication authentication) {
 
-        CommentResponseDto responseDto = commentService.updateComment(commentId, commentDto);
+        String userEmail = authentication.getName();
+        CommentResponseDto responseDto = commentService.updateComment(commentId, commentDto, userEmail);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
