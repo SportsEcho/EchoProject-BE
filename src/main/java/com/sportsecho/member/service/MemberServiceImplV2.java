@@ -13,6 +13,7 @@ import com.sportsecho.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
  * - V1에서 builder로 생성하던 MemberEntity를 MemberMapper를 통해 생성
  * - V1에서 builder로 생성해 반환하던 MemberResponseDto를 MemberMapper를 통해 생성
  * */
+@Qualifier("V2")
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
