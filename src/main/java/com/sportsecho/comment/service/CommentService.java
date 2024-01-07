@@ -81,9 +81,13 @@ public class CommentService {
 
     // 댓글 삭제
     @Transactional
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long commentId, String userEmail) {
         Comment comment = commentRepository.findById(commentId)
             .orElseThrow(() -> new GlobalException(CommentErrorCode.COMMENT_NOT_FOUND));
+
+        if (!comment.getMember().getEmail().equals(userEmail)) {
+            throw new GlobalException(CommentErrorCode.UNAUTHORIZED_COMMENT_ACCESS);
+        }
 
         commentRepository.delete(comment);
     }
