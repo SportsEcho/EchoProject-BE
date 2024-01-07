@@ -39,6 +39,9 @@ public class Product extends TimeStamp {
     @Column(name = "imageUrl", nullable = false)
     private String imageUrl;
 
+    @Column(name = "price", nullable = false)
+    private int price;
+
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Hotdeal hotdeal;
 
@@ -49,10 +52,11 @@ public class Product extends TimeStamp {
     private List<MemberProduct> memberProductList = new ArrayList<>();
 
     @Builder
-    public Product(String title, String content, String imageUrl) {
+    public Product(String title, String content, String imageUrl, int price) {
         this.title = title;
         this.content = content;
         this.imageUrl = imageUrl;
+        this.price = price;
     }
 
     public static Product create(String title, String content) {
@@ -62,10 +66,11 @@ public class Product extends TimeStamp {
             .build();
     }
 
-    public Product update(String title, String content, String imageUrl) {
+    public Product update(String title, String content, String imageUrl, int price) {
         this.title = title;
         this.content = content;
         this.imageUrl = imageUrl;
+        this.price = price;
         return this;
     }
 
