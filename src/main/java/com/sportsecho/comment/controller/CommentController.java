@@ -30,7 +30,11 @@ public class CommentController {
 
     // 게임별 댓글 추가
     @PostMapping("/comments")
-    public ResponseEntity<CommentResponseDto> addComment(@PathVariable Long gameId, @RequestBody CommentRequestDto commentDto, Authentication authentication) {
+    public ResponseEntity<CommentResponseDto> addComment(
+        @PathVariable Long gameId,
+        @RequestBody CommentRequestDto commentDto,
+        Authentication authentication) {
+
         String userEmail = authentication.getName();
         CommentResponseDto responseDto = commentService.addComment(gameId, commentDto, userEmail);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
@@ -45,7 +49,10 @@ public class CommentController {
 
     // 댓글 수정
     @PutMapping("/comments/{commentId}")
-    public ResponseEntity<CommentResponseDto> updateComment(@PathVariable Long commentId, @RequestBody CommentRequestDto commentDto) {
+    public ResponseEntity<CommentResponseDto> updateComment(
+        @PathVariable Long commentId,
+        @RequestBody CommentRequestDto commentDto) {
+
         CommentResponseDto responseDto = commentService.updateComment(commentId, commentDto);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
