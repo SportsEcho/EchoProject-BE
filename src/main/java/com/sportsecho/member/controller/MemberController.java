@@ -1,11 +1,12 @@
 package com.sportsecho.member.controller;
 
 import com.sportsecho.common.dto.ApiResponse;
+import com.sportsecho.common.dto.ResponseCode;
 import com.sportsecho.member.dto.MemberRequestDto;
 import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.MemberDetailsImpl;
-import com.sportsecho.member.service.MemberServiceImplV1;
 import com.sportsecho.member.service.MemberServiceImplV2;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,16 +30,51 @@ public class MemberController {
         @RequestBody MemberRequestDto request
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-            memberService.signup(request)
+            ApiResponse.of(
+                ResponseCode.CREATED,
+                memberService.signup(request)
+            )
         );
     }
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<Void>> login(
-        @RequestBody MemberRequestDto request, HttpServletResponse response
+        @RequestBody MemberRequestDto request,
+        HttpServletResponse response
     ) {
+        memberService.login(request, response);
         return ResponseEntity.status(HttpStatus.OK).body(
-            memberService.login(request, response)
+            ApiResponse.of(
+                ResponseCode.OK,
+                null
+            )
+        );
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(
+        @AuthenticationPrincipal MemberDetailsImpl memberDetails,
+        HttpServletRequest request
+    ) {
+        memberService.logout(memberDetails.getMember(), request);
+        return ResponseEntity.status(HttpStatus.OK).body(
+            ApiResponse.of(
+                ResponseCode.OK,
+                null
+            )
+        );
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<Void>> refresh(
+        HttpServletRequest request
+    ) {
+        memberService.refresh(request);
+        return ResponseEntity.status(HttpStatus.OK).body(
+            ApiResponse.of(
+                ResponseCode.OK,
+                null
+            )
         );
     }
 
@@ -47,7 +83,10 @@ public class MemberController {
         @AuthenticationPrincipal MemberDetailsImpl memberDetails
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
-            memberService.deleteMember(memberDetails.getMember())
+            ApiResponse.of(
+                ResponseCode.OK,
+                memberService.deleteMember(memberDetails.getMember())
+            )
         );
     }
 }
