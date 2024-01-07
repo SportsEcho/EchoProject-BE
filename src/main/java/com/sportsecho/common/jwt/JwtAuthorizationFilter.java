@@ -34,7 +34,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         //Bearer를 포함한 tokenValue
-        String tokenValue = jwtUtil.getToken(request);
+        String tokenValue = jwtUtil.getAccessToken(request);
 
         if(StringUtils.hasText(tokenValue)) {
             String token = jwtUtil.substringToken(tokenValue);

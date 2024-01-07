@@ -70,8 +70,12 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String getToken(HttpServletRequest request) {
+    public String getAccessToken(HttpServletRequest request) {
         return request.getHeader(AUTHORIZATION_HEADER);
+    }
+
+    public String getRefreshToken(HttpServletRequest request) {
+        return request.getHeader(REFRESH_AUTHORIZATION_HEADER);
     }
 
     public String substringToken(String tokenValue) {
