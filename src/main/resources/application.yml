@@ -23,6 +23,11 @@ spring:
       enabled: true
       max-file-size: 2MB
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
 jwt:
   secret_key: ${jwt.secret_key}
 
