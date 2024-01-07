@@ -77,7 +77,11 @@ public class CommentService {
     }
 
     // 댓글 삭제
+    @Transactional
     public void deleteComment(Long commentId) {
-        // 댓글 삭제 로직
+        Comment comment = commentRepository.findById(commentId)
+            .orElseThrow(() -> new GlobalException(CommentErrorCode.COMMENT_NOT_FOUND));
+
+        commentRepository.delete(comment);
     }
 }
