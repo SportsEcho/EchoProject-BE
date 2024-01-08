@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/carts")
 public class MemberProductController {
 
     private final MemberProductService memberProductService;
@@ -27,7 +27,7 @@ public class MemberProductController {
         this.memberProductService = memberProductService;
     }
 
-    @PostMapping("/products/{productId}/carts")
+    @PostMapping("/products/{productId}")
     public ResponseEntity<MemberProductResponseDto> addCart(
         @PathVariable Long productId,
         @RequestBody MemberProductRequestDto requestDto,
@@ -39,7 +39,7 @@ public class MemberProductController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
-    @GetMapping("/member/carts")
+    @GetMapping
     public ResponseEntity<List<MemberProductResponseDto>> getCart(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
 
@@ -49,7 +49,7 @@ public class MemberProductController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDtoList);
     }
 
-    @DeleteMapping("/carts/products/{productId}")
+    @DeleteMapping("/products/{productId}")
     public ResponseEntity<Void> deleteCart(
         @PathVariable Long productId,
         @AuthenticationPrincipal MemberDetailsImpl memberDetails
@@ -60,7 +60,7 @@ public class MemberProductController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
-    @DeleteMapping("/carts")
+    @DeleteMapping
     public ResponseEntity<Void> deleteAllCart(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails
     ) {
