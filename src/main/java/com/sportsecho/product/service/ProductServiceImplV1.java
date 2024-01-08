@@ -53,7 +53,7 @@ public class ProductServiceImplV1 implements ProductService{
     @Transactional
     public ProductResponseDto updateProduct(Member member, Long productId, ProductRequestDto requestDto) {
         Product product = findProduct(productId);
-        product.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getImage_url(), requestDto.getPrice());
+        product.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getImageUrl(), requestDto.getPrice());
         productRepository.save(product);
 
         return ProductMapper.INSTANCE.toResponseDto(product);
