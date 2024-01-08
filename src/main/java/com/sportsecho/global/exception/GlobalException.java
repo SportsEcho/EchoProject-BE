@@ -1,17 +1,20 @@
 package com.sportsecho.global.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
-public class GlobalException extends RuntimeException{
-    private ErrorCode errorCode;
+public class GlobalException extends RuntimeException {
+    private final BaseErrorCode errorCode;
     private String msg;
 
-    public GlobalException(ErrorCode errorCode) {
+    public GlobalException(BaseErrorCode errorCode) {
+        super(errorCode.getMsg());
         this.errorCode = errorCode;
-        this.msg = null;
+    }
+
+    public GlobalException(BaseErrorCode errorCode, String msg) {
+        super(msg);
+        this.errorCode = errorCode;
+        this.msg = msg;
     }
 }
-
