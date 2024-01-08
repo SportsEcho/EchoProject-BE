@@ -7,10 +7,12 @@ import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberDetailsImpl;
 import com.sportsecho.member.entity.MemberRole;
+import com.sportsecho.member.exception.MemberErrorCode;
 import com.sportsecho.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,7 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@Service("V1")
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberServiceImplV1 implements MemberService {
@@ -68,7 +70,7 @@ public class MemberServiceImplV1 implements MemberService {
             response.setHeader(JwtUtil.AUTHORIZATION_HEADER, token);
 
         } catch(BadCredentialsException e) {
-            throw new GlobalException(ErrorCode.INVALID_AUTH);
+            throw new GlobalException(MemberErrorCode.INVALID_AUTH);
         }
     }
 
@@ -76,7 +78,7 @@ public class MemberServiceImplV1 implements MemberService {
     public void logout(Member member, HttpServletRequest request) {}
 
     @Override
-    public void refresh(HttpServletRequest request) {}
+    public void refresh(HttpServletRequest request, HttpServletResponse response) {}
 
     @Override
     @Transactional
