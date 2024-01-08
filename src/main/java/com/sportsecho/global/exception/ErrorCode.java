@@ -15,14 +15,7 @@ public enum ErrorCode implements BaseErrorCode{
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다"),
     INVALID_ID_PERMISSION(HttpStatus.UNAUTHORIZED, "권한이 유효하지 않습니다"),
     EXTERNAL_API_ERROR(HttpStatus.BAD_GATEWAY, "외부 API 오류입니다"),
-    INVALID_API_RESPONSE(HttpStatus.BAD_REQUEST, "유효하지 않은 API 응답입니다"),
-    INVALID_AUTH(HttpStatus.UNAUTHORIZED, "유효하지 않은 로그인 정보입니다"),
-
-    //Jwt Error Code
-    UNSUPPORTED_JWT_EXCEPTION(HttpStatus.UNAUTHORIZED, "Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다."),
-    SIGNATURE_EXCEPTION(HttpStatus.UNAUTHORIZED, "Invalid JWT signature, 유효하지 않는 JWT 서명 입니다."),
-    ILLEGAL_ARGUMENT_EXCEPTION(HttpStatus.UNAUTHORIZED, "JWT claims is empty, 잘못된 JWT 토큰 입니다."),
-    EXPIRED_TOKEN_EXCEPTION(HttpStatus.UNAUTHORIZED, "Expired JWT token, 만료된 JWT token 입니다.");
+    INVALID_API_RESPONSE(HttpStatus.BAD_REQUEST, "유효하지 않은 API 응답입니다");
 
     private HttpStatus status;
     private String msg;

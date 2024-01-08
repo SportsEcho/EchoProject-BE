@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -41,5 +42,12 @@ public class CustomRestAdvice {
 
         return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
                 .body(Response.error(HttpStatus.EXPECTATION_FAILED.name(), errorMap));
+    }
+
+    //입력값 검증 실패 - 유효성 검사에 대한 권장 상태코드는 400-Bad Request
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        //exception 공통 양식 정리 후 수정
+        return ResponseEntity.status(e.getStatusCode()).body(null);
     }
 }

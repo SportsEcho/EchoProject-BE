@@ -33,7 +33,7 @@ public interface MemberService {
      * RefreshToken 재발급
      * @param request 사용자의 RefreshToken을 전달받기 위한 HttpServletRequest
      * */
-    void refresh(HttpServletRequest request);
+    void refresh(HttpServletRequest request, HttpServletResponse response);
 
     /**
      * Member 삭제
