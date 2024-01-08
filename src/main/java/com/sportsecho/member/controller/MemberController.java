@@ -31,73 +31,47 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<MemberResponseDto>> signup(
+    public ResponseEntity<MemberResponseDto> signup(
         @Valid @RequestBody MemberRequestDto request
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-            ApiResponse.of(
-                "사용자 회원가입 성공",
-                201,
                 memberService.signup(request)
-            )
         );
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<Void>> login(
+    public ResponseEntity<Void> login(
         @RequestBody MemberRequestDto request,
         HttpServletResponse response
     ) {
         memberService.login(request, response);
-        return ResponseEntity.status(HttpStatus.OK).body(
-            ApiResponse.of(
-                "사용자 로그인 성공",
-                200,
-                null
-            )
-        );
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<Void>> logout(
+    public ResponseEntity<Void> logout(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         HttpServletRequest request
     ) {
         memberService.logout(memberDetails.getMember(), request);
-        return ResponseEntity.status(HttpStatus.OK).body(
-            ApiResponse.of(
-                "사용자 로그아웃 성공",
-                200,
-                null
-            )
-        );
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<ApiResponse<Void>> refresh(
+    public ResponseEntity<Void> refresh(
         HttpServletRequest request,
         HttpServletResponse response
     ) {
         memberService.refresh(request, response);
-        return ResponseEntity.status(HttpStatus.OK).body(
-            ApiResponse.of(
-                "접근토큰 재발급 성공",
-                200,
-                null
-            )
-        );
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @DeleteMapping("")
-    public ResponseEntity<ApiResponse<MemberResponseDto>> deleteMember(
+    public ResponseEntity<MemberResponseDto> deleteMember(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
-            ApiResponse.of(
-                "사용자 회원탈퇴 성공",
-                200,
-                memberService.deleteMember(memberDetails.getMember())
-            )
+            memberService.deleteMember(memberDetails.getMember())
         );
     }
 }
