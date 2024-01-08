@@ -1,6 +1,7 @@
 package com.sportsecho.member.service;
 
 import com.sportsecho.common.jwt.JwtUtil;
+import com.sportsecho.common.jwt.exception.JwtErrorCode;
 import com.sportsecho.common.redis.RedisUtil;
 import com.sportsecho.global.exception.ErrorCode;
 import com.sportsecho.global.exception.GlobalException;
@@ -8,6 +9,7 @@ import com.sportsecho.member.dto.MemberRequestDto;
 import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberDetailsImpl;
+import com.sportsecho.member.exception.MemberErrorCode;
 import com.sportsecho.member.mapper.MemberMapper;
 import com.sportsecho.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,7 +49,7 @@ public class MemberServiceImplV2 implements MemberService {
 
         //email duplicate check
         if(memberRepository.findByEmail(request.getEmail()).isPresent())
-            throw new GlobalException(ErrorCode.DUPLICATED_USER_NAME);
+            throw new GlobalException(MemberErrorCode.DUPLICATED_EMAIL);
 
         //MemberMapper를 이용한 Entity 생성
         Member member = MemberMapper.MAPPER.toEntity(request);
@@ -77,7 +79,7 @@ public class MemberServiceImplV2 implements MemberService {
             redisUtil.saveRefreshToken(refreshToken, member.getEmail());
 
         } catch(BadCredentialsException e) {
-            throw new GlobalException(ErrorCode.INVALID_AUTH);
+            throw new GlobalException(MemberErrorCode.INVALID_AUTH);
         }
     }
 
@@ -92,10 +94,10 @@ public class MemberServiceImplV2 implements MemberService {
             if(member.getEmail().equals(redisUtil.getEmail(refreshToken))) {
                 redisUtil.removeToken(refreshToken);
             } else {
-                //throw new GlobalException(JwtErrorCode.INVALID_REQUEST);
+                throw new GlobalException(MemberErrorCode.INVALID_REQUEST);
             }
         } else {
-            //throw new GlobalException(JwtErrorCode.TOKEN_NOT_FOUND);
+            throw new GlobalException(JwtErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
     }
 
@@ -113,7 +115,7 @@ public class MemberServiceImplV2 implements MemberService {
 
             setTokenHeader(response, accessToken, refreshToken);
         } else {
-            //throw new GlobalException(JwtErrorCode.TOKEN_NOT_FOUND);
+            throw new GlobalException(JwtErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
     }
 

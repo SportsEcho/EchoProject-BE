@@ -8,6 +8,7 @@ import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberDetailsImpl;
 import com.sportsecho.member.entity.MemberRole;
+import com.sportsecho.member.exception.MemberErrorCode;
 import com.sportsecho.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -71,7 +72,7 @@ public class MemberServiceImplV1 implements MemberService {
             response.setHeader(JwtUtil.AUTHORIZATION_HEADER, token);
 
         } catch(BadCredentialsException e) {
-            throw new GlobalException(ErrorCode.INVALID_AUTH);
+            throw new GlobalException(MemberErrorCode.INVALID_AUTH);
         }
     }
 
