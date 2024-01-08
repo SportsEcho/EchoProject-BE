@@ -26,7 +26,6 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    // 생성자 주입
 
     // 게임별 댓글 추가
     @PostMapping("/comments")
