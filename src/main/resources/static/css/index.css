@@ -1,0 +1,91 @@
+body {
+  margin: 15px;
+  padding: 15px;
+  font-family: Arial, sans-serif;
+  /* 수정된 그라데이션 배경색 */
+  background: linear-gradient(#0A2A3A, #4F6D7A);
+  min-height: 100vh; /* 화면 전체 높이를 채우도록 설정 */
+}
+/* 드롭다운 콘텐츠 */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover { background-color: #f1f1f1; }
+
+nav > ul > li:hover .dropdown-content {
+  display: block;
+}
+header {
+  display: flex; /* 플렉스 컨테이너 설정 */
+  justify-content: space-between; /* 요소들을 양 끝과 중앙에 배치 */
+  align-items: center; /* 세로 축 중앙 정렬 */
+  padding: 5px; /* 패딩 설정 */
+  background-color: rgba(79, 109, 122, 0.8); /* 배경색 및 투명도 설정 */
+  border-radius: 10px;
+}
+
+nav {
+  padding: 20px 0;
+  border-radius: 10px;
+  background-color: rgba(10, 42, 58, 0.8); /* 네비게이션 바 배경색 및 투명도 설정 */
+}
+
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+nav ul li {
+  margin: 0 10px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: white; /* 네비게이션 바 글자 색상을 흰색으로 설정 */
+  font-weight: bold; /* 글자를 볼드체로 설정 */
+}
+#logo img {
+  width: 100px; /* 로고 이미지 크기 조정 */
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+#logo, #user-profile {
+  display: flex; /* 로고와 유저 프로필 내 요소들도 가로로 정렬 */
+  align-items: center; /* 세로 축 중앙 정렬 */
+}
+
+#user-profile img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+footer {
+  text-align: center;
+  padding: 2px 0;
+}
+h1 {
+  margin: 0; /* 중앙에 위치한 웹페이지 이름의 여백 제거 */
+  font-weight: bold;
+  font-size: 60px;
+}
+
