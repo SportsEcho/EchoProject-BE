@@ -15,8 +15,7 @@ public enum ErrorCode implements BaseErrorCode{
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다"),
     INVALID_ID_PERMISSION(HttpStatus.UNAUTHORIZED, "권한이 유효하지 않습니다"),
     EXTERNAL_API_ERROR(HttpStatus.BAD_GATEWAY, "외부 API 오류입니다"),
-    INVALID_API_RESPONSE(HttpStatus.BAD_REQUEST, "유효하지 않은 API 응답입니다"),
-    INVALID_AUTH(HttpStatus.UNAUTHORIZED, "유효하지 않은 로그인 정보입니다");
+    INVALID_API_RESPONSE(HttpStatus.BAD_REQUEST, "유효하지 않은 API 응답입니다");
 
     private HttpStatus status;
     private String msg;
