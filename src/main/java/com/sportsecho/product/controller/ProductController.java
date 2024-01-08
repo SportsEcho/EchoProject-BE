@@ -37,6 +37,7 @@ public class ProductController {
         ProductResponseDto responseDto = productService.createProduct(requestDto,
             memberDetails.getMember());
 
+
         return ResponseEntity.status(HttpStatus.CREATED).body(
             ApiResponse.of("상품 생성 성공", 201, responseDto)
         );

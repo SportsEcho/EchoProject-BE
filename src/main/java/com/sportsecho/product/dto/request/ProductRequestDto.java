@@ -7,7 +7,7 @@ public class ProductRequestDto {
 
     private String title;
     private String content;
-    private String image_url;
+    private String imageUrl;
     private int price;
 
 }

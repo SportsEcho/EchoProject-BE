@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Hotdeal{
+public class Hotdeal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,27 +35,33 @@ public class Hotdeal{
     private Product product;
 
     @Builder
-    public Hotdeal(LocalDateTime startDay, LocalDateTime dueDay, int dealQuantity, int sale) {
+    public Hotdeal(LocalDateTime startDay, LocalDateTime dueDay, int dealQuantity, int sale,
+        Product product) {
         this.startDay = startDay;
         this.dueDay = dueDay;
-        this. dealQuantity = dealQuantity;
+        this.dealQuantity = dealQuantity;
         this.sale = sale;
+        this.product = product;
     }
 
-    public Hotdeal create(LocalDateTime startDay, LocalDateTime dueDay, int dealQuantity, int sale) {
+    public static Hotdeal of(LocalDateTime startDay, LocalDateTime dueDay, int dealQuantity,
+        int sale, Product product) {
         return Hotdeal.builder()
-                .startDay(startDay)
-                .dueDay(dueDay)
-                .dealQuantity(dealQuantity)
-                .sale(sale)
-                .build();
+            .startDay(startDay)
+            .dueDay(dueDay)
+            .dealQuantity(dealQuantity)
+            .sale(sale)
+            .product(product)
+            .build();
     }
 
     public void updateDealQuantity(int dealQuantity) {
         this.dealQuantity = dealQuantity;
     }
 
-    public void updateSale(int sale) {
+    public void updateHotdealInfo(LocalDateTime startDay, LocalDateTime dueDay, int sale) {
+        this.startDay = startDay;
+        this.dueDay = dueDay;
         this.sale = sale;
     }
 }
