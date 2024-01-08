@@ -1,7 +1,6 @@
 package com.sportsecho.member.service;
 
 import com.sportsecho.common.jwt.JwtUtil;
-import com.sportsecho.global.exception.ErrorCode;
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.dto.MemberRequestDto;
 import com.sportsecho.member.dto.MemberResponseDto;

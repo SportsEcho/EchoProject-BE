@@ -11,8 +11,11 @@ import org.mapstruct.factory.Mappers;
 public interface CommentMapper {
     CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
 
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "member.memberName", target = "memberName")
+    @Mapping(source = "createdAt", target = "createdDate")
     CommentResponseDto commentToCommentResponseDto(Comment comment);
 
     Comment commentRequestDtoToComment(CommentRequestDto dto);
 }
+

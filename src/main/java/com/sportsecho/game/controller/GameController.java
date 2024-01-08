@@ -34,13 +34,6 @@ public class GameController {
         List<GameResponseDto> games = gameService.getGamesBySport(sportType);
         return ResponseEntity.status(HttpStatus.OK).body(games);
     }
-
-    // 경기별 댓글 조회 API
-    @GetMapping("/{gameId}/comments")
-    public ResponseEntity<List<CommentResponseDto>> getCommentsByGame(@PathVariable Long gameId) {
-        List<CommentResponseDto> comments = commentService.getCommentsByGame(gameId);
-        return ResponseEntity.status(HttpStatus.OK).body(comments);
-    }
 }
 
 
