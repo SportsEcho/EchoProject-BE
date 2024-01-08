@@ -27,11 +27,10 @@ public class GameController {
         this.commentService = commentService;
     }
 
-    // 스포츠 타입별 경기 조회 API
     @GetMapping
-    public ResponseEntity<ApiResponse<List<GameResponseDto>>> getGamesBySport(@RequestParam String sportType) {
-        ApiResponse<List<GameResponseDto>> response = gameService.getGamesBySport(sportType);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+    public ResponseEntity<List<GameResponseDto>> getGamesBySport(@RequestParam String sportType) {
+        List<GameResponseDto> games = gameService.getGamesBySport(sportType);
+        return ResponseEntity.status(HttpStatus.OK).body(games);
     }
 
     // 경기별 댓글 조회 API
