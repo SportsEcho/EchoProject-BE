@@ -1,6 +1,7 @@
 package com.sportsecho.common.jwt;
 
 
+import com.sportsecho.global.exception.ErrorCode;
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.entity.MemberRole;
 import io.jsonwebtoken.Claims;
