@@ -1,10 +1,12 @@
 package com.sportsecho.memberProduct.service;
 
+import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.repository.MemberRepository;
 import com.sportsecho.memberProduct.dto.MemberProductRequestDto;
 import com.sportsecho.memberProduct.dto.MemberProductResponseDto;
 import com.sportsecho.memberProduct.entity.MemberProduct;
+import com.sportsecho.memberProduct.exception.MemberProductErrorCode;
 import com.sportsecho.memberProduct.mapper.MemberProductMapper;
 import com.sportsecho.memberProduct.repository.MemberProductRepository;
 import com.sportsecho.product.entity.Product;
@@ -76,19 +78,19 @@ public class MemberProductServiceImplV1 implements MemberProductService {
 
     private Product findProduct(Long productId) {
         return productRepository.findById(productId)
-            .orElseThrow(() -> new NullPointerException("상품이 존재하지 않습니다.")
+            .orElseThrow(() -> new GlobalException(MemberProductErrorCode.NOT_FOUND_PRODUCT)
             );
     }
 
     private MemberProduct findMemberProduct(Long productId, Long memberId) {
         return memberProductRepository.findByProductIdAndMemberId(productId, memberId)
-            .orElseThrow(() -> new NullPointerException("장바구니에 상품이 존재하지 않습니다.")
+            .orElseThrow(() -> new GlobalException(MemberProductErrorCode.NOT_FOUND_PRODUCT_IN_CART)
             );
     }
 
     private void checkMember(Long memberId, MemberProduct memberProduct) {
         if (!memberId.equals(memberProduct.getMember().getId())) {
-            throw new IllegalArgumentException("본인만 수정/삭제 가능합니다.");
+            throw new GlobalException(MemberProductErrorCode.ACCESS_DENIED);
         }
     }
 }
