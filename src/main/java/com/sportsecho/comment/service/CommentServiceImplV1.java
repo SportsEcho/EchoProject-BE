@@ -15,14 +15,14 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
-public class CommentService {
+@Service("commentServiceImplV1")
+public class CommentServiceImplV1 implements CommentService{
 
     private final CommentRepository commentRepository;
     private final GameRepository gameRepository;
     private final MemberRepository memberRepository;
 
-    public CommentService(CommentRepository commentRepository, GameRepository gameRepository,
+    public CommentServiceImplV1(CommentRepository commentRepository, GameRepository gameRepository,
         MemberRepository memberRepository) {
         this.commentRepository = commentRepository;
         this.gameRepository = gameRepository;
