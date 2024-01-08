@@ -2,11 +2,12 @@ package com.sportsecho.game.controller;
 
 import com.sportsecho.comment.dto.CommentResponseDto;
 import com.sportsecho.comment.service.CommentService;
-import com.sportsecho.common.dto.ApiResponse;
+import com.sportsecho.comment.service.CommentServiceImplV1;
 import com.sportsecho.game.dto.GameResponseDto;
 import com.sportsecho.game.service.GameService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,23 +23,16 @@ public class GameController {
     private final CommentService commentService;
 
     @Autowired
-    public GameController(GameService gameService, CommentService commentService) {
+    public GameController(@Qualifier("gameServiceImplV1")GameService gameService,
+                          @Qualifier("commentServiceImplV1") CommentService commentService) {
         this.gameService = gameService;
         this.commentService = commentService;
     }
 
-    // 스포츠 타입별 경기 조회 API
     @GetMapping
-    public ResponseEntity<ApiResponse<List<GameResponseDto>>> getGamesBySport(@RequestParam String sportType) {
-        ApiResponse<List<GameResponseDto>> response = gameService.getGamesBySport(sportType);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    // 경기별 댓글 조회 API
-    @GetMapping("/{gameId}/comments")
-    public ResponseEntity<List<CommentResponseDto>> getCommentsByGame(@PathVariable Long gameId) {
-        List<CommentResponseDto> comments = commentService.getCommentsByGame(gameId);
-        return ResponseEntity.status(HttpStatus.OK).body(comments);
+    public ResponseEntity<List<GameResponseDto>> getGamesBySport(@RequestParam String sportType) {
+        List<GameResponseDto> games = gameService.getGamesBySport(sportType);
+        return ResponseEntity.status(HttpStatus.OK).body(games);
     }
 }
 
