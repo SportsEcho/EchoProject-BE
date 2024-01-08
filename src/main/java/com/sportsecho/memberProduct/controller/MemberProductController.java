@@ -1,6 +1,5 @@
 package com.sportsecho.memberProduct.controller;
 
-import com.sportsecho.common.dto.ApiResponse;
 import com.sportsecho.member.entity.MemberDetailsImpl;
 import com.sportsecho.memberProduct.dto.MemberProductRequestDto;
 import com.sportsecho.memberProduct.dto.MemberProductResponseDto;
@@ -26,7 +25,7 @@ public class MemberProductController {
     private final MemberProductService memberProductService;
 
     @PostMapping("/products/{productId}/carts")
-    public ResponseEntity<ApiResponse<MemberProductResponseDto>> addCart(
+    public ResponseEntity<MemberProductResponseDto> addCart(
         @PathVariable Long productId,
         @RequestBody MemberProductRequestDto requestDto,
         @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
@@ -34,41 +33,37 @@ public class MemberProductController {
         MemberProductResponseDto responseDto = memberProductService.addCart(productId, requestDto,
             memberDetails.getMember());
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-            ApiResponse.of("장바구니에 추가되었습니다.", 200, responseDto));
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     @GetMapping("/member/carts")
-    public ResponseEntity<ApiResponse<List<MemberProductResponseDto>>> getCart(
+    public ResponseEntity<List<MemberProductResponseDto>> getCart(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
 
         List<MemberProductResponseDto> responseDtoList = memberProductService.getCart(
             memberDetails.getMember());
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-            ApiResponse.of("장바구니를 조회하였습니다.", 200, responseDtoList));
+        return ResponseEntity.status(HttpStatus.OK).body(responseDtoList);
     }
 
     @DeleteMapping("/carts/products/{productId}")
-    public ResponseEntity<ApiResponse<Void>> deleteCart(
+    public ResponseEntity<Void> deleteCart(
         @PathVariable Long productId,
         @AuthenticationPrincipal MemberDetailsImpl memberDetails
     ) {
 
         memberProductService.deleteCart(productId, memberDetails.getMember());
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-            ApiResponse.of("장바구니에서 삭제되었습니다.", 200, null));
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @DeleteMapping("/carts")
-    public ResponseEntity<ApiResponse<Void>> deleteAllCart(
+    public ResponseEntity<Void> deleteAllCart(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails
     ) {
 
         memberProductService.deleteAllCart(memberDetails.getMember());
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-            ApiResponse.of("장바구니를 비웠습니다.", 200, null));
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }
