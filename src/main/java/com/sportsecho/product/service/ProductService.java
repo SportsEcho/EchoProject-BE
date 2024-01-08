@@ -12,7 +12,7 @@ public interface ProductService {
 
     ProductResponseDto getProduct(Long productId);
 
-    List<ProductResponseDto> getProductListWithPageNation(Pageable pageable);
+    List<ProductResponseDto> getProductListWithPagiNation(Pageable pageable);
 
     ProductResponseDto updateProduct(Member member, Long productId, ProductRequestDto requestDto);
 

@@ -51,21 +51,6 @@ public class Product extends TimeStamp {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberProduct> memberProductList = new ArrayList<>();
 
-    @Builder
-    public Product(String title, String content, String imageUrl, int price) {
-        this.title = title;
-        this.content = content;
-        this.imageUrl = imageUrl;
-        this.price = price;
-    }
-
-    public static Product create(String title, String content) {
-        return Product.builder()
-            .content(content)
-            .content(content)
-            .build();
-    }
-
     public Product update(String title, String content, String imageUrl, int price) {
         this.title = title;
         this.content = content;
