@@ -3,7 +3,9 @@ package com.sportsecho.comment.controller;
 import com.sportsecho.comment.dto.CommentRequestDto;
 import com.sportsecho.comment.dto.CommentResponseDto;
 import com.sportsecho.comment.service.CommentService;
+import com.sportsecho.comment.service.CommentServiceImplV1;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -22,7 +24,7 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    public CommentController(CommentService commentService) {
+    public CommentController(@Qualifier("commentServiceImplV1")CommentService commentService) {
         this.commentService = commentService;
     }
 
