@@ -37,7 +37,7 @@ public class ProductController {
         ProductResponseDto responseDto = productService.createProduct(requestDto,
             memberDetails.getMember());
 
-        return ResponseEntity.status(HttpStatus.OK).body(
+        return ResponseEntity.status(HttpStatus.CREATED).body(
             ApiResponse.of("상품 생성 성공", 201, responseDto)
         );
     }
@@ -59,7 +59,7 @@ public class ProductController {
     public ResponseEntity<ApiResponse<List<ProductResponseDto>>> getProductListWithPageNation(
         Pageable pageable
     ) {
-        List<ProductResponseDto> responseDtoList = productService.getProductListWithPageNation(pageable);
+        List<ProductResponseDto> responseDtoList = productService.getProductListWithPagiNation(pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(
             ApiResponse.of("상품 목록 조회 성공", 200, responseDtoList)
@@ -83,13 +83,12 @@ public class ProductController {
     @DeleteMapping("/products/{productId}")
     public ResponseEntity<ApiResponse<Void>> deleteProduct(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails,
-        @PathVariable Long productId,
-        @RequestBody ProductRequestDto requestDto
+        @PathVariable Long productId
     ) {
         productService.deleteProduct(memberDetails.getMember(), productId);
 
         return ResponseEntity.status(HttpStatus.OK).body(
-            ApiResponse.of("상품 삭제 성공", 200, null)
+            ApiResponse.of("상품 삭제 성공", 204, null)
         );
     }
 
