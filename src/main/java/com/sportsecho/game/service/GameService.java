@@ -1,15 +1,12 @@
 package com.sportsecho.game.service;
 
-import com.sportsecho.common.dto.ApiResponse;
-import com.sportsecho.common.dto.ResponseCode;
 import com.sportsecho.game.dto.GameResponseDto;
 import com.sportsecho.game.exception.GameErrorCode;
-import com.sportsecho.game.mapper.GameMapper;
 import com.sportsecho.global.exception.GlobalException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,25 +17,20 @@ public class GameService {
 
     private final RestTemplate restTemplate;
 
-    public ApiResponse<List<GameResponseDto>> getGamesBySport(String sportType) {
+    public List<GameResponseDto> getGamesBySport(String sportType) {
         String apiUrl = determineApiUrl(sportType);
-        ResponseEntity<ApiResponse> response = restTemplate.getForEntity(apiUrl, ApiResponse.class);
+        ResponseEntity<List<GameResponseDto>> response = restTemplate.exchange(
+            apiUrl,
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<List<GameResponseDto>>() {}
+        );
 
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-            List<Map<String, Object>> responseDataList = (List<Map<String, Object>>) response.getBody().getData();
-            List<GameResponseDto> gameList = convertToGameResponseDtoList(responseDataList);
-            return ApiResponse.of(ResponseCode.OK, gameList);
+            return response.getBody();
         } else {
             throw new GlobalException(GameErrorCode.EXTERNAL_API_ERROR);
         }
-    }
-
-    private List<GameResponseDto> convertToGameResponseDtoList(List<Map<String, Object>> responseDataList) {
-        List<GameResponseDto> gameList = new ArrayList<>();
-        for (Map<String, Object> gameData : responseDataList) {
-            gameList.add(GameMapper.INSTANCE.mapToDto(gameData));
-        }
-        return gameList;
     }
 
     private String determineApiUrl(String sportType) {
