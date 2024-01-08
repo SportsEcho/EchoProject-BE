@@ -42,7 +42,7 @@ public class ProductServiceImplV1 implements ProductService{
 
     @Override
     public List<ProductResponseDto> getProductListWithPagiNation(Pageable pageable) {
-        Page<Product> productPage = productRepository.findAllWithPagination(pageable);
+        Page<Product> productPage = productRepository.findAll(pageable);
 
         return productPage.stream()
             .map(ProductMapper.INSTANCE::toResponseDto)

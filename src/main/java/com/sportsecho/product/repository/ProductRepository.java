@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // QueryDsl, JPQL을 사용할때 모두 비교하고 벤치마킹
-    Page<Product> findAllWithPagination(Pageable pageable);
+    Page<Product> findAll(Pageable pageable);
   
 }
