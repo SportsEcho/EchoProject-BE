@@ -30,8 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
  * - V1에서 builder로 생성하던 MemberEntity를 MemberMapper를 통해 생성
  * - V1에서 builder로 생성해 반환하던 MemberResponseDto를 MemberMapper를 통해 생성
  * */
-@Qualifier("V2")
-@Service
+@Service("V2")
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberServiceImplV2 implements MemberService {
