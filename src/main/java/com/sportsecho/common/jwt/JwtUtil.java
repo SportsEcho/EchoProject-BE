@@ -1,6 +1,7 @@
 package com.sportsecho.common.jwt;
 
 
+import com.sportsecho.common.jwt.exception.JwtErrorCode;
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.entity.MemberRole;
 import io.jsonwebtoken.Claims;
@@ -83,7 +84,7 @@ public class JwtUtil {
         }
 
         //tokenValue가 Bearer로 시작하지 않는 경우
-        throw new GlobalException(ErrorCode.ILLEGAL_ARGUMENT_EXCEPTION);
+        throw new GlobalException(JwtErrorCode.ILLEGAL_ARGUMENT_EXCEPTION);
     }
 
     public boolean validateToken(String token) {
@@ -91,13 +92,13 @@ public class JwtUtil {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
-            throw new GlobalException(ErrorCode.SIGNATURE_EXCEPTION);
+            throw new GlobalException(JwtErrorCode.SIGNATURE_EXCEPTION);
         } catch (ExpiredJwtException e) {
-            throw new GlobalException(ErrorCode.EXPIRED_TOKEN_EXCEPTION);
+            throw new GlobalException(JwtErrorCode.EXPIRED_TOKEN_EXCEPTION);
         } catch (UnsupportedJwtException e) {
-            throw new GlobalException(ErrorCode.UNSUPPORTED_JWT_EXCEPTION);
+            throw new GlobalException(JwtErrorCode.UNSUPPORTED_JWT_EXCEPTION);
         } catch (IllegalArgumentException e) {
-            throw new GlobalException(ErrorCode.ILLEGAL_ARGUMENT_EXCEPTION);
+            throw new GlobalException(JwtErrorCode.ILLEGAL_ARGUMENT_EXCEPTION);
         }
     }
 

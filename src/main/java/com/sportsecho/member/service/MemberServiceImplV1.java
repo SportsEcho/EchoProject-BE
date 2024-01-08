@@ -38,7 +38,7 @@ public class MemberServiceImplV1 implements MemberService {
 
         //email duplicate check
         if(memberRepository.findByEmail(request.getEmail()).isPresent())
-            throw new GlobalException(ErrorCode.DUPLICATED_USER_NAME);
+            throw new GlobalException(MemberErrorCode.DUPLICATED_EMAIL);
 
         Member member = Member.builder()
                 .memberName(request.getMemberName())
