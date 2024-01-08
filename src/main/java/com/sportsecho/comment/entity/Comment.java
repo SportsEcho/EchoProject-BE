@@ -3,24 +3,33 @@ package com.sportsecho.comment.entity;
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.game.entity.Game;
 import com.sportsecho.member.entity.Member;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comments")
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Comment extends TimeStamp {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
     private String content;
-    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "game_id")
@@ -30,12 +39,7 @@ public class Comment extends TimeStamp {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public Comment(Member member, Game game, String username, String content) {
-        this.member = member;
-        this.game = game;
-        this.username = username;
+    public void updateContent(String content) {
         this.content = content;
-        this.createdAt = LocalDateTime.now();
     }
-
 }
