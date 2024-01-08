@@ -11,7 +11,6 @@ public interface PurchaseMapper {
 
     PurchaseMapper INSTANCE = Mappers.getMapper(PurchaseMapper.class);
 
-    // 연관 관계가 복잡하여 사용하지 않음.. 추후 수정 가능성 있음..
 //    PurchaseResponseDto toResponseDto(Purchase purchase);
 
     Purchase toEntity(PurchaseRequestDto requestDto, Member member);

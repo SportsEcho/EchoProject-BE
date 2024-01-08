@@ -2,10 +2,9 @@ package com.sportsecho.purchase.entity;
 
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.member.entity.Member;
-import com.sportsecho.memberProduct.entity.MemberProduct;
-import com.sportsecho.memberProduct.mapper.MemberProductMapper;
 import com.sportsecho.purchase.dto.PurchaseResponseDto;
 import com.sportsecho.purchaseProduct.entity.PurchaseProduct;
+import com.sportsecho.purchaseProduct.mapper.PurchaseProductMapper;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -54,14 +53,16 @@ public class Purchase extends TimeStamp {
         this.totalPrice = totalPrice;
     }
 
-    public PurchaseResponseDto createResponseDto(List<MemberProduct> memberProductList) {
+    // 연관 관계가 복잡하여 mapper를 사용하지 않음.. 추후 수정 가능성 있음..
+    public PurchaseResponseDto createResponseDto() {
         return PurchaseResponseDto.builder()
             .totalPrice(this.totalPrice)
             .address(this.address)
             .phone(this.phone)
+            .purchaseDate(this.getCreatedAt())
             .responseDtoList(
-                memberProductList.stream()
-                    .map(MemberProductMapper.INSTANCE::toResponseDto)
+                this.purchaseProductList.stream()
+                    .map(PurchaseProductMapper.INSTANCE::toResponseDto)
                     .toList()
             )
             .build();

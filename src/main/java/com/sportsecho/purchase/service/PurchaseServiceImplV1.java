@@ -1,11 +1,13 @@
 package com.sportsecho.purchase.service;
 
+import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.memberProduct.entity.MemberProduct;
 import com.sportsecho.memberProduct.repository.MemberProductRepository;
 import com.sportsecho.purchase.dto.PurchaseRequestDto;
 import com.sportsecho.purchase.dto.PurchaseResponseDto;
 import com.sportsecho.purchase.entity.Purchase;
+import com.sportsecho.purchase.exception.PurchaseErrorCode;
 import com.sportsecho.purchase.mapper.PurchaseMapper;
 import com.sportsecho.purchase.repository.PurchaseRepository;
 import com.sportsecho.purchaseProduct.entity.PurchaseProduct;
@@ -33,29 +35,45 @@ public class PurchaseServiceImplV1 implements PurchaseService {
         Purchase purchase = PurchaseMapper.INSTANCE.toEntity(requestDto, member);
         List<MemberProduct> memberProductList = memberProductRepository.findByMemberId(
             member.getId());
-
-        // 총 금액 업데이트
-        updateTotalPrice(memberProductList, purchase);
-        purchaseRepository.save(purchase);
+        if (memberProductList.isEmpty()) {
+            throw new GlobalException(PurchaseErrorCode.EMPTY_CART);
+        }
 
         // 구매 정보와 장바구니 상품 리스트로 purchaseProduct 엔티티 리스트 생성
         List<PurchaseProduct> purchaseProductList = createPList(memberProductList, purchase);
         purchaseProductRepository.saveAll(purchaseProductList);
         purchase.getPurchaseProductList().addAll(purchaseProductList);
 
+        // 총 금액 업데이트
+        purchase.updateTotalPrice(calTotalPrice(purchaseProductList));
+
         // 장바구니 비우기
         memberProductRepository.deleteByMemberId(member.getId());
 
-        return purchase.createResponseDto(memberProductList);
+        purchaseRepository.save(purchase);
+
+        return purchase.createResponseDto();
     }
 
-    private void updateTotalPrice(List<MemberProduct> memberProductList, Purchase purchase) {
-        int totalPrice = memberProductList.stream()
-            .mapToInt(memberProduct -> memberProduct.getProduct().getPrice()
-                * memberProduct.getProductsQuantity())
-            .sum();
+    @Override
+    @Transactional(readOnly = true)
+    public List<PurchaseResponseDto> getPurchaseList(Member member) {
 
-        purchase.updateTotalPrice(totalPrice);
+        List<Purchase> purchaseList = purchaseRepository.findByMemberId(member.getId());
+        if (purchaseList.isEmpty()) {
+            throw new GlobalException(PurchaseErrorCode.EMPTY_PURCHASE_LIST);
+        }
+
+        return purchaseList.stream()
+            .map(Purchase::createResponseDto)
+            .toList();
+    }
+
+    private int calTotalPrice(List<PurchaseProduct> purchaseProductList) {
+        return purchaseProductList.stream()
+            .mapToInt(purchaseProduct -> purchaseProduct.getProduct().getPrice()
+                * purchaseProduct.getProductsQuantity())
+            .sum();
     }
 
     private List<PurchaseProduct> createPList(List<MemberProduct> memberProductList,

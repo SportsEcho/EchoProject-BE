@@ -7,5 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PurchaseRequestDto {
 
+    private String address;
+
+    private String phone;
 
 }

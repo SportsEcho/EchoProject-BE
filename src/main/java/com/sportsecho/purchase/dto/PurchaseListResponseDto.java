@@ -12,15 +12,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PurchaseResponseDto {
+public class PurchaseListResponseDto {
 
-    private int totalPrice;
-
-    private String address;
-
-    private String phone;
-
-    private LocalDateTime purchaseDate;
+    private LocalDateTime createdAt;
 
     private List<PurchaseProductResponseDto> responseDtoList;
 }
