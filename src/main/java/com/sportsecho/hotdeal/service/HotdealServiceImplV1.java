@@ -59,7 +59,7 @@ public class HotdealServiceImplV1 implements HotdealService {
 
     @Override
     public List<HotdealResponseDto> getHotdealList(Pageable pageable) {
-        Page<Hotdeal> hotdealPage = hotdealRepository.findAllWithPagination(pageable);
+        Page<Hotdeal> hotdealPage = hotdealRepository.findAll(pageable);
 
         return hotdealPage.stream()
             .map(HotdealMapper.INSTANCE::toResponseDto)

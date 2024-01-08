@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface HotdealRepository extends JpaRepository<Hotdeal, Long> {
 
-    Page<Hotdeal> findAllWithPagination(Pageable pageable);
+    Page<Hotdeal> findAll(Pageable pageable);
 
 }
