@@ -1,21 +1,42 @@
+// API 키와 호스트는 변수로 저장하여 재사용
+const apiKey = 'd789e7aa74msh95a2867cc80a6d0p11239ajsna2c01db4ee85';
+const apiHostFootball = 'api-football-v1.p.rapidapi.com';
+const apiHostBasketball = 'api-basketball.p.rapidapi.com';
+const apiHostBaseball = 'api-baseball.p.rapidapi.com';
+
 // 경기 정보를 가져오는 함수
-function fetchGamesBySport(sportType) {
-  fetch(`/api/games?sportType=${sportType}`)
-  .then(response => response.json())
-  .then(data => {
-    // 경기 일정을 페이지에 표시하는 로직
-  })
-  .catch(error => console.error('Error:', error));
+function fetchGames(sportType) {
+  let apiUrl, apiHost;
+
+  switch (sportType) {
+    case 'football':
+      apiUrl = 'https://api-football-v1.p.rapidapi.com/v3/timezone';
+      apiHost = apiHostFootball;
+      break;
+    case 'basketball':
+      apiUrl = 'https://api-basketball.p.rapidapi.com/timezone';
+      apiHost = apiHostBasketball;
+      break;
+    case 'baseball':
+      apiUrl = 'https://api-baseball.p.rapidapi.com/timezone';
+      apiHost = apiHostBaseball;
+      break;
+    default:
+      return;
+  }
+
+  $.ajax({
+    url: apiUrl,
+    method: 'GET',
+    headers: {
+      'X-RapidAPI-Key': apiKey,
+      'X-RapidAPI-Host': apiHost
+    }
+  }).done(function(response) {
+    // 여기에서 response 데이터를 사용하여 경기 일정을 페이지에 표시
+    console.log(response);
+  });
 }
 
-// 드롭다운 메뉴를 토글하는 함수
-function toggleDropdown() {
-  var dropdown = document.getElementById("sports-dropdown");
-  dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
-}
-
-// "경기 일정" 링크에 이벤트 리스너 추가
-document.querySelector('nav > ul > li > a[href="#calendar"]').addEventListener('click', function(event) {
-  event.preventDefault(); // 기본 링크 동작 방지
-  toggleDropdown();
-});
+// 예시: 축구 경기 정보 가져오기
+fetchGames('football');

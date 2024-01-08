@@ -3,7 +3,7 @@ body {
   padding: 15px;
   font-family: Arial, sans-serif;
   /* 수정된 그라데이션 배경색 */
-  background: linear-gradient(#0A2A3A, #4F6D7A);
+  background: linear-gradient(#76B6EA, #D4E6F1);
   min-height: 100vh; /* 화면 전체 높이를 채우도록 설정 */
 }
 /* 드롭다운 콘텐츠 */
@@ -29,18 +29,18 @@ nav > ul > li:hover .dropdown-content {
   display: block;
 }
 header {
-  display: flex; /* 플렉스 컨테이너 설정 */
-  justify-content: space-between; /* 요소들을 양 끝과 중앙에 배치 */
-  align-items: center; /* 세로 축 중앙 정렬 */
-  padding: 5px; /* 패딩 설정 */
-  background-color: rgba(79, 109, 122, 0.8); /* 배경색 및 투명도 설정 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  background-color: rgba(242, 242, 242, 0.8);
   border-radius: 10px;
 }
 
 nav {
   padding: 20px 0;
   border-radius: 10px;
-  background-color: rgba(10, 42, 58, 0.8); /* 네비게이션 바 배경색 및 투명도 설정 */
+  background-color: rgba(162,213,242, 0.8); /* 네비게이션 바 배경색 및 투명도 설정 */
 }
 
 
@@ -67,17 +67,18 @@ nav ul li a {
   border-radius: 50%;
   object-fit: cover;
 }
-
 #logo, #user-profile {
-  display: flex; /* 로고와 유저 프로필 내 요소들도 가로로 정렬 */
-  align-items: center; /* 세로 축 중앙 정렬 */
+  display: flex;
+  align-items: center;
 }
+
 
 #user-profile img {
   width: 50px;
   height: 50px;
   border-radius: 50%;
   object-fit: cover;
+  margin-left: 10px;
 }
 footer {
   text-align: center;
