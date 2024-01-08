@@ -5,7 +5,7 @@ import com.sportsecho.memberProduct.dto.MemberProductRequestDto;
 import com.sportsecho.memberProduct.dto.MemberProductResponseDto;
 import com.sportsecho.memberProduct.service.MemberProductService;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,11 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api")
 public class MemberProductController {
 
     private final MemberProductService memberProductService;
+
+    public MemberProductController(@Qualifier("V1") MemberProductService memberProductService) {
+        this.memberProductService = memberProductService;
+    }
 
     @PostMapping("/products/{productId}/carts")
     public ResponseEntity<MemberProductResponseDto> addCart(
@@ -54,7 +57,7 @@ public class MemberProductController {
 
         memberProductService.deleteCart(productId, memberDetails.getMember());
 
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
     @DeleteMapping("/carts")
@@ -64,6 +67,6 @@ public class MemberProductController {
 
         memberProductService.deleteAllCart(memberDetails.getMember());
 
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 }
