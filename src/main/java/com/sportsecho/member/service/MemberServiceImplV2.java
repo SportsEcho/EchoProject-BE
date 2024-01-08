@@ -106,7 +106,7 @@ public class MemberServiceImplV2 implements MemberService {
         //redis에 refreshToken이 존재하는 경우
         if(redisUtil.isExist(refreshToken)) {
             Member member = memberRepository.findByEmail(redisUtil.getEmail(refreshToken))
-                .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new GlobalException(MemberErrorCode.USER_NOT_FOUND));
 
             //accessToken 발급
             String accessToken = jwtUtil.generateAccessToken(member.getEmail(), member.getRole());
