@@ -11,12 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+@Service("gameServiceImplV1")
 @RequiredArgsConstructor
-@Service
-public class GameService {
-
+public class GameServiceImplV1 implements GameService {
     private final RestTemplate restTemplate;
 
+    @Override
     public List<GameResponseDto> getGamesBySport(String sportType) {
         String apiUrl = determineApiUrl(sportType);
         ResponseEntity<List<GameResponseDto>> response = restTemplate.exchange(
