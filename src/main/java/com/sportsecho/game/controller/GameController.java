@@ -2,9 +2,9 @@ package com.sportsecho.game.controller;
 
 import com.sportsecho.comment.dto.CommentResponseDto;
 import com.sportsecho.comment.service.CommentService;
+import com.sportsecho.comment.service.CommentServiceImplV1;
 import com.sportsecho.game.dto.GameResponseDto;
 import com.sportsecho.game.service.GameService;
-import com.sportsecho.game.service.GameServiceImplV1;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,7 +23,8 @@ public class GameController {
     private final CommentService commentService;
 
     @Autowired
-    public GameController(@Qualifier("gameServiceImplV1")GameService gameService, CommentService commentService) {
+    public GameController(@Qualifier("gameServiceImplV1")GameService gameService,
+                          @Qualifier("commentServiceImplV1") CommentService commentService) {
         this.gameService = gameService;
         this.commentService = commentService;
     }
