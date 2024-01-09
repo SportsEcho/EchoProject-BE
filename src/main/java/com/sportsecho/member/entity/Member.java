@@ -44,6 +44,9 @@ public class Member extends TimeStamp {
     @Column(name = "role", nullable = false)
     private MemberRole role;
 
+    @Column(name = "kakao_id")
+    private Long kakaoId;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Comment> commentList = new ArrayList<>();
 
@@ -59,6 +62,11 @@ public class Member extends TimeStamp {
         this.email = email;
         this.password = password;
         this.role = role;
+    }
+
+    public Member updateKakaoId(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        return this;
     }
 
     public Member update(String memberName, String password) {
