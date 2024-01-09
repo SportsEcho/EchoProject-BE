@@ -3,11 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>EchoSports</title>
-  <link rel="stylesheet" href="../static/css/index.css">
-
-</head>
+  <link rel="stylesheet" href="../static/css/comment.css">
 <body>
-
 <header>
   <div id="logo">
     <img src="../static/images/EchoLogo.jpeg"/>
@@ -18,6 +15,7 @@
     <img src="../static/images/IMG_1851.JPG"/>
   </div>
 </header>
+
 <nav>
   <ul>
     <li>
@@ -39,20 +37,22 @@
     <li><a href="#deals">핫 딜</a></li>
   </ul>
 </nav>
-
 <main>
-  <section id="baseball-schedule">
-    <h2>야구 경기 일정</h2>
-    <div id="baseball-games-schedule"></div> <!-- 야구 경기 일정 표시 -->
-  </section>
-  <!-- 추가 섹션: 상품구매, 핫딜 등 -->
-</main>
+  <section id="football-comments">
+    <h2>축구 경기 댓글</h2>
+<!-- 댓글 작성 폼 -->
+<form id="comment-form">
+  <textarea id="comment-text" placeholder="댓글을 입력하세요"></textarea>
+  <button type="submit">댓글 작성</button>
+</form>
 
+<div id="comments-container"></div> <!-- 댓글 표시 영역 -->
+</section>
+</main>
 <footer>
   <!-- 푸터 내용: 저작권 정보, 연락처 정보 등 -->
   <p>&copy; 내배캠 Team Echo</p>
 </footer>
-<script src="../static/js/baseball.js"></script>
+<script src="../static/js/football-comment.js"></script>
 </body>
-
 </html>

@@ -1,5 +1,5 @@
 // API 키와 호스트는 변수로 저장하여 재사용
-const apiKey = 'd789e7aa74msh95a2867cc80a6d0p11239ajsna2c01db4ee85';
+const apiKey = process.env.API_KEY;
 const apiHostFootball = 'api-football-v1.p.rapidapi.com';
 const apiHostBasketball = 'api-basketball.p.rapidapi.com';
 const apiHostBaseball = 'api-baseball.p.rapidapi.com';
