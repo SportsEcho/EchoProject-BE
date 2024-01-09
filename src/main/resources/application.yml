@@ -57,6 +57,7 @@ oauth:
   api:
     secret:
       naver: ${naver-api-secret}
+      google: ${google-api-secret}
     key:
       kakao: ${kakao-api-key}
       naver: ${naver-api-key}
