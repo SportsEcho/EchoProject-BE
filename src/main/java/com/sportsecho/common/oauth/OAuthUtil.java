@@ -25,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * kakaoOAuthDocs: https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#request-token
  * naverOAuthDocs: https://developers.naver.com/docs/login/devguide/devguide.md
+ * googleOAuthDocs: https://developers.google.com/identity/protocols/oauth2/web-server?hl=ko
  * */
 
 @Service
