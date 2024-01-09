@@ -44,8 +44,12 @@ public class Member extends TimeStamp {
     @Column(name = "role", nullable = false)
     private MemberRole role;
 
-    @Column(name = "kakao_id")
-    private Long kakaoId;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "social_type")
+    private SocialType socialType;
+
+    @Column(name = "social_id")
+    private Long socialId;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Comment> commentList = new ArrayList<>();
@@ -64,8 +68,9 @@ public class Member extends TimeStamp {
         this.role = role;
     }
 
-    public Member updateKakaoId(Long kakaoId) {
-        this.kakaoId = kakaoId;
+    public Member updateSocialIdAndType(Long socialId, SocialType socialType) {
+        this.socialId = socialId;
+        this.socialType = socialType;
         return this;
     }
 

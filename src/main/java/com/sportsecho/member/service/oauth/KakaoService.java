@@ -8,6 +8,7 @@ import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.dto.KakaoUserInfoDto;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberRole;
+import com.sportsecho.member.entity.SocialType;
 import com.sportsecho.member.exception.MemberErrorCode;
 import com.sportsecho.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletResponse;
@@ -127,13 +128,12 @@ public class KakaoService {
         String email = jsonNode.get("kakao_account")
             .get("email").asText();
 
-        log.info("카카오 사용자 정보: " + id + ", " + nickname + ", " + email);
         return new KakaoUserInfoDto(id, nickname, email);
     }
 
     private Member registerKakaoMemberIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
         Long kakaoId = kakaoUserInfo.getId();
-        Member kakaoMember = memberRepository.findByKakaoId(kakaoId).orElse(null);
+        Member kakaoMember = memberRepository.findBySocialIdAndSocialType(kakaoId, SocialType.KAKAO).orElse(null);
 
         if (kakaoMember == null) {
             // 카카오 사용자 email과 동일한 email 가진 회원이 있는지 확인
@@ -156,7 +156,7 @@ public class KakaoService {
             }
 
             //KakaoId update 및 저장
-            kakaoMember = kakaoMember.updateKakaoId(kakaoId);
+            kakaoMember = kakaoMember.updateSocialIdAndType(kakaoId, SocialType.KAKAO);
             memberRepository.save(kakaoMember);
         }
 
