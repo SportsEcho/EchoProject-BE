@@ -1,5 +1,4 @@
 // API 키와 호스트 설정
-const apiKey = 'd789e7aa74msh95a2867cc80a6d0p11239ajsna2c01db4ee85';
 const apiHostFootball = 'api-football-v1.p.rapidapi.com';
 
 // 축구 경기 정보를 가져오는 함수
