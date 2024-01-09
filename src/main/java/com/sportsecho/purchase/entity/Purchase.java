@@ -2,7 +2,9 @@ package com.sportsecho.purchase.entity;
 
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.member.entity.Member;
+import com.sportsecho.purchase.dto.PurchaseResponseDto;
 import com.sportsecho.purchaseProduct.entity.PurchaseProduct;
+import com.sportsecho.purchaseProduct.mapper.PurchaseProductMapper;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,7 +29,7 @@ public class Purchase extends TimeStamp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer totalPrice;
+    private int totalPrice;
 
     private String address;
 
@@ -41,22 +43,28 @@ public class Purchase extends TimeStamp {
     private List<PurchaseProduct> purchaseProductList = new ArrayList<>();
 
     @Builder
-    public Purchase(Integer totalPrice, String address, String phone) {
+    public Purchase(int totalPrice, String address, String phone) {
         this.totalPrice = totalPrice;
         this.address = address;
         this.phone = phone;
     }
 
-    public Purchase create(Integer totalPrice, String address, String phone) {
-        return Purchase.builder()
-            .totalPrice(totalPrice)
-            .address(address)
-            .phone(phone)
-            .build();
+    public void updateTotalPrice(int totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
-    public void update(Integer totalPrice, String address, String phone) {
-        this.address = address;
-        this.phone = phone;
+    // 연관 관계가 복잡하여 mapper를 사용하지 않음.. 추후 수정 가능성 있음..
+    public PurchaseResponseDto createResponseDto() {
+        return PurchaseResponseDto.builder()
+            .totalPrice(this.totalPrice)
+            .address(this.address)
+            .phone(this.phone)
+            .purchaseDate(this.getCreatedAt())
+            .responseDtoList(
+                this.purchaseProductList.stream()
+                    .map(PurchaseProductMapper.INSTANCE::toResponseDto)
+                    .toList()
+            )
+            .build();
     }
 }

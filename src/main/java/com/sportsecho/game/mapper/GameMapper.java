@@ -8,6 +8,7 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface GameMapper {
+
     GameMapper INSTANCE = Mappers.getMapper(GameMapper.class);
 
     GameResponseDto gameToGameResponseDto(Game game);
