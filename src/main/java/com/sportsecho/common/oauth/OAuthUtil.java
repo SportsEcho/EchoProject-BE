@@ -109,7 +109,7 @@ public class OAuthUtil {
         Member socialMember = memberRepository.findBySocialIdAndSocialType(socialId, socialType).orElse(null);
 
         if (socialMember == null) {
-            // 카카오 사용자 email과 동일한 email 가진 회원이 있는지 확인
+            // 소셜 사용자 email과 동일한 email 가진 회원이 있는지 확인
             Member sameEmailMember = memberRepository.findByEmail(email).orElse(null);
 
             if (sameEmailMember != null) {
@@ -125,7 +125,7 @@ public class OAuthUtil {
                     .build();
             }
 
-            //KakaoId update 및 저장
+            //socialId update 및 저장
             socialMember = socialMember.updateSocialIdAndType(socialId, socialType);
             memberRepository.save(socialMember);
         }
