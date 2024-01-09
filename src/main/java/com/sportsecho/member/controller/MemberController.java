@@ -1,11 +1,9 @@
 package com.sportsecho.member.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sportsecho.member.dto.MemberRequestDto;
 import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.MemberDetailsImpl;
 import com.sportsecho.member.service.MemberService;
-import com.sportsecho.member.service.oauth.KakaoService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -27,15 +25,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
-    private final KakaoService kakaoService;
 
     @Autowired
     public MemberController(
-        @Qualifier("V2") MemberService memberService,
-        KakaoService kakaoService
+        @Qualifier("V2") MemberService memberService
     ) {
         this.memberService = memberService;
-        this.kakaoService = kakaoService;
     }
 
     @PostMapping("/signup")
@@ -88,7 +83,16 @@ public class MemberController {
         @RequestParam("code") String code,
         HttpServletResponse response
     ) {
-        kakaoService.kakaoLogin(code, response);
+        memberService.kakaoLogin(code, response);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @GetMapping("/naver/callback")
+    public ResponseEntity<Void> naverLogin(
+        @RequestParam("code") String code,
+        HttpServletResponse response
+    ) {
+        memberService.naverLogin(code, response);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }

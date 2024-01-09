@@ -1,5 +1,6 @@
 package com.sportsecho.member.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.sportsecho.common.jwt.JwtUtil;
 import com.sportsecho.common.jwt.exception.JwtErrorCode;
 import com.sportsecho.common.redis.RedisUtil;
@@ -8,14 +9,16 @@ import com.sportsecho.member.dto.MemberRequestDto;
 import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberDetailsImpl;
+import com.sportsecho.member.entity.SocialType;
 import com.sportsecho.member.exception.MemberErrorCode;
 import com.sportsecho.member.mapper.MemberMapper;
 import com.sportsecho.member.repository.MemberRepository;
+import com.sportsecho.common.oauth.OAuthUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Optional;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,12 +33,15 @@ import org.springframework.transaction.annotation.Transactional;
  * - V1에서 builder로 생성해 반환하던 MemberResponseDto를 MemberMapper를 통해 생성
  * */
 @Service("V2")
+@Slf4j(topic = "MemberServiceV2")
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberServiceImplV2 implements MemberService {
 
     private final MemberRepository memberRepository;
+
     private final JwtUtil jwtUtil;
+    private final OAuthUtil oAuthUtil;
     private final RedisUtil redisUtil;
 
     private final AuthenticationManager authenticationManager;
@@ -122,5 +128,51 @@ public class MemberServiceImplV2 implements MemberService {
     public MemberResponseDto deleteMember(Member member) {
         memberRepository.delete(member);
         return MemberMapper.MAPPER.toResponseDto(member);
+    }
+
+    @Override
+    @Transactional
+    public void kakaoLogin(String code, HttpServletResponse response) {
+        //사용자 정보에 접근하기 위한 접근토큰 요청
+        URI tokenUri = URI.create("https://kauth.kakao.com/oauth/token");
+        String accessToken = oAuthUtil.getToken(tokenUri, SocialType.KAKAO, code);
+
+        //접근토큰으로 사용자 정보 요청
+        URI infoUri = URI.create("https://kapi.kakao.com/v2/user/me");
+        JsonNode jsonNode = oAuthUtil.getMemberInfo(infoUri, accessToken);
+
+        Long kakaoId = jsonNode.get("id").asLong();
+        String memberName = jsonNode.get("properties").get("nickname").asText();
+        String email = jsonNode.get("kakao_account").get("email").asText();
+
+        //Member객체를 이용해 서비스에 저장
+        Member socialMember = oAuthUtil.registerSocialMemberIfNeeded(kakaoId, memberName, email, SocialType.KAKAO);
+
+        String aToken = jwtUtil.generateAccessToken(socialMember.getEmail(), socialMember.getRole());
+        String rToken = jwtUtil.generateRefreshToken();
+        jwtUtil.setJwtHeader(response, aToken, rToken);
+    }
+
+    @Override
+    @Transactional
+    public void naverLogin(String code, HttpServletResponse response) {
+        //사용자 정보에 접근하기 위한 접근토큰 요청
+        URI tokenUri = URI.create("https://nid.naver.com/oauth2.0/token");
+        String accessToken = oAuthUtil.getToken(tokenUri, SocialType.NAVER, code);
+
+        //접근토큰으로 사용자 정보 요청
+        URI infoUri = URI.create("https://openapi.naver.com/v1/nid/me");
+        JsonNode jsonNode = oAuthUtil.getMemberInfo(infoUri, accessToken);
+
+        //naver는 id값을 제공하지 않는다. 0으로 처리
+        String memberName = jsonNode.get("response").get("name").asText();
+        String email = jsonNode.get("response").get("email").asText();
+
+        //Member객체를 이용해 서비스에 저장
+        Member socialMember = oAuthUtil.registerSocialMemberIfNeeded(0L, memberName, email, SocialType.NAVER);
+
+        String aToken = jwtUtil.generateAccessToken(socialMember.getEmail(), socialMember.getRole());
+        String rToken = jwtUtil.generateRefreshToken();
+        jwtUtil.setJwtHeader(response, aToken, rToken);
     }
 }

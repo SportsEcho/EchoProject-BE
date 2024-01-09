@@ -41,4 +41,18 @@ public interface MemberService {
      * @return 삭제된 Member 정보
      * */
     MemberResponseDto deleteMember(Member member);
+
+    /**
+     * Mamber Kakao 로그인
+     * @param code kakao 로그인 요청시 전달받은 인가 code
+     * @param response Jwt 토큰을 담아서 전달하기 위한 HttpServletResponse
+     * */
+    void kakaoLogin(String code, HttpServletResponse response);
+
+    /**
+     * Member Naver 로그인
+     * @param code naver 로그인 요청시 전달받은 인가 code
+     * @param response Jwt 토큰을 담아서 전달하기 위한 HttpServletResponse
+     * */
+    void naverLogin(String code, HttpServletResponse response);
 }

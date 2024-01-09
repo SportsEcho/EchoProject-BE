@@ -53,7 +53,12 @@ cloud:
     s3:
       bucket: sports-echo
 
-
-kakao:
+oauth:
   api:
-    key: ${kakao-api-key}
+    secret:
+      naver: ${naver-api-secret}
+    key:
+      kakao: ${kakao-api-key}
+      naver: ${naver-api-key}
+      google: ${google-api-key}
+

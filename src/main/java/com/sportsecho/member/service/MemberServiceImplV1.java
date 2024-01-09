@@ -90,4 +90,14 @@ public class MemberServiceImplV1 implements MemberService {
             .email(member.getEmail())
             .build();
     }
+
+    @Override
+    public void kakaoLogin(String code, HttpServletResponse response) {
+
+    }
+
+    @Override
+    public void naverLogin(String code, HttpServletResponse response) {
+
+    }
 }
