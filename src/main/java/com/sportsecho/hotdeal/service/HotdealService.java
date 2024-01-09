@@ -18,4 +18,6 @@ public interface HotdealService {
     HotdealResponseDto updateHotdeal(Member member, Long hotdealId, UpdateHotdealInfoRequestDto requestDto);
 
     void decreaseHotdealDealQuantity(Member member, Long hotdealId ,int quantity);
+
+    void deleteHotdeal(Member member, Long hotdealId);
 }
