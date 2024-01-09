@@ -1,10 +1,11 @@
 package com.sportsecho.member.controller;
 
-import com.sportsecho.common.dto.ApiResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sportsecho.member.dto.MemberRequestDto;
 import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.MemberDetailsImpl;
 import com.sportsecho.member.service.MemberService;
+import com.sportsecho.member.service.oauth.KakaoService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -14,9 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,10 +27,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
+    private final KakaoService kakaoService;
 
     @Autowired
-    public MemberController(@Qualifier("V2") MemberService memberService) {
+    public MemberController(
+        @Qualifier("V2") MemberService memberService,
+        KakaoService kakaoService
+    ) {
         this.memberService = memberService;
+        this.kakaoService = kakaoService;
     }
 
     @PostMapping("/signup")
@@ -73,5 +81,14 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(
             memberService.deleteMember(memberDetails.getMember())
         );
+    }
+
+    @GetMapping("/kakao/callback")
+    public ResponseEntity<Void> kakaoLogin(
+        @RequestParam("code") String code,
+        HttpServletResponse response
+    ) {
+        kakaoService.kakaoLogin(code, response);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }
