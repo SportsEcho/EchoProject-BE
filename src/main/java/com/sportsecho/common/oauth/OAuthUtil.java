@@ -42,9 +42,6 @@ public class OAuthUtil {
     @Value("${naver-api-secret}")
     private String naverApiSecret;
 
-    @Value("${google-api-key}")
-    private String googleApiKey;
-
     private final MemberRepository memberRepository;
 
     private final RestTemplate restTemplate;
