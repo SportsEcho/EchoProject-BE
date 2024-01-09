@@ -55,6 +55,10 @@ public class Product extends TimeStamp {
         return this;
     }
 
+    public void unlinkHotdeal() {
+        this.hotdeal = null;
+    }
+
     public void updateProductImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
