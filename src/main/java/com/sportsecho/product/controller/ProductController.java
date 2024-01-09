@@ -19,14 +19,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api")
 public class ProductController {
 
+    private final ProductService productService;
+
     @Autowired
-    private @Qualifier("V1") ProductService productService;
+    public ProductController(@Qualifier("V1") ProductService productService) {
+        this.productService = productService;
+    }
 
     @PostMapping("/products")
     public ResponseEntity<ApiResponse<ProductResponseDto>> createProduct(
@@ -36,7 +42,6 @@ public class ProductController {
 
         ProductResponseDto responseDto = productService.createProduct(requestDto,
             memberDetails.getMember());
-
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
             ApiResponse.of("상품 생성 성공", 201, responseDto)

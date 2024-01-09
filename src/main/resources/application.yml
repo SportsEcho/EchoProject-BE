@@ -37,3 +37,18 @@ api-keys:
   basketball: ${basketball-api-key}
 
   baseball: ${baseball-api-key}
+
+spring.servlet.multipart.max-file-size: 10MB
+spring.servlet.multipart.max-request-size: 10MB
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${aws_accessKey}
+      secretKey: ${aws_secretKey}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    s3:
+      bucket: sports-echo
