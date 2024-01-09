@@ -95,4 +95,13 @@ public class MemberController {
         memberService.naverLogin(code, response);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
+
+    @GetMapping("/google/callback")
+    public ResponseEntity<Void> googleLogin(
+        @RequestParam("code") String code,
+        HttpServletResponse response
+    ) {
+        memberService.googleLogin(code, response);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
 }
