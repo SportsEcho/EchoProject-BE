@@ -40,6 +40,17 @@ function fetchGames(sportType) {
 
 // 축구 경기 정보 가져오기
 fetchGames('football').then(response => {
-  // 여기에서 response 데이터를 사용하여 축구 경기 일정을 페이지에 표시
-  // 예: document.getElementById('football-games-schedule').innerHTML = ...
+  const footballScheduleContainer = document.getElementById('football-games-schedule');
+  footballScheduleContainer.innerHTML = ''; // 기존 내용 초기화
+
+  // API 응답이 경기의 배열을 포함한다고 가정
+  response.games.forEach(game => {
+    const gameInfo = document.createElement('div');
+    gameInfo.innerHTML = `
+      <h3>${game.teamA} vs ${game.teamB}</h3>
+      <p>Date: ${game.date}</p>
+      <p>Location: ${game.location}</p>
+    `;
+    footballScheduleContainer.appendChild(gameInfo);
+  });
 });
