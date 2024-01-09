@@ -3,7 +3,6 @@ package com.sportsecho.common.oauth;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sportsecho.common.jwt.JwtUtil;
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberRole;
@@ -47,7 +46,6 @@ public class OAuthUtil {
     private String googleApiKey;
 
     private final MemberRepository memberRepository;
-    private final JwtUtil jwtUtil;
 
     private final RestTemplate restTemplate;
     private final PasswordEncoder passwordEncoder;
