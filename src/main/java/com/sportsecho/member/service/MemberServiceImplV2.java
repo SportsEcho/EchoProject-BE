@@ -72,7 +72,7 @@ public class MemberServiceImplV2 implements MemberService {
             String refreshToken = jwtUtil.generateRefreshToken();
 
             //ResponseHeader에 토큰 추가
-            setTokenHeader(response, accessToken, refreshToken);
+            jwtUtil.setJwtHeader(response, accessToken, refreshToken);
 
             redisUtil.saveRefreshToken(refreshToken, member.getEmail());
 
@@ -111,7 +111,7 @@ public class MemberServiceImplV2 implements MemberService {
             //accessToken 발급
             String accessToken = jwtUtil.generateAccessToken(member.getEmail(), member.getRole());
 
-            setTokenHeader(response, accessToken, refreshToken);
+            jwtUtil.setJwtHeader(response, accessToken, refreshToken);
         } else {
             throw new GlobalException(JwtErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
@@ -122,10 +122,5 @@ public class MemberServiceImplV2 implements MemberService {
     public MemberResponseDto deleteMember(Member member) {
         memberRepository.delete(member);
         return MemberMapper.MAPPER.toResponseDto(member);
-    }
-
-    private void setTokenHeader(HttpServletResponse response, String accessToken, String refreshToken) {
-        response.setHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
-        response.setHeader(JwtUtil.REFRESH_AUTHORIZATION_HEADER, refreshToken);
     }
 }

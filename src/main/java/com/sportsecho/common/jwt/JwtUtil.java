@@ -14,6 +14,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -107,5 +108,10 @@ public class JwtUtil {
 
         //return member email
         return body.getSubject();
+    }
+
+    public void setJwtHeader(HttpServletResponse response, String accessToken, String refreshToken) {
+        response.setHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
+        response.setHeader(JwtUtil.REFRESH_AUTHORIZATION_HEADER, refreshToken);
     }
 }
