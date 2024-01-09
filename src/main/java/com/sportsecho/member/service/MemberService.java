@@ -55,4 +55,11 @@ public interface MemberService {
      * @param response Jwt 토큰을 담아서 전달하기 위한 HttpServletResponse
      * */
     void naverLogin(String code, HttpServletResponse response);
+
+    /**
+     * Member Google 로그인
+     * @param code google 로그인 요청시 전달받은 인가 code
+     * @param response Jwt 토큰을 담아서 전달하기 위한 HttpServletResponse
+     * */
+    void googleLogin(String code, HttpServletResponse response);
 }

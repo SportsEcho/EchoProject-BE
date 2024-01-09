@@ -1,24 +1,37 @@
 package com.sportsecho.member.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sportsecho.common.jwt.JwtUtil;
 import com.sportsecho.common.jwt.exception.JwtErrorCode;
+import com.sportsecho.common.oauth.exception.OAuthErrorCode;
 import com.sportsecho.common.redis.RedisUtil;
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.dto.MemberRequestDto;
 import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberDetailsImpl;
-import com.sportsecho.member.entity.SocialType;
+import com.sportsecho.common.oauth.SocialType;
 import com.sportsecho.member.exception.MemberErrorCode;
 import com.sportsecho.member.mapper.MemberMapper;
 import com.sportsecho.member.repository.MemberRepository;
 import com.sportsecho.common.oauth.OAuthUtil;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.Base64UrlCodec;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.util.Base64;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.web.JsonPath;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -135,7 +148,8 @@ public class MemberServiceImplV2 implements MemberService {
     public void kakaoLogin(String code, HttpServletResponse response) {
         //사용자 정보에 접근하기 위한 접근토큰 요청
         URI tokenUri = URI.create("https://kauth.kakao.com/oauth/token");
-        String accessToken = oAuthUtil.getToken(tokenUri, SocialType.KAKAO, code);
+        JsonNode tokenJsonNode = oAuthUtil.getToken(tokenUri, SocialType.KAKAO, code);
+        String accessToken = tokenJsonNode.get("access_token").asText();
 
         //접근토큰으로 사용자 정보 요청
         URI infoUri = URI.create("https://kapi.kakao.com/v2/user/me");
@@ -158,7 +172,8 @@ public class MemberServiceImplV2 implements MemberService {
     public void naverLogin(String code, HttpServletResponse response) {
         //사용자 정보에 접근하기 위한 접근토큰 요청
         URI tokenUri = URI.create("https://nid.naver.com/oauth2.0/token");
-        String accessToken = oAuthUtil.getToken(tokenUri, SocialType.NAVER, code);
+        JsonNode tokenJsonNode = oAuthUtil.getToken(tokenUri, SocialType.NAVER, code);
+        String accessToken = tokenJsonNode.get("access_token").asText();
 
         //접근토큰으로 사용자 정보 요청
         URI infoUri = URI.create("https://openapi.naver.com/v1/nid/me");
@@ -174,5 +189,37 @@ public class MemberServiceImplV2 implements MemberService {
         String aToken = jwtUtil.generateAccessToken(socialMember.getEmail(), socialMember.getRole());
         String rToken = jwtUtil.generateRefreshToken();
         jwtUtil.setJwtHeader(response, aToken, rToken);
+    }
+
+    @Override
+    @Transactional
+    public void googleLogin(String code, HttpServletResponse response) {
+        //사용자 정보에 접근하기 위한 접근토큰 요청
+        URI tokenUri = URI.create("https://oauth2.googleapis.com/token");
+        JsonNode tokenJsonNode = oAuthUtil.getToken(tokenUri, SocialType.GOOGLE, code);
+
+        //Google 사용자 정보를 담고 있는 jwt 파싱
+        String idToken = tokenJsonNode.get("id_token").asText();
+
+        //idToken 페이로드 디코딩
+        byte[] bytes = Base64.getDecoder().decode(idToken.split("\\.")[1]);
+        String decodedIdToken = new String(bytes, StandardCharsets.UTF_8);
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(decodedIdToken);
+
+            //objectMapper로 필요한 데이터 파싱
+            String email = jsonNode.get("email").asText();
+            String memberName = jsonNode.get("name").asText();
+
+            Member socialMember = oAuthUtil.registerSocialMemberIfNeeded(0L, memberName, email, SocialType.GOOGLE);
+
+            String aToken = jwtUtil.generateAccessToken(socialMember.getEmail(), socialMember.getRole());
+            String rToken = jwtUtil.generateRefreshToken();
+            jwtUtil.setJwtHeader(response, aToken, rToken);
+        } catch(Exception e) {
+            throw new GlobalException(OAuthErrorCode.ILLEGAL_REQUEST);
+        }
     }
 }
