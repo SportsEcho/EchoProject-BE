@@ -3,6 +3,7 @@ package com.sportsecho.common.oauth;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sportsecho.common.oauth.exception.OAuthErrorCode;
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberRole;
@@ -68,9 +69,7 @@ public class OAuthUtil {
             JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
             return jsonNode.get("access_token").asText();
         } catch (JsonProcessingException e) {
-
-            //Error코드 추가하고 바꿀것
-            throw new GlobalException(MemberErrorCode.DUPLICATED_EMAIL);
+            throw new GlobalException(OAuthErrorCode.ILLEGAL_REQUEST);
         }
     }
 
@@ -94,9 +93,7 @@ public class OAuthUtil {
 
             return new ObjectMapper().readTree(response.getBody());
         } catch(JsonProcessingException e) {
-
-            //Error코드 추가하고 바꿀것
-            throw new GlobalException(MemberErrorCode.DUPLICATED_EMAIL);
+            throw new GlobalException(OAuthErrorCode.ILLEGAL_REQUEST);
         }
     }
 
