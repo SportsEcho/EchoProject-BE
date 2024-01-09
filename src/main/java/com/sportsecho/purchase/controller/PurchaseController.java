@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/purchase")
 public class PurchaseController {
 
     private final PurchaseService purchaseService;
@@ -25,7 +25,7 @@ public class PurchaseController {
         this.purchaseService = purchaseService;
     }
 
-    @PostMapping("/carts/purchase")
+    @PostMapping
     public ResponseEntity<PurchaseResponseDto> purchase(
         @RequestBody PurchaseRequestDto requestDto,
         @AuthenticationPrincipal MemberDetailsImpl memberDetails
@@ -36,7 +36,7 @@ public class PurchaseController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
-    @GetMapping("/members/purchase")
+    @GetMapping
     public ResponseEntity<List<PurchaseResponseDto>> getPurchaseList(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails
     ) {
