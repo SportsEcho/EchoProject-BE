@@ -1,7 +1,7 @@
 package com.sportsecho.member.repository;
 
 import com.sportsecho.member.entity.Member;
-import com.sportsecho.member.entity.SocialType;
+import com.sportsecho.common.oauth.SocialType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

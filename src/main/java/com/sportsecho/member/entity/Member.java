@@ -1,6 +1,7 @@
 package com.sportsecho.member.entity;
 
 import com.sportsecho.comment.entity.Comment;
+import com.sportsecho.common.oauth.SocialType;
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.memberProduct.entity.MemberProduct;
 import com.sportsecho.purchase.entity.Purchase;

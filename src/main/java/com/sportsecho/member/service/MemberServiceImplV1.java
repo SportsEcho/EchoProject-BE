@@ -100,4 +100,9 @@ public class MemberServiceImplV1 implements MemberService {
     public void naverLogin(String code, HttpServletResponse response) {
 
     }
+
+    @Override
+    public void googleLogin(String code, HttpServletResponse response) {
+
+    }
 }

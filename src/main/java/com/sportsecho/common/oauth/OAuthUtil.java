@@ -7,8 +7,6 @@ import com.sportsecho.common.oauth.exception.OAuthErrorCode;
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberRole;
-import com.sportsecho.member.entity.SocialType;
-import com.sportsecho.member.exception.MemberErrorCode;
 import com.sportsecho.member.repository.MemberRepository;
 import java.net.URI;
 import java.util.UUID;
@@ -27,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * kakaoOAuthDocs: https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#request-token
  * naverOAuthDocs: https://developers.naver.com/docs/login/devguide/devguide.md
+ * googleOAuthDocs: https://developers.google.com/identity/protocols/oauth2/web-server?hl=ko
  * */
 
 @Service
@@ -34,21 +33,27 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class OAuthUtil {
 
-    @Value("${kakao-api-key}")
+    @Value("${oauth.api.key.kakao}")
     private String kakaoApiKey;
 
-    @Value("${naver-api-key}")
+    @Value("${oauth.api.key.naver}")
     private String naverApiKey;
 
-    @Value("${naver-api-secret}")
+    @Value("${oauth.api.secret.naver}")
     private String naverApiSecret;
+
+    @Value("${oauth.api.key.google}")
+    private String googleApiKey;
+
+    @Value("${oauth.api.secret.google}")
+    private String googleApiSecret;
 
     private final MemberRepository memberRepository;
 
     private final RestTemplate restTemplate;
     private final PasswordEncoder passwordEncoder;
 
-    public String getToken(URI uri, SocialType socialType, String code) {
+    public JsonNode getToken(URI uri, SocialType socialType, String code) {
         try {
             // HTTP Header 생성
             HttpHeaders headers = new HttpHeaders();
@@ -66,8 +71,7 @@ public class OAuthUtil {
             );
 
             // HTTP 응답 (JSON) -> 액세스 토큰 파싱
-            JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
-            return jsonNode.get("access_token").asText();
+            return new ObjectMapper().readTree(response.getBody());
         } catch (JsonProcessingException e) {
             throw new GlobalException(OAuthErrorCode.ILLEGAL_REQUEST);
         }
@@ -85,7 +89,7 @@ public class OAuthUtil {
                 .headers(headers)
                 .body(new LinkedMultiValueMap<>());
 
-            // HTTP 요청 보내기
+            //HTTP 요청 보내기
             ResponseEntity<String> response = restTemplate.exchange(
                 requestEntity,
                 String.class
@@ -140,6 +144,13 @@ public class OAuthUtil {
             body.add("client_secret", naverApiSecret);
             body.add("code", code);
             body.add("state", "9kgsGTfH4j7IyAkg");
+        }
+        if(SocialType.GOOGLE.equals(socialType)) {
+            body.add("grant_type", "authorization_code");
+            body.add("client_id", googleApiKey);
+            body.add("client_secret", googleApiSecret);
+            body.add("code", code);
+            body.add("redirect_uri", "http://localhost:8080/api/members/google/callback");
         }
 
         return body;
