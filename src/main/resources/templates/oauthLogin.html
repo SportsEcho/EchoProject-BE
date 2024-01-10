@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>로그인 페이지</title>
@@ -43,35 +43,34 @@
                 <p class="text-white-50 mt-2 mb-5">서비스 사용을 위해 로그인을 해주세요!</p>
 
                 <div class="icon-container">
-                <div class="mb-2">
-                    <a href="https://accounts.google.com/o/oauth2/auth?client_id=807257127729-2eg30f8m4cq2ngtm1d6q4o2o68p5q8bm.apps.googleusercontent.com&redirect_uri=http://localhost:8080/api/member/google/callback&response_type=code&scope=https://www.googleapis.com/auth/userinfo.profile">
-                        <img src="/static/images/web_light_rd_na@2x.png" th:src="@{/images/web_light_rd_na@2x.png}" class="login-icon"/>
-                    </a>
+                    <div class="mb-2">
+                        <a href="https://accounts.google.com/o/oauth2/auth?client_id=642740645250-jtjcbtd8bo1l0inq29cs82e77pomt48l.apps.googleusercontent.com&redirect_uri=http://localhost:8080/api/member/google/callback&response_type=code&scope=https://www.googleapis.com/auth/userinfo.profile">
+                            <img src="/static/images/web_light_rd_na@2x.png" class="login-icon"/>
+                        </a>
+                    </div>
+                    <div class="mb-2">
+                        <a href="https://nid.naver.com/oauth2.0/authorize?client_id=rQLLYj2zPkyPnImKslGZ&redirect_uri=http://localhost:8080/api/member/naver/callback&response_type=code">
+                            <img src="/static/images/btnG_아이콘원형.png" class="login-icon"/>
+                        </a>
+                    </div>
+                    <div class="mb-2">
+                        <a href="https://kauth.kakao.com/oauth/authorize?client_id= c902a6ffaf89ac3cd4a0a95396e8b29d&redirect_uri=http://localhost:8080/api/member/kakao/callback&response_type=code">
+                            <img src="/static/images/kakao원형.png" class="login-icon"/>
+                        </a>
+                    </div>
+                    <div class="mb-2">
+                        <a href="https://github.com/login/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=http://localhost:8080/api/member/github/callback&response_type=code">
+                            <img src="/static/images/gitlogo.png" class="login-icon"/>
+                        </a>
+                    </div>
+                    <div class="mb-2">
+                        <a href="https://appleid.apple.com/auth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=http://localhost:8080/api/member/apple/callback&response_type=code">
+                            <img src="/static/images/Logo%20-%20SIWA%20-%20Logo-only%20-%20Black@2x.png" class="login-icon"/>
+                        </a>
+                    </div>
                 </div>
                 <div class="mb-2">
-                    <a th:href="@{https://nid.naver.com/oauth2.0/authorize(client_id='',redirect_uri='http://localhost:8080/api/member/naver/callback',response_type='code')}">
-                        <img src="/static/images/btnG_아이콘원형.png" th:src="@{/images/btnG_아이콘원형.png} " class="login-icon"/>
-                    </a>
-                </div>
-                <div class="mb-2">
-                    <a th:href="@{https://kauth.kakao.com/oauth/authorize(client_id='',redirect_uri='http://localhost:8080/api/member/kakao/callback',response_type='code')}">
-                        <img src="/static/images/kakao원형.png" th:src="@{/images/kakao원형.png}" class="login-icon"/>
-                    </a>
-                </div>
-                <div class="mb-2">
-                    <a th:href="@{https://kauth.git.com/oauth/authorize(client_id='',redirect_uri='http://localhost:8080/api/member/kakao/callback',response_type='code')}">
-                        <img src="/static/images/gitlogo.png" th:src="@{/images/gitlogo.png}" class="login-icon"/>
-                    </a>
-                </div>
-                <div class="mb-2">
-                    <a th:href="@{https://kauth.apple.com/oauth/authorize(client_id='',redirect_uri='http://localhost:8080/api/member/kakao/callback',response_type='code')}">
-                        <img src="/static/images/Logo%20-%20SIWA%20-%20Logo-only%20-%20Black@2x.png" th:src="@{/images/Logo%20-%20SIWA%20-%20Logo-only%20-%20Black@2x.png}" class="login-icon"/>
-                    </a>
-                </div>
-                </div>
-                <div class = "mb-2">
                     <form action="/login" method="POST">
-                        <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
                         <div class="mb-3">
                             <label class="form-label text-white">Email address</label>
                             <input type="email" class="form-control" name="username">
@@ -82,9 +81,9 @@
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 </body>
 </html>
