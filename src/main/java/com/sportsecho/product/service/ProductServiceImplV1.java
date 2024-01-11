@@ -1,7 +1,6 @@
 package com.sportsecho.product.service;
 
 import com.sportsecho.global.exception.GlobalException;
-import com.sportsecho.global.util.s3.S3Uploader;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.product.dto.request.ProductRequestDto;
@@ -66,7 +65,7 @@ public class ProductServiceImplV1 implements ProductService{
         }
 
         Product product = findProduct(productId);
-        product.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getImageUrl(), requestDto.getPrice());
+        product.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getImageUrl(), requestDto.getPrice(), requestDto.getQuantity());
         productRepository.save(product);
 
         return ProductMapper.INSTANCE.toResponseDto(product);
