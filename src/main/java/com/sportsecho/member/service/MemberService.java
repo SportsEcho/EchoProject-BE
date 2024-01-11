@@ -3,6 +3,7 @@ package com.sportsecho.member.service;
 import com.sportsecho.member.dto.MemberRequestDto;
 import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.Member;
+import com.sportsecho.member.entity.MemberRole;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -13,7 +14,14 @@ public interface MemberService {
      * @param request Member 회원가입 요청 정보
      * @return Member 회원가입 정보
      * */
-    MemberResponseDto signup(MemberRequestDto request);
+    MemberResponseDto signup(MemberRequestDto request, MemberRole role);
+
+    /**
+     * Member Admin 회원가입
+     * @param request Member Admin 회원가입 요청 정보
+     * @return Member 회원가입 정보
+     * */
+    MemberResponseDto signupAdmin(MemberRequestDto request);
 
     /**
      * Member 로그인

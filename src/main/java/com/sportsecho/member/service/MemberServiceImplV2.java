@@ -12,6 +12,7 @@ import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberDetailsImpl;
 import com.sportsecho.common.oauth.SocialType;
+import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.member.exception.MemberErrorCode;
 import com.sportsecho.member.mapper.MemberMapper;
 import com.sportsecho.member.repository.MemberRepository;
@@ -22,6 +23,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.Base64UrlCodec;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.TableGenerator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.net.URI;
@@ -62,20 +64,27 @@ public class MemberServiceImplV2 implements MemberService {
 
     @Override
     @Transactional
-    public MemberResponseDto signup(MemberRequestDto request) {
+    public MemberResponseDto signup(MemberRequestDto request, MemberRole role) {
 
         //email duplicate check
         if(memberRepository.findByEmail(request.getEmail()).isPresent())
             throw new GlobalException(MemberErrorCode.DUPLICATED_EMAIL);
 
         //MemberMapper를 이용한 Entity 생성
-        Member member = MemberMapper.MAPPER.toEntity(request);
+        Member member = MemberMapper.MAPPER.toEntity(request, role);
         member.passwordEncode(passwordEncoder);
 
         memberRepository.save(member);
 
 
         return MemberMapper.MAPPER.toResponseDto(member);
+    }
+
+    @Override
+    @Transactional
+    public MemberResponseDto signupAdmin(MemberRequestDto request) {
+        //admin register 검증용 로직 추가
+        return this.signup(request, MemberRole.ADMIN);
     }
 
     @Override
