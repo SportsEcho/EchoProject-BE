@@ -3,6 +3,7 @@ package com.sportsecho.member.controller;
 import com.sportsecho.member.dto.MemberRequestDto;
 import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.MemberDetailsImpl;
+import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,7 +39,17 @@ public class MemberController {
         @Valid @RequestBody MemberRequestDto request
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                memberService.signup(request)
+                memberService.signup(request, MemberRole.CUSTOMER)
+        );
+    }
+
+    //ADMIN 계정 로그인 추가
+    @PostMapping("/signup/admin")
+    public ResponseEntity<MemberResponseDto> signupAdmin(
+        @Valid @RequestBody MemberRequestDto request
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                memberService.signupAdmin(request)
         );
     }
 
