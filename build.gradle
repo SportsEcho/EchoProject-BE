@@ -85,7 +85,7 @@ dependencies {
     implementation 'org.asynchttpclient:async-http-client:2.12.3'
 
     // Jackson JSON 처리
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
 }
 
 tasks.named('test') {
