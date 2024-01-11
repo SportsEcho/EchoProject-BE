@@ -61,6 +61,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'com.h2database:h2'
 
     // QueryDSL
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
@@ -85,7 +86,7 @@ dependencies {
     implementation 'org.asynchttpclient:async-http-client:2.12.3'
 
     // Jackson JSON 처리
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
+//    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
 }
 
 tasks.named('test') {
