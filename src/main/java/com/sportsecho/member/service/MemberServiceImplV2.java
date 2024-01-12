@@ -81,13 +81,6 @@ public class MemberServiceImplV2 implements MemberService {
     }
 
     @Override
-    @Transactional
-    public MemberResponseDto signupAdmin(MemberRequestDto request) {
-        //admin register 검증용 로직 추가
-        return this.signup(request, MemberRole.ADMIN);
-    }
-
-    @Override
     public void login(MemberRequestDto request, HttpServletResponse response) {
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -102,6 +95,7 @@ public class MemberServiceImplV2 implements MemberService {
             //ResponseHeader에 토큰 추가
             jwtUtil.setJwtHeader(response, accessToken, refreshToken);
 
+            //Redis에 refreshToken 저장
             redisUtil.saveRefreshToken(refreshToken, member.getEmail());
 
         } catch(BadCredentialsException e) {

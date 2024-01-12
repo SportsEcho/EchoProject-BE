@@ -49,7 +49,7 @@ public class MemberController {
         @Valid @RequestBody MemberRequestDto request
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                memberService.signupAdmin(request)
+                memberService.signup(request, MemberRole.ADMIN)
         );
     }
 

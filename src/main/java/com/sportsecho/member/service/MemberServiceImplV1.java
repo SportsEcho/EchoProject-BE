@@ -57,11 +57,6 @@ public class MemberServiceImplV1 implements MemberService {
     }
 
     @Override
-    public MemberResponseDto signupAdmin(MemberRequestDto request) {
-        return null;
-    }
-
-    @Override
     public void login(MemberRequestDto request, HttpServletResponse response) {
         try {
             Authentication authentication = authenticationManager.authenticate(

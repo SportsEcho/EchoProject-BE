@@ -1,31 +1,24 @@
 spring:
   config:
     activate:
-      on-profile: default
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
-    defer-datasource-initialization: true
-
-  datasource:
-    url: jdbc:mysql://localhost:3306/echo_db
-    username: ${your_username}
-    password: ${your_password}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+      on-profile: test
   h2:
     console:
-      enabled: false
+      enabled: true
+  jpa:
+    database: h2
+    generate-ddl: off
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;MODE=MySQL
+    username: SA
+    password: ''
+
   servlet:
     multipart:
       enabled: true
       max-file-size: 10MB
       max-request-size: 10MB
-
   data:
     redis:
       host: localhost
@@ -60,4 +53,3 @@ oauth:
       kakao: ${kakao-api-key}
       naver: ${naver-api-key}
       google: ${google-api-key}
-

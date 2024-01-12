@@ -17,13 +17,6 @@ public interface MemberService {
     MemberResponseDto signup(MemberRequestDto request, MemberRole role);
 
     /**
-     * Member Admin 회원가입
-     * @param request Member Admin 회원가입 요청 정보
-     * @return Member 회원가입 정보
-     * */
-    MemberResponseDto signupAdmin(MemberRequestDto request);
-
-    /**
      * Member 로그인
      * @param response Jwt 토큰을 담아서 전달하기 위한 HttpServletResponse
      * @param request Member 로그인 요청 정보
