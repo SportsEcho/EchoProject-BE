@@ -6,6 +6,7 @@ import com.sportsecho.memberProduct.dto.MemberProductResponseDto;
 import com.sportsecho.memberProduct.entity.MemberProduct;
 import com.sportsecho.product.entity.Product;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -13,7 +14,9 @@ public interface MemberProductMapper {
 
     MemberProductMapper INSTANCE = Mappers.getMapper(MemberProductMapper.class);
 
+    @Mapping(target = "title", source = "product.title")
+    @Mapping(target = "price", source = "product.price")
     MemberProductResponseDto toResponseDto(MemberProduct memberProduct);
-
+    
     MemberProduct toEntity(MemberProductRequestDto requestDto, Member member, Product product);
 }
