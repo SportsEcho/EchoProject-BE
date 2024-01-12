@@ -14,7 +14,8 @@ public enum JwtErrorCode implements BaseErrorCode {
     ILLEGAL_ARGUMENT_EXCEPTION(HttpStatus.UNAUTHORIZED, "JWT claims is empty, 잘못된 JWT 토큰 입니다."),
     EXPIRED_TOKEN_EXCEPTION(HttpStatus.UNAUTHORIZED, "Expired JWT token, 만료된 JWT token 입니다."),
 
-    REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "갱신토큰이 존재하지 않습니다.");
+    REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "갱신토큰이 존재하지 않습니다."),
+    ACCESS_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "접근토큰이 존재하지 않습니다."),
 
     ;
 
