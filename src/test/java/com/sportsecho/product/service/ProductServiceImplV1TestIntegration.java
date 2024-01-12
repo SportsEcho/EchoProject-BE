@@ -13,7 +13,6 @@ import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.exception.ProductErrorCode;
 import com.sportsecho.product.repository.ProductRepository;
 import java.util.List;
-import java.util.SimpleTimeZone;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -41,14 +41,25 @@ class ProductServiceImplV1TestIntegration {
 
     private Member adminMember, customerMember;
     private Product product;
-    private ProductRequestDto requestDto;
+    private ProductRequestDto requestDto = new ProductRequestDto();
 
     @BeforeEach
     void setUp() {
         adminMember = createMember("admin", MemberRole.ADMIN);
         customerMember = createMember("customer", MemberRole.CUSTOMER);
-        product = createProduct("test 제목", "test 내용", "test.com", 1900, 100);
-        requestDto = new ProductRequestDto("제목", "내용", "image.com", 3000, 10);
+        product = productRepository.save(Product.builder()
+            .title("test 제목")
+            .content("test 내용")
+            .imageUrl("test.com")
+            .price(1900)
+            .quantity(100)
+            .build());
+
+        ReflectionTestUtils.setField(requestDto, "title", "제목", String.class);
+        ReflectionTestUtils.setField(requestDto, "content", "내용", String.class);
+        ReflectionTestUtils.setField(requestDto, "imageUrl", "image.com", String.class);
+        ReflectionTestUtils.setField(requestDto, "price", 3000, int.class);
+        ReflectionTestUtils.setField(requestDto, "quantity", 10, int.class);
     }
 
     private Member createMember(String memberName, MemberRole role) {
@@ -57,16 +68,6 @@ class ProductServiceImplV1TestIntegration {
             .password("Password2@")
             .email(memberName + "@email.com")
             .role(role)
-            .build());
-    }
-
-    private Product createProduct(String title, String content, String imageUrl, int price, int quantity) {
-        return productRepository.save(Product.builder()
-            .title(title)
-            .content(content)
-            .imageUrl(imageUrl)
-            .price(price)
-            .quantity(quantity)
             .build());
     }
 
