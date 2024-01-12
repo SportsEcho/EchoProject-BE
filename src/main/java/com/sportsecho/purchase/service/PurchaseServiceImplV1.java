@@ -38,11 +38,12 @@ public class PurchaseServiceImplV1 implements PurchaseService {
         if (memberProductList.isEmpty()) {
             throw new GlobalException(PurchaseErrorCode.EMPTY_CART);
         }
+        purchaseRepository.save(purchase);
 
         // 구매 정보와 장바구니 상품 리스트로 purchaseProduct 엔티티 리스트 생성
         List<PurchaseProduct> purchaseProductList = createPList(memberProductList, purchase);
         purchaseProductRepository.saveAll(purchaseProductList);
-        purchase.getPurchaseProductList().addAll(purchaseProductList);
+        //  purchase.getPurchaseProductList().addAll(purchaseProductList);
 
         // 총 금액 업데이트
         purchase.updateTotalPrice(calTotalPrice(purchaseProductList));
@@ -50,7 +51,6 @@ public class PurchaseServiceImplV1 implements PurchaseService {
         // 장바구니 비우기
         memberProductRepository.deleteByMemberId(member.getId());
 
-        purchaseRepository.save(purchase);
 
         return purchase.createResponseDto();
     }
