@@ -1,10 +1,8 @@
 package com.sportsecho.comment.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Data;
 
-@Getter
-@NoArgsConstructor
+@Data
 public class CommentRequestDto {
     private String content;
 }
