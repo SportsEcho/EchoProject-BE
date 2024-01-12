@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -12,11 +13,13 @@ import com.sportsecho.common.jwt.exception.JwtErrorCode;
 import com.sportsecho.common.redis.RedisUtil;
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.dto.MemberRequestDto;
+import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.member.exception.MemberErrorCode;
 import com.sportsecho.member.repository.MemberRepository;
-import com.sportsecho.member.service.MemberServiceImplV2;
+import com.sportsecho.member.service.MemberService;
+import jakarta.persistence.EntityManager;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +28,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -36,7 +40,8 @@ import org.springframework.test.context.ActiveProfiles;
 public class MemberIntegrationTest implements MemberTest {
 
     @Autowired
-    MemberServiceImplV2 memberService;
+    @Qualifier("V2")
+    MemberService memberService;
 
     @Autowired
     MemberRepository memberRepository;
@@ -277,6 +282,23 @@ public class MemberIntegrationTest implements MemberTest {
 
             //then
             assertEquals(MemberErrorCode.USER_NOT_FOUND, exception.getErrorCode());
+        }
+    }
+
+    @Nested
+    @DisplayName("Member 회원탈퇴 테스트")
+    class MemberDeleteTest {
+
+        @Test
+        @DisplayName("Member 회원탈퇴 테스트 성공")
+        void memberDelete_success() {
+            //given
+
+            //when
+            MemberResponseDto memberResponseDto = memberService.deleteMember(TEST_MEMBER);
+
+            //then
+            assertEquals(TEST_MEMBER.getEmail(), memberResponseDto.getEmail());
         }
     }
 
