@@ -3,12 +3,16 @@ package com.sportsecho.memberProduct.entity;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.product.entity.Product;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class MemberProduct {
 
     @Id
