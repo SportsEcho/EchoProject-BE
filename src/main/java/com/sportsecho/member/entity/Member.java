@@ -1,6 +1,7 @@
 package com.sportsecho.member.entity;
 
 import com.sportsecho.comment.entity.Comment;
+import com.sportsecho.common.oauth.SocialType;
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.memberProduct.entity.MemberProduct;
 import com.sportsecho.purchase.entity.Purchase;
@@ -44,6 +45,13 @@ public class Member extends TimeStamp {
     @Column(name = "role", nullable = false)
     private MemberRole role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "social_type")
+    private SocialType socialType;
+
+    @Column(name = "social_id")
+    private Long socialId;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Comment> commentList = new ArrayList<>();
 
@@ -59,6 +67,12 @@ public class Member extends TimeStamp {
         this.email = email;
         this.password = password;
         this.role = role;
+    }
+
+    public Member updateSocialIdAndType(Long socialId, SocialType socialType) {
+        this.socialId = socialId;
+        this.socialType = socialType;
+        return this;
     }
 
     public Member update(String memberName, String password) {

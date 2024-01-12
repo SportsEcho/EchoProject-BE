@@ -2,6 +2,7 @@ package com.sportsecho.hotdeal.entity;
 
 import com.sportsecho.product.entity.Product;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Hotdeal {
 
     @Id
@@ -59,9 +60,10 @@ public class Hotdeal {
         this.dealQuantity = dealQuantity;
     }
 
-    public void updateHotdealInfo(LocalDateTime startDay, LocalDateTime dueDay, int sale) {
+    public void updateHotdealInfo(LocalDateTime startDay, LocalDateTime dueDay, int sale, int dealQuantity) {
         this.startDay = startDay;
         this.dueDay = dueDay;
         this.sale = sale;
+        this.dealQuantity = dealQuantity;
     }
 }
