@@ -16,5 +16,6 @@ public interface PurchaseMapper {
 
 
     @Mapping(target = "totalPrice", constant = "0")
+    @Mapping(target = "member", source = "member")
     Purchase toEntity(PurchaseRequestDto requestDto, Member member);
 }
