@@ -152,4 +152,34 @@ class CommentServiceImplV1Test {
         assertEquals(commentId, result.getId());
         verify(commentRepository, times(1)).save(any(Comment.class));
     }
+    @Test
+    @DisplayName("댓글 삭제 테스트")
+    void testDeleteComment() {
+        // given
+        Long commentId = 1L;
+        String userEmail = "user@example.com";
+
+        Member testMember = Member.builder()
+            .memberName("Test User")
+            .email(userEmail)
+            .password("TestPass123!")
+            .role(MemberRole.CUSTOMER)
+            .build();
+
+        Comment existingComment = Comment.builder()
+            .id(commentId)
+            .content("기존 댓글 내용")
+            .member(testMember)
+            .game(new Game()) // 적절한 Game 객체 설정
+            .build();
+
+        when(commentRepository.findById(commentId)).thenReturn(Optional.of(existingComment));
+        when(memberRepository.findByEmail(userEmail)).thenReturn(Optional.of(testMember));
+
+        // when
+        commentService.deleteComment(commentId, userEmail);
+
+        // then
+        verify(commentRepository, times(1)).delete(any(Comment.class));
+    }
 }
