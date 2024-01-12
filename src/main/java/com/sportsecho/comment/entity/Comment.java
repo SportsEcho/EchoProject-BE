@@ -3,7 +3,6 @@ package com.sportsecho.comment.entity;
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.game.entity.Game;
 import com.sportsecho.member.entity.Member;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
