@@ -1,27 +1,37 @@
 plugins {
+    // Java 언어 지원을 위한 플러그인
     id 'java'
+
+    // Spring Boot 응용 프로그램을 빌드 및 실행하기 위한 플러그인
     id 'org.springframework.boot' version '3.2.1'
+
+    // Spring Boot 의존성 관리를 위한 플러그인
     id 'io.spring.dependency-management' version '1.1.4'
 }
 
+// 프로젝트 그룹과 버전 설정
 group = 'com'
 version = '0.0.1-SNAPSHOT'
 
 java {
+    // 자바 버전 호환성 설정
     sourceCompatibility = '17'
 }
 
 configurations {
     compileOnly {
+        // 컴파일 시점에만 필요한 의존성 구성
         extendsFrom annotationProcessor
     }
 }
 
 repositories {
+    // Maven 중앙 저장소에서 의존성을 가져오도록 설정
     mavenCentral()
 }
 
 dependencies {
+    // Spring Boot 스타터 의존성들
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
@@ -32,36 +42,59 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Thymeleaf 보안 확장
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+
+    // Lombok 라이브러리
     compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // 개발 도구
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // 데이터베이스 드라이버
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
-    annotationProcessor 'org.projectlombok:lombok'
+
+    // 테스트 의존성들
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.springframework.security:spring-security-test'
+
     // QueryDSL
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
-    //jwt
+    // JWT 처리를 위한 의존성
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-    //mapper
+    // MapStruct 매퍼
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
     implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+
+    // AWS 서비스 통합
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation "com.amazonaws:aws-java-sdk-s3:1.12.395"
+
+    // AsyncHttpClient 추가
+    implementation 'org.asynchttpclient:async-http-client:2.12.3'
+
+    // Jackson JSON 처리
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
 }
 
 tasks.named('test') {
+    // JUnit 플랫폼 설정
     useJUnitPlatform()
 }
 configurations {
     compileOnly {
+        // 컴파일 시점에만 필요한 의존성 구성
         extendsFrom annotationProcessor
     }
     querydsl.extendsFrom compileClasspath

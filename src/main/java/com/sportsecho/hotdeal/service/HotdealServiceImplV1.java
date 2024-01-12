@@ -38,7 +38,7 @@ public class HotdealServiceImplV1 implements HotdealService {
     @Transactional
     public HotdealResponseDto createHotdeal(Member member, Long productId,
         HotdealRequestDto requestDto) {
-        if (isAuthorized(member)) {
+        if (!isAuthorized(member)) {
             throw new GlobalException(HotdealErrorCode.NO_AUTHORIZATION);
         }
 
@@ -70,14 +70,13 @@ public class HotdealServiceImplV1 implements HotdealService {
     @Transactional
     public HotdealResponseDto updateHotdeal(Member member, Long hotdealId,
         UpdateHotdealInfoRequestDto requestDto) {
-        if (isAuthorized(member)) {
+        if (!isAuthorized(member)) {
             throw new GlobalException(HotdealErrorCode.NO_AUTHORIZATION);
         }
         Hotdeal hotdeal = findHotdeal(hotdealId);
 
         hotdeal.updateHotdealInfo(requestDto.getStartDay(), requestDto.getDueDay(),
-            requestDto.getSale());
-//        hotdealRepository.save(hotdeal); 더티 체킹 X
+            requestDto.getSale(), requestDto.getDealQuantity());
 
         return HotdealMapper.INSTANCE.toResponseDto(hotdeal);
     }
@@ -85,7 +84,7 @@ public class HotdealServiceImplV1 implements HotdealService {
     @Override
     @Transactional
     public void decreaseHotdealDealQuantity(Member member, Long hotdealId ,int quantity) {
-        if (isAuthorized(member)) {
+        if (!isAuthorized(member)) {
             throw new GlobalException(HotdealErrorCode.NO_AUTHORIZATION);
         }
         Hotdeal hotdeal = findHotdeal(hotdealId);
@@ -95,6 +94,17 @@ public class HotdealServiceImplV1 implements HotdealService {
         }
 
         hotdeal.updateDealQuantity(hotdeal.getDealQuantity() - quantity);
+    }
+
+    @Override
+    @Transactional
+    public void deleteHotdeal(Member member, Long hotdealId) {
+        if (!isAuthorized(member)) {
+            throw new GlobalException(HotdealErrorCode.NO_AUTHORIZATION);
+        }
+        Hotdeal hotdeal = findHotdeal(hotdealId);
+
+        hotdealRepository.delete(hotdeal);
     }
 
     private Product findProduct(Long productId) {

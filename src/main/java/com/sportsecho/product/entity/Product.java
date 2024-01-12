@@ -14,12 +14,14 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Product extends TimeStamp {
 
     @Id
@@ -38,6 +40,9 @@ public class Product extends TimeStamp {
     @Column(name = "price", nullable = false)
     private int price;
 
+    @Column(name = "quantity", nullable = false)
+    private int quantity;
+
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Hotdeal hotdeal;
 
@@ -47,15 +52,26 @@ public class Product extends TimeStamp {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberProduct> memberProductList = new ArrayList<>();
 
-    public Product update(String title, String content, String imageUrl, int price) {
+    @Builder
+    public Product (String title, String content, String imageUrl, int price, int quantity) {
         this.title = title;
         this.content = content;
         this.imageUrl = imageUrl;
         this.price = price;
+        this.quantity = quantity;
+    }
+
+    public Product update(String title, String content, String imageUrl, int price, int quantity) {
+        this.title = title;
+        this.content = content;
+        this.imageUrl = imageUrl;
+        this.price = price;
+        this.quantity = quantity;
         return this;
     }
 
-    public void updateProductImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void unlinkHotdeal() {
+        this.hotdeal = null;
     }
+
 }
