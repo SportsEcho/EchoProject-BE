@@ -34,7 +34,7 @@ public class MemberServiceImplV1 implements MemberService {
 
     @Override
     @Transactional
-    public MemberResponseDto signup(MemberRequestDto request) {
+    public MemberResponseDto signup(MemberRequestDto request, MemberRole role) {
 
         //email duplicate check
         if(memberRepository.findByEmail(request.getEmail()).isPresent())
