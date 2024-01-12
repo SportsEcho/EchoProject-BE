@@ -116,5 +116,40 @@ class CommentServiceImplV1Test {
         assertEquals(mockComments.get(0).getContent(), result.get(0).getContent());
         assertEquals(mockComments.get(1).getContent(), result.get(1).getContent());
     }
+    @Test
+    @DisplayName("댓글 업데이트 테스트")
+    void testUpdateComment() {
+        // given
+        Long commentId = 1L;
+        String updatedContent = "업데이트된 댓글 내용";
+        CommentRequestDto commentDto = new CommentRequestDto();
+        ReflectionTestUtils.setField(commentDto, "content", updatedContent, String.class);
 
+        String userEmail = "user@example.com";
+        Member testMember = Member.builder()
+            .memberName("Test User")
+            .email(userEmail)
+            .password("TestPass123!")
+            .role(MemberRole.CUSTOMER)
+            .build();
+
+        Comment existingComment = Comment.builder()
+            .id(commentId)
+            .content("기존 댓글 내용")
+            .member(testMember)
+            .game(new Game()) // 적절한 Game 객체를 설정해야 함
+            .build();
+
+        when(commentRepository.findById(commentId)).thenReturn(Optional.of(existingComment));
+        when(memberRepository.findByEmail(userEmail)).thenReturn(Optional.of(testMember));
+
+        // when
+        CommentResponseDto result = commentService.updateComment(commentId, commentDto, userEmail);
+
+        // then
+        assertNotNull(result);
+        assertEquals(updatedContent, result.getContent());
+        assertEquals(commentId, result.getId());
+        verify(commentRepository, times(1)).save(any(Comment.class));
+    }
 }
