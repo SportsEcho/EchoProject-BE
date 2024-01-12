@@ -5,15 +5,22 @@ import com.sportsecho.member.entity.Member;
 
 public interface MemberTest {
 
+    String TEST_MEMBER_NAME = "test_member_name";
+    String TEST_EMAIL = "test_email@echo.com";
+    String TEST_PASSWORD = "test_password1A~";
+
+    String ANOTHER_TEST_EMAIL = "test_email@echo.net";
+    String ANOTHER_TEST_PASSWORD = "test_password1A!";
+
     Member TEST_MEMBER = Member.builder()
-        .memberName("test_member_name")
-        .email("test_email@echo.com")
-        .password("test_password1A~")
+        .memberName(TEST_MEMBER_NAME)
+        .email(TEST_EMAIL)
+        .password(TEST_PASSWORD)
         .build();
 
     MemberRequestDto TEST_MEMBER_REQUEST_DTO = MemberTestUtil.getTestMemberRequestDto(
-        "test_member_name",
-        "test_email@echo.com",
-        "test_password1A~"
+        TEST_MEMBER_NAME,
+        TEST_EMAIL,
+        TEST_PASSWORD
     );
 }

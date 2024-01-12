@@ -26,4 +26,7 @@ public class MemberTestUtil {
         return memberRequestDto;
     }
 
+    public static MemberRequestDto getTestMemberRequestDto(String email, String password) {
+        return getTestMemberRequestDto("test_member_name", email, password);
+    }
 }

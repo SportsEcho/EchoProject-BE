@@ -22,7 +22,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -81,22 +80,6 @@ class MemberServiceTest implements MemberTest {
 
             //then
             assertEquals(MemberErrorCode.DUPLICATED_EMAIL, exception.getErrorCode());
-        }
-    }
-
-    @Nested
-    @DisplayName("Member 로그인 테스트")
-    class memberLoginTest {
-
-        @Test
-        @DisplayName("Member 로그인 테스트 성공")
-        void memberLogin_success() {
-            //given
-            MockHttpServletResponse response = new MockHttpServletResponse();
-
-            //when
-
-            //then
         }
     }
 }
