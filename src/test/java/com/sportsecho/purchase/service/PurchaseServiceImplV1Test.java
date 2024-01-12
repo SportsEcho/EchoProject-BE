@@ -132,6 +132,23 @@ class PurchaseServiceImplV1Test {
 
             //then
             assertEquals(1, responseDtoList.size());
+            assertEquals(requestDto.getAddress(), responseDtoList.get(0).getAddress());
+            assertEquals(memberProduct.getProductsQuantity() * product.getPrice(),
+                    responseDtoList.get(0).getTotalPrice());
+            assertEquals(product.getTitle(),
+                    responseDtoList.get(0).getResponseDtoList().get(0).getTitle());
+            assertEquals(memberProduct.getProductsQuantity(),
+                    responseDtoList.get(0).getResponseDtoList().get(0).getProductsQuantity());
+        }
+
+        @Test
+        @DisplayName("멤버의 구매 목록 조회 실패 - 구매 내역 없음")
+        void getPurchaseListTest_fail() {
+            //when - then
+            GlobalException e = assertThrows(GlobalException.class, () -> {
+                purchaseService.getPurchaseList(member);
+            });
+            assertEquals(PurchaseErrorCode.EMPTY_PURCHASE_LIST, e.getErrorCode());
         }
     }
 
