@@ -1,10 +1,13 @@
 package com.sportsecho.memberProduct.service;
 
+import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.member.repository.MemberRepository;
 import com.sportsecho.memberProduct.dto.MemberProductRequestDto;
 import com.sportsecho.memberProduct.dto.MemberProductResponseDto;
+import com.sportsecho.memberProduct.entity.MemberProduct;
+import com.sportsecho.memberProduct.exception.MemberProductErrorCode;
 import com.sportsecho.memberProduct.repository.MemberProductRepository;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.repository.ProductRepository;
@@ -14,8 +17,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -35,13 +39,23 @@ class MemberProductServiceImplV1IntTest {
 
     Member member;
     Product product;
-    MemberProductRequestDto requestDto;
+    MemberProductRequestDto requestDto = new MemberProductRequestDto();
 
     @BeforeEach
     void setUp() {
-        member = new Member("name", "member@email.com", "pass", MemberRole.CUSTOMER);
-        product = new Product("상품", "상품", "image", 10000, 100);
-        requestDto = new MemberProductRequestDto();
+        member = Member.builder()
+                .memberName("name")
+                .email("member@email.com")
+                .password("password")
+                .role(MemberRole.CUSTOMER)
+                .build();
+        product = Product.builder()
+                .title("상품")
+                .content("설명")
+                .imageUrl("test image")
+                .price(10000)
+                .quantity(100)
+                .build();
 
         ReflectionTestUtils.setField(requestDto, "productsQuantity", 3);
 
@@ -56,8 +70,18 @@ class MemberProductServiceImplV1IntTest {
         memberRepository.deleteAll();
     }
 
+    private MemberProduct createMemberProduct() {
+        MemberProduct memberProduct = MemberProduct.builder()
+                .member(member)
+                .product(product)
+                .productsQuantity(2)
+                .build();
+        memberProductRepository.save(memberProduct);
+        return memberProduct;
+    }
+
     @Nested
-    @DisplayName("장바구니에 상품 추가 test")
+    @DisplayName("장바구니에 상품 추가 테스트")
     class addCartTest {
         @Test
         @DisplayName("장바구니 추가 성공 - 새 상품")
@@ -66,10 +90,96 @@ class MemberProductServiceImplV1IntTest {
             MemberProductResponseDto responseDto = memberProductService.addCart(product.getId(), requestDto, member);
 
             //then
-            assertNotNull(responseDto);
             assertEquals(requestDto.getProductsQuantity(), responseDto.getProductsQuantity());
             assertEquals(product.getPrice(), responseDto.getPrice());
             assertEquals(product.getTitle(), responseDto.getTitle());
+        }
+
+        @Test
+        @DisplayName("장바구니 추가 성공 - 기존에 존재하던 상품")
+        void addCartTest_success_old() {
+            //given
+            MemberProduct memberProduct = createMemberProduct();
+
+            //when
+            MemberProductResponseDto responseDto = memberProductService.addCart(product.getId(), requestDto, member);
+
+            //then
+            assertEquals(requestDto.getProductsQuantity() + memberProduct.getProductsQuantity(),
+                    responseDto.getProductsQuantity());
+            assertEquals(product.getPrice(), responseDto.getPrice());
+            assertEquals(product.getTitle(), responseDto.getTitle());
+        }
+
+        @Test
+        @DisplayName("장바구니 추가 실패 - 상품이 존재하지 않음")
+        void addCartTest_fail_notFoundProduct() {
+            //when - then
+            GlobalException e = assertThrows(GlobalException.class, () -> {
+                memberProductService.addCart(10L, requestDto, member);
+            });
+            assertEquals(MemberProductErrorCode.NOT_FOUND_PRODUCT, e.getErrorCode());
+        }
+    }
+
+    @Test
+    @DisplayName("장바구니 조회 테스트")
+    void Test() {
+        //given
+        MemberProduct memberProduct1 = createMemberProduct();
+        MemberProduct memberProduct2 = createMemberProduct();
+        MemberProduct memberProduct3 = createMemberProduct();
+
+        //when
+        List<MemberProductResponseDto> memberProductList = memberProductService.getCart(member);
+
+        //then
+        assertEquals(3, memberProductList.size());
+        assertEquals(memberProduct1.getProduct().getTitle(), memberProductList.get(0).getTitle());
+    }
+
+    @Nested
+    @DisplayName("장바구니 삭제 테스트")
+    class deleteCart {
+        @Test
+        @DisplayName("단일 상품 삭제 성공")
+        void deleteCartTest_success() {
+            //given
+            MemberProduct memberProduct = createMemberProduct();
+
+            //when
+            memberProductService.deleteCart(product.getId(), member);
+
+            //then
+            assertTrue(memberProductRepository.findById(memberProduct.getId()).isEmpty());
+        }
+
+        @Test
+        @DisplayName("단일 상품 삭제 실패 - 장바구니에 상품이 없음")
+        void deleteCartTest_fail() {
+            //when - then
+            GlobalException e = assertThrows(GlobalException.class, () -> {
+                memberProductService.deleteCart(product.getId(), member);
+
+            });
+            assertEquals(MemberProductErrorCode.NOT_FOUND_PRODUCT_IN_CART, e.getErrorCode());
+        }
+
+        @Test
+        @DisplayName("전체 상품 삭제 성공")
+        void deleteAllCartTest_success() {
+            //given
+            MemberProduct memberProduct1 = createMemberProduct();
+            MemberProduct memberProduct2 = createMemberProduct();
+            MemberProduct memberProduct3 = createMemberProduct();
+
+            //when
+            memberProductService.deleteAllCart(member);
+
+            //then
+            assertTrue(memberProductRepository.findById(memberProduct1.getId()).isEmpty());
+            assertTrue(memberProductRepository.findById(memberProduct2.getId()).isEmpty());
+            assertTrue(memberProductRepository.findById(memberProduct3.getId()).isEmpty());
         }
     }
 }
