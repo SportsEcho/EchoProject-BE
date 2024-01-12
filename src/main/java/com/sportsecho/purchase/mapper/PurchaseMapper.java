@@ -4,6 +4,7 @@ import com.sportsecho.member.entity.Member;
 import com.sportsecho.purchase.dto.PurchaseRequestDto;
 import com.sportsecho.purchase.entity.Purchase;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -13,5 +14,7 @@ public interface PurchaseMapper {
 
 //    PurchaseResponseDto toResponseDto(Purchase purchase);
 
+
+    @Mapping(target = "totalPrice", constant = "0")
     Purchase toEntity(PurchaseRequestDto requestDto, Member member);
 }
