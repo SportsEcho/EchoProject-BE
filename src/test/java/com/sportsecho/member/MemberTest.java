@@ -12,6 +12,8 @@ public interface MemberTest {
     String ANOTHER_TEST_EMAIL = "test_email@echo.net";
     String ANOTHER_TEST_PASSWORD = "test_password1A!";
 
+    String TEST_REFRESH_TOKEN = "test_refresh_token";
+
     Member TEST_MEMBER = Member.builder()
         .memberName(TEST_MEMBER_NAME)
         .email(TEST_EMAIL)

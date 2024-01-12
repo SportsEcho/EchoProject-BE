@@ -5,7 +5,7 @@ import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberRole;
 import org.springframework.test.util.ReflectionTestUtils;
 
-public class MemberTestUtil {
+public class MemberTestUtil implements MemberTest {
 
     public static Member getTestMember(String memberName, String email, String password, MemberRole role) {
         return Member.builder()
@@ -13,6 +13,15 @@ public class MemberTestUtil {
             .email(email)
             .password(password)
             .role(role)
+            .build();
+    }
+
+    public static Member getTestMember(String email, String password) {
+        return Member.builder()
+            .memberName(TEST_MEMBER_NAME)
+            .email(email)
+            .password(password)
+            .role(MemberRole.CUSTOMER)
             .build();
     }
 
@@ -27,6 +36,6 @@ public class MemberTestUtil {
     }
 
     public static MemberRequestDto getTestMemberRequestDto(String email, String password) {
-        return getTestMemberRequestDto("test_member_name", email, password);
+        return getTestMemberRequestDto(TEST_MEMBER_NAME, email, password);
     }
 }
