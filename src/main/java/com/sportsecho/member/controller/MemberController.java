@@ -46,10 +46,11 @@ public class MemberController {
     //ADMIN 계정 로그인 추가
     @PostMapping("/signup/admin")
     public ResponseEntity<MemberResponseDto> signupAdmin(
-        @Valid @RequestBody MemberRequestDto request
+        @Valid @RequestBody MemberRequestDto request,
+        @RequestParam("key") String key
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                memberService.signup(request, MemberRole.ADMIN)
+                memberService.adminSignup(request, key)
         );
     }
 

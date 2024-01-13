@@ -2,7 +2,9 @@ package com.sportsecho.member;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -11,11 +13,13 @@ import com.sportsecho.common.jwt.exception.JwtErrorCode;
 import com.sportsecho.common.redis.RedisUtil;
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.dto.MemberRequestDto;
+import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.member.exception.MemberErrorCode;
 import com.sportsecho.member.repository.MemberRepository;
-import com.sportsecho.member.service.MemberServiceImplV2;
+import com.sportsecho.member.service.MemberService;
+import jakarta.persistence.EntityManager;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +28,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -35,7 +40,8 @@ import org.springframework.test.context.ActiveProfiles;
 public class MemberIntegrationTest implements MemberTest {
 
     @Autowired
-    MemberServiceImplV2 memberService;
+    @Qualifier("V2")
+    MemberService memberService;
 
     @Autowired
     MemberRepository memberRepository;
@@ -210,6 +216,89 @@ public class MemberIntegrationTest implements MemberTest {
 
             //then
             assertEquals(MemberErrorCode.INVALID_REQUEST, exception.getErrorCode());
+        }
+    }
+
+    @Nested
+    @DisplayName("Member 접근 토큰 재발급 테스트")
+    class MemberRefreshTest {
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        @BeforeEach
+        void MemberRefreshSetUp() {
+            memberService.login(TEST_MEMBER_REQUEST_DTO, response);
+
+            request.addHeader(JwtUtil.REFRESH_AUTHORIZATION_HEADER,
+                Objects.requireNonNull(response.getHeader(JwtUtil.REFRESH_AUTHORIZATION_HEADER)));
+        }
+
+        @Test
+        @DisplayName("Member 접근 토큰 재발급 테스트 성공")
+        void memberRefresh_success() {
+            //given
+
+            //when
+            memberService.refresh(request, response);
+
+            String accessToken = response.getHeader(JwtUtil.AUTHORIZATION_HEADER);
+            String refreshToken = response.getHeader(JwtUtil.REFRESH_AUTHORIZATION_HEADER);
+
+            //then
+            assertNotNull(accessToken);
+            assertNotNull(refreshToken);
+        }
+
+        @Test
+        @DisplayName("Member 접근 토큰 재발급 테스트 실패 - 갱신 토큰이 존재하지 않는 경우")
+        void memberRefresh_fail_refreshTokenNotFound() {
+            //given
+            String refreshToken = request.getHeader(JwtUtil.REFRESH_AUTHORIZATION_HEADER);
+
+            //when
+            redisUtil.removeToken(refreshToken);
+
+            GlobalException exception = assertThrows(GlobalException.class, () ->
+                memberService.refresh(request, response)
+            );
+
+            //then
+            assertEquals(JwtErrorCode.REFRESH_TOKEN_NOT_FOUND, exception.getErrorCode());
+        }
+
+        @Test
+        @DisplayName("Member 접근 토큰 재발급 테스트 실패 - 사용자가 존재하지 않는 경우")
+        void memberRefresh_fail_memberNotFound() {
+            //given
+            String refreshToken = request.getHeader(JwtUtil.REFRESH_AUTHORIZATION_HEADER);
+
+            //when
+            redisUtil.saveRefreshToken(refreshToken, ANOTHER_TEST_EMAIL);
+
+            GlobalException exception = assertThrows(GlobalException.class, () ->
+                memberService.refresh(request, response)
+            );
+
+            //then
+            assertEquals(MemberErrorCode.USER_NOT_FOUND, exception.getErrorCode());
+        }
+    }
+
+    @Nested
+    @DisplayName("Member 회원탈퇴 테스트")
+    class MemberDeleteTest {
+
+        @Test
+        @DisplayName("Member 회원탈퇴 테스트 성공")
+        void memberDelete_success() {
+            //given
+
+            //when
+            MemberResponseDto memberResponseDto = memberService.deleteMember(TEST_MEMBER);
+
+            //then
+            assertEquals(TEST_MEMBER.getEmail(), memberResponseDto.getEmail());
         }
     }
 
