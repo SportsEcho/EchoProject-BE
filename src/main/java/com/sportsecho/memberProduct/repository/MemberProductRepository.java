@@ -1,9 +1,10 @@
 package com.sportsecho.memberProduct.repository;
 
 import com.sportsecho.memberProduct.entity.MemberProduct;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberProductRepository extends JpaRepository<MemberProduct, Long> {
 
@@ -11,5 +12,5 @@ public interface MemberProductRepository extends JpaRepository<MemberProduct, Lo
 
     List<MemberProduct> findByMemberId(Long id);
 
-    void deleteByMemberId(Long memberId);
+    void deleteAllByMemberId(Long memberId);
 }
