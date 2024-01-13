@@ -69,8 +69,8 @@ class CommentTestIntegration {
     @Test
     @DisplayName("댓글 추가 테스트")
     void testAddComment() {
-        CommentRequestDto commentDto = new CommentRequestDto();
-        commentDto.setContent("Test comment");
+        CommentRequestDto commentDto = new CommentRequestDto("Test comment");
+
 
         commentService.addComment(testGame.getId(), commentDto, testMember.getEmail());
 
@@ -93,8 +93,8 @@ class CommentTestIntegration {
     void testUpdateComment() {
         testAddComment();
         Comment existingComment = commentRepository.findByGameId(testGame.getId()).get(0);
-        CommentRequestDto updatedDto = new CommentRequestDto();
-        updatedDto.setContent("Updated content");
+        CommentRequestDto updatedDto = new CommentRequestDto("Updated content");
+
 
         commentService.updateComment(existingComment.getId(), updatedDto, testMember.getEmail());
 
