@@ -17,12 +17,7 @@ public class MemberTestUtil implements MemberTest {
     }
 
     public static Member getTestMember(String email, String password) {
-        return Member.builder()
-            .memberName(TEST_MEMBER_NAME)
-            .email(email)
-            .password(password)
-            .role(MemberRole.CUSTOMER)
-            .build();
+        return getTestMember(TEST_MEMBER_NAME, email, password, MemberRole.CUSTOMER);
     }
 
     public static MemberRequestDto getTestMemberRequestDto(String memberName, String email, String password) {

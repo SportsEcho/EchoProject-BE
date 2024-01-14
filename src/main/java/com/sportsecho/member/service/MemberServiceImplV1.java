@@ -57,6 +57,11 @@ public class MemberServiceImplV1 implements MemberService {
     }
 
     @Override
+    public MemberResponseDto adminSignup(MemberRequestDto request, String key) {
+        return null;
+    }
+
+    @Override
     public void login(MemberRequestDto request, HttpServletResponse response) {
         try {
             Authentication authentication = authenticationManager.authenticate(

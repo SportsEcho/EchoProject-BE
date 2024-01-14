@@ -61,3 +61,6 @@ oauth:
       naver: ${naver-api-key}
       google: ${google-api-key}
 
+admin:
+  key:
+    secret: ${admin-secret-key}
