@@ -71,6 +71,7 @@ public class CommentServiceImplV1 implements CommentService{
         }
 
         comment.updateContent(commentDto.getContent());
+        commentRepository.save(comment);
         return new CommentResponseDto(
             comment.getId(),
             comment.getContent(),
