@@ -36,8 +36,9 @@ public class Purchase extends TimeStamp {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Builder.Default
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PurchaseProduct> purchaseProductList = new ArrayList<>();
+    private final List<PurchaseProduct> purchaseProductList = new ArrayList<>();
 
     public void updateTotalPrice(int totalPrice) {
         this.totalPrice = totalPrice;
