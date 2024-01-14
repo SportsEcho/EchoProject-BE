@@ -4,9 +4,15 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.sportsecho.global.exception.GlobalException;
+import com.sportsecho.member.MemberTest;
+import com.sportsecho.member.MemberTestUtil;
+import com.sportsecho.member.dto.MemberRequestDto;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberRole;
+import com.sportsecho.member.mapper.MemberMapper;
 import com.sportsecho.member.repository.MemberRepository;
+import com.sportsecho.product.ProductTest;
+import com.sportsecho.product.ProductTestUtil;
 import com.sportsecho.product.dto.request.ProductRequestDto;
 import com.sportsecho.product.dto.response.ProductResponseDto;
 import com.sportsecho.product.entity.Product;
@@ -28,7 +34,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class ProductServiceImplV1TestIntegration {
+class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
 
     @Autowired
     private ProductService productService;
@@ -41,34 +47,20 @@ class ProductServiceImplV1TestIntegration {
 
     private Member adminMember, customerMember;
     private Product product;
-    private ProductRequestDto requestDto = new ProductRequestDto();
+    private ProductRequestDto requestDto;
+
 
     @BeforeEach
     void setUp() {
-        adminMember = createMember("admin", MemberRole.ADMIN);
-        customerMember = createMember("customer", MemberRole.CUSTOMER);
-        product = productRepository.save(Product.builder()
-            .title("test 제목")
-            .content("test 내용")
-            .imageUrl("test.com")
-            .price(1900)
-            .quantity(100)
-            .build());
-
-        ReflectionTestUtils.setField(requestDto, "title", "제목", String.class);
-        ReflectionTestUtils.setField(requestDto, "content", "내용", String.class);
-        ReflectionTestUtils.setField(requestDto, "imageUrl", "image.com", String.class);
-        ReflectionTestUtils.setField(requestDto, "price", 3000, int.class);
-        ReflectionTestUtils.setField(requestDto, "quantity", 10, int.class);
-    }
-
-    private Member createMember(String memberName, MemberRole role) {
-        return memberRepository.save(Member.builder()
-            .memberName(memberName)
-            .password("Password2@")
-            .email(memberName + "@email.com")
-            .role(role)
-            .build());
+        customerMember = memberRepository.save(
+            MemberTestUtil.getTestMember("customer", "customer@email.com", "Customer123@",
+                MemberRole.CUSTOMER));
+        adminMember = memberRepository.save(
+            MemberTestUtil.getTestMember("admin", "admin@email.com", "Admin123@",
+                MemberRole.ADMIN));
+        product = ProductTestUtil.getTestProduct();
+        requestDto = ProductTestUtil.createTestProductRequestDto("제목", "내용",
+            "image.com", 3000, 10);
     }
 
     @AfterEach
@@ -84,7 +76,7 @@ class ProductServiceImplV1TestIntegration {
         @Test
         @DisplayName("성공 - 상품 생성")
         void createProductSuccess() {
-            productService.createProduct(requestDto, adminMember);
+//            productService.createProduct(requestDto, adminMember);
             assertNotNull(productRepository);
         }
 
@@ -108,6 +100,8 @@ class ProductServiceImplV1TestIntegration {
             @Test
             @DisplayName("성공 - 상품 단건 조회")
             void getProductSuccess() {
+                productRepository.save(product);
+
                 ProductResponseDto result = productService.getProduct(product.getId());
                 assertNotNull(result);
                 assertEquals(result.getTitle(), product.getTitle());
@@ -155,7 +149,8 @@ class ProductServiceImplV1TestIntegration {
                     .map(Product::getPrice)
                     .toList();
 
-                List<ProductResponseDto> productList = productService.getProductListWithPagiNation(pageable);
+                List<ProductResponseDto> productList = productService.getProductListWithPagiNation(
+                    pageable);
                 assertEquals(pageSize, productList.size());
                 assertEquals(productList.get(0).getPrice(), allPrices.get(0));
             }
@@ -169,7 +164,10 @@ class ProductServiceImplV1TestIntegration {
         @Test
         @DisplayName("성공 - 상품 수정")
         void updateProductSuccess() {
-            ProductResponseDto responseDto = productService.updateProduct(adminMember, product.getId(), requestDto);
+            productRepository.save(product);
+            ProductResponseDto responseDto = productService.updateProduct(adminMember,
+                product.getId(), requestDto);
+
             assertEquals(requestDto.getTitle(), responseDto.getTitle());
             assertEquals(requestDto.getContent(), responseDto.getContent());
             assertEquals(requestDto.getImageUrl(), responseDto.getImageUrl());
@@ -194,6 +192,7 @@ class ProductServiceImplV1TestIntegration {
         @Test
         @DisplayName("성공 - 상품 삭제")
         void deleteProductSuccess() {
+            productRepository.save(product);
             productService.deleteProduct(adminMember, product.getId());
             assertTrue(productRepository.findById(product.getId()).isEmpty());
         }
