@@ -6,10 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.MemberTest;
 import com.sportsecho.member.MemberTestUtil;
-import com.sportsecho.member.dto.MemberRequestDto;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberRole;
-import com.sportsecho.member.mapper.MemberMapper;
 import com.sportsecho.member.repository.MemberRepository;
 import com.sportsecho.product.ProductTest;
 import com.sportsecho.product.ProductTestUtil;
@@ -30,7 +28,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @SpringBootTest
 @ActiveProfiles("test")

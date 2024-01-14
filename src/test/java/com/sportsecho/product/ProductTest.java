@@ -1,6 +1,5 @@
 package com.sportsecho.product;
 
-import com.sportsecho.product.dto.request.ProductRequestDto;
 import com.sportsecho.product.entity.Product;
 
 public interface ProductTest {
