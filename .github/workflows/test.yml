@@ -7,7 +7,7 @@ on:
 permissions: write-all
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     env:
@@ -25,32 +25,26 @@ jobs:
       NAVER_API_SECRET: ${{ secrets.NAVER_API_SECRET }}
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Run chmod to make gradlew executable
-        run: chmod +x ./gradlew
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Set up JDK 17
+      - name: setup jdk
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
-          server-id: github
-
-      - name: Restore dependencies
-        run: ./gradlew dependencies
+          cache: gradle
 
       - name: Start Redis
         uses: supercharge/redis-github-action@1.1.0
         with:
           redis-version: 6
 
-      - name: Build with Gradle
-        run: |
-          ./gradlew build -x test
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
 
-      - name: Test with Gradle
-        run: |
-          ./gradlew test
+      - name: gradlew test
+        run: ./gradlew test
 
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
