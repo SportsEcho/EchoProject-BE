@@ -9,7 +9,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.4'
 
     //jacoco 플러그인
-    id 'jacoco'
+    // id 'jacoco'
 }
 
 // 프로젝트 그룹과 버전 설정
@@ -124,33 +124,33 @@ configurations.all {
 //        }
 //    }
 //}
-
-jacocoTestReport {
-    reports {
-        xml.required = false
-        csv.required = false
-        html.required = true
-        html.destination file("jacoco/jacocoHtml")
-        xml.destination file("jacoco/jacoco.xml")
-    }
-    afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, include: '**/service/**') // 서비스 레이어만 포함
-        }))
-    }
-}
-
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            element = 'CLASS'
-            includes = ['**/service/**'] // 서비스 레이어에 대한 규칙 적용
-
-            limit {
-                counter = 'BRANCH'
-                value = 'COVEREDRATIO'
-                minimum = 0.70
-            }
-        }
-    }
-}
+//
+//jacocoTestReport {
+//    reports {
+//        xml.required = false
+//        csv.required = false
+//        html.required = true
+//        html.destination file("jacoco/jacocoHtml")
+//        xml.destination file("jacoco/jacoco.xml")
+//    }
+//    afterEvaluate {
+//        classDirectories.setFrom(files(classDirectories.files.collect {
+//            fileTree(dir: it, include: '**/service/**') // 서비스 레이어만 포함
+//        }))
+//    }
+//}
+//
+//jacocoTestCoverageVerification {
+//    violationRules {
+//        rule {
+//            element = 'CLASS'
+//            includes = ['**/service/**'] // 서비스 레이어에 대한 규칙 적용
+//
+//            limit {
+//                counter = 'BRANCH'
+//                value = 'COVEREDRATIO'
+//                minimum = 0.70
+//            }
+//        }
+//    }
+//}

@@ -56,9 +56,8 @@ jobs:
         with:
           files: build/test-results/**/*.xml
 
-      - name: Upload Jacoco Report
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: jacoco-report
-          path: build/reports/jacoco/test/html
+      - name: Cleanup Gradle Cache
+        if: ${{ always() }}
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
