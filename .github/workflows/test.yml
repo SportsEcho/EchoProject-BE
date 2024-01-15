@@ -17,9 +17,9 @@ jobs:
 
       - name: Create application-ci.properties
         run: |
-          touch ./src/main/resources/application-ci.properties
-          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-ci.properties
-          cat ./src/main/resources/application-ci.properties
+          touch ./src/main/resources/application-test.properties
+          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-test.properties
+          cat ./src/main/resources/application-test.properties
 
       - name: Java Setup
         uses: actions/setup-java@v3
