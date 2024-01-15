@@ -26,14 +26,6 @@ jobs:
       NAVER_API_KEY: ${{ secrets.NAVER_API_KEY }}
       NAVER_API_SECRET: ${{ secrets.NAVER_API_SECRET }}
 
-    services:
-      h2:
-        image: h2database/h2
-        ports:
-          - 1521:1521
-        env:
-          H2_OPTIONS: '-ifNotExists'
-
     steps:
       - uses: actions/checkout@v3
       - name: Run chmod to make gralew executable
@@ -45,6 +37,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
+
+      - name: Restore dependencies
+        run: ./gradlew dependencies
 
       - name: Start Redis
         uses: supercharge/redis-github-action@1.1.0
