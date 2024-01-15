@@ -11,18 +11,18 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      admin-secret-key: ${{ secrets.ADMIN_SECRET_KEY }}
-      aws_accessKey: ${{ secrets.AWS_ACCESS_KEY }}
-      aws_secretKey: ${{ secrets.AWS_SECRET_KEY }}
-      baseball-api-key: ${{ secrets.BASEBALL_API_KEY }}
-      basketball-api-key: ${{ secrets.BASKETBALL_API_KEY }}
-      football-api-key: ${{ secrets.FOOTBALL_API_KEY }}
-      google-api-key: ${{ secrets.GOOGLE_API_KEY }}
-      google-api-secret: ${{ secrets.GOOGLE_API_SECRET }}
-      jwt_secret_key: ${{ secrets.JWT_SECRET_KEY }}
-      kakao-api-key: ${{ secrets.KAKAO_API_KEY }}
-      naver-api-key: ${{ secrets.NAVER_API_KEY }}
-      naver-api-secret: ${{ secrets.NAVER_API_SECRET }}
+      ADMIN_SECRET_KEY: ${{ secrets.ADMIN_SECRET_KEY }}
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+      BASEBALL_API_KEY: ${{ secrets.BASEBALL_API_KEY }}
+      BASKETBALL_API_KEY: ${{ secrets.BASKETBALL_API_KEY }}
+      FOOTBALL_API_KEY: ${{ secrets.FOOTBALL_API_KEY }}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      GOOGLE_API_SECRET: ${{ secrets.GOOGLE_API_SECRET }}
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+      KAKAO_API_KEY: ${{ secrets.KAKAO_API_KEY }}
+      NAVER_API_KEY: ${{ secrets.NAVER_API_KEY }}
+      NAVER_API_SECRET: ${{ secrets.NAVER_API_SECRET }}
 
     steps:
       - uses: actions/checkout@v3
