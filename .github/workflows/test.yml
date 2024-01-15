@@ -4,9 +4,7 @@ on:
     branches: [ "feature/*", "hotfix2" ]
   pull_request:
     branches: [ "dev1" ]
-permissions:
-  contents: write
-  pull-requests: write
+permissions: write-all
 
 jobs:
   build:
