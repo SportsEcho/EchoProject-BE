@@ -25,19 +25,16 @@ jobs:
       NAVER_API_SECRET: ${{ secrets.NAVER_API_SECRET }}
 
     steps:
-      - uses: actions/checkout@v2
       - name: Run chmod to make gradlew executable
-        run: chmod +x ./gradlew
+        uses: actions/checkout@v2
 
       - name: Java Setup
         uses: actions/setup-java@v1
         with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: gradle
+          java-version: 17
 
-      - name: Restore dependencies
-        run: ./gradlew dependencies
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
       - name: Start Redis
         uses: supercharge/redis-github-action@1.1.0
