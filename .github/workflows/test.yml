@@ -3,11 +3,10 @@ on:
   push:
     branches:
       - "feature/*"
-      - "CICD"
+      - "test/*"
   pull_request:
     branches:
       - "dev1"
-      - "CICD"
 permissions: write-all
 jobs:
   deploy:
