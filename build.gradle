@@ -105,25 +105,25 @@ configurations {
 configurations.all {
     exclude group: 'commons-logging', module: 'commons-logging'
 }
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src/main/java']
-            exclude '**/controller/**' // 컨트롤러 제외
-            exclude '**/repository/**' // 리포지토리 제외
-            exclude '**/dto/**' // DTO 제외
-            exclude '**/exception/**' // 예외 제외
-            exclude '**/entity/**' // 엔티티 제외
-            exclude '**/mapper/**' // 매퍼 제외
-            exclude '**/redis/**' // redis 제외
-            exclude '**/configuration/**' // configuration 제외
-            exclude '**/oauth/**' // oauth 제외
-            exclude '**/jwt/**' //  jwt 제외
-            exclude '**/time/**' // time 제외
-            exclude '**/util/**' // util 제외
-        }
-    }
-}
+//sourceSets {
+//    main {
+//        java {
+//            srcDirs = ['src/main/java']
+//            exclude '**/controller/**' // 컨트롤러 제외
+//            exclude '**/repository/**' // 리포지토리 제외
+//            exclude '**/dto/**' // DTO 제외
+//            exclude '**/exception/**' // 예외 제외
+//            exclude '**/entity/**' // 엔티티 제외
+//            exclude '**/mapper/**' // 매퍼 제외
+//            exclude '**/redis/**' // redis 제외
+//            exclude '**/configuration/**' // configuration 제외
+//            exclude '**/oauth/**' // oauth 제외
+//            exclude '**/jwt/**' //  jwt 제외
+//            exclude '**/time/**' // time 제외
+//            exclude '**/util/**' // util 제외
+//        }
+//    }
+//}
 
 jacocoTestReport {
     reports {
