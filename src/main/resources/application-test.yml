@@ -8,10 +8,11 @@ spring:
   jpa:
     database: h2
     generate-ddl: off
+    database-platform: org.hibernate.dialect.H2Dialect
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb;MODE=MySQL
-    username: SA
+    url: jdbc:h2:mem:testdb
+    username: sa
     password: 
 
   servlet:
