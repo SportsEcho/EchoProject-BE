@@ -24,6 +24,8 @@ public class PurchaseProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private int productsQuantity;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "purchase_id")
     private Purchase purchase;
@@ -33,9 +35,10 @@ public class PurchaseProduct {
     private Product product;
 
     @Builder
-    public PurchaseProduct(Purchase purchase, Product product) {
+    public PurchaseProduct(Purchase purchase, Product product, int productsQuantity) {
         this.purchase = purchase;
         this.product = product;
+        this.productsQuantity = productsQuantity;
     }
 
 

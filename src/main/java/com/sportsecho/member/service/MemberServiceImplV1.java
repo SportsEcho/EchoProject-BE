@@ -34,7 +34,7 @@ public class MemberServiceImplV1 implements MemberService {
 
     @Override
     @Transactional
-    public MemberResponseDto signup(MemberRequestDto request) {
+    public MemberResponseDto signup(MemberRequestDto request, MemberRole role) {
 
         //email duplicate check
         if(memberRepository.findByEmail(request.getEmail()).isPresent())
@@ -54,6 +54,11 @@ public class MemberServiceImplV1 implements MemberService {
             .memberName(member.getMemberName())
             .email(member.getEmail())
             .build();
+    }
+
+    @Override
+    public MemberResponseDto adminSignup(MemberRequestDto request, String key) {
+        return null;
     }
 
     @Override
@@ -89,5 +94,20 @@ public class MemberServiceImplV1 implements MemberService {
             .memberName(member.getMemberName())
             .email(member.getEmail())
             .build();
+    }
+
+    @Override
+    public void kakaoLogin(String code, HttpServletResponse response) {
+
+    }
+
+    @Override
+    public void naverLogin(String code, HttpServletResponse response) {
+
+    }
+
+    @Override
+    public void googleLogin(String code, HttpServletResponse response) {
+
     }
 }

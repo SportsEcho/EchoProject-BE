@@ -1,5 +1,7 @@
 spring:
-
+  config:
+    activate:
+      on-profile: default
   jpa:
     hibernate:
       ddl-auto: update
@@ -11,7 +13,7 @@ spring:
     defer-datasource-initialization: true
 
   datasource:
-    url: jdbc:mysql://localhost:3306/Echo_db
+    url: jdbc:mysql://localhost:3306/echo_db
     username: ${your_username}
     password: ${your_password}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -21,7 +23,8 @@ spring:
   servlet:
     multipart:
       enabled: true
-      max-file-size: 2MB
+      max-file-size: 10MB
+      max-request-size: 10MB
 
   data:
     redis:
@@ -33,7 +36,31 @@ jwt:
 
 api-keys:
   football: ${football-api-key}
-
   basketball: ${basketball-api-key}
-
   baseball: ${baseball-api-key}
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${aws_accessKey}
+      secretKey: ${aws_secretKey}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    s3:
+      bucket: sports-echo
+
+oauth:
+  api:
+    secret:
+      naver: ${naver-api-secret}
+      google: ${google-api-secret}
+    key:
+      kakao: ${kakao-api-key}
+      naver: ${naver-api-key}
+      google: ${google-api-key}
+
+admin:
+  key:
+    secret: ${admin-secret-key}

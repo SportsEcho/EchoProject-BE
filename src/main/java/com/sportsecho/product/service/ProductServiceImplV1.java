@@ -1,10 +1,12 @@
 package com.sportsecho.product.service;
 
+import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.product.dto.request.ProductRequestDto;
 import com.sportsecho.product.dto.response.ProductResponseDto;
 import com.sportsecho.product.entity.Product;
+import com.sportsecho.product.exception.ProductErrorCode;
 import com.sportsecho.product.mapper.ProductMapper;
 import com.sportsecho.product.repository.ProductRepository;
 import java.util.List;
@@ -27,9 +29,14 @@ public class ProductServiceImplV1 implements ProductService{
     @Override
     @Transactional
     public ProductResponseDto createProduct(ProductRequestDto requestDto, Member member) {
-        Product product = ProductMapper.INSTANCE.toEntity(requestDto);
 
+        if (!isAuthorized(member)) {
+            throw new GlobalException(ProductErrorCode.NO_AUTHORIZATION);
+        }
+
+        Product product = ProductMapper.INSTANCE.toEntity(requestDto);
         productRepository.save(product);
+
         return ProductMapper.INSTANCE.toResponseDto(product);
     }
 
@@ -52,8 +59,13 @@ public class ProductServiceImplV1 implements ProductService{
     @Override
     @Transactional
     public ProductResponseDto updateProduct(Member member, Long productId, ProductRequestDto requestDto) {
+
+        if (!isAuthorized(member)) {
+            throw new GlobalException(ProductErrorCode.NO_AUTHORIZATION);
+        }
+
         Product product = findProduct(productId);
-        product.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getImageUrl(), requestDto.getPrice());
+        product.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getImageUrl(), requestDto.getPrice(), requestDto.getQuantity());
         productRepository.save(product);
 
         return ProductMapper.INSTANCE.toResponseDto(product);
@@ -63,8 +75,8 @@ public class ProductServiceImplV1 implements ProductService{
     public void deleteProduct(Member member, Long productId) {
         Product product = findProduct(productId);
 
-        if (member.getRole().equals(MemberRole.CUSTOMER)) {
-            throw new RuntimeException();
+        if (!isAuthorized(member)) {
+            throw new GlobalException(ProductErrorCode.NO_AUTHORIZATION);
         }
 
         productRepository.delete(product);
@@ -73,9 +85,13 @@ public class ProductServiceImplV1 implements ProductService{
     private Product findProduct(Long productId) {
         Optional<Product> product = productRepository.findById(productId);
         if (product.isEmpty()) {
-            throw new RuntimeException();
+            throw new GlobalException(ProductErrorCode.NOT_FOUND_PRODUCT);
         }
 
         return product.get();
+    }
+
+    private Boolean isAuthorized(Member member) {
+        return member.getRole().equals(MemberRole.ADMIN);
     }
 }
