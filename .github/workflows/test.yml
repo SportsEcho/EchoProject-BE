@@ -45,10 +45,3 @@ jobs:
         if: ${{ always() }}
         with:
           files: build/test-results/**/*.xml
-
-      - name: Upload Jacoco Report
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: jacoco-report
-          path: build/reports/jacoco/test/html
