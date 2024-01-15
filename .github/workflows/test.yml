@@ -7,19 +7,19 @@ on:
 permissions: write-all
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
-      - name: Run chmod to make gralew executable
+      - name: Run chmod to make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Create application-ci.properties
+      - name: Create application-test.properties
         run: |
-          touch ./src/main/resources/application-test.yml
-          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-test.yml
-          cat ./src/main/resources/application-test.yml
+          touch ./src/main/resources/application-test.properties
+          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-test.properties
+          cat ./src/main/resources/application-test.properties
 
       - name: Java Setup
         uses: actions/setup-java@v3
@@ -35,10 +35,6 @@ jobs:
         uses: supercharge/redis-github-action@1.1.0
         with:
           redis-version: 6
-
-      - name: Build with Gradle
-        run: |
-          ./gradlew build -x test
 
       - name: Test with Gradle
         run: |
