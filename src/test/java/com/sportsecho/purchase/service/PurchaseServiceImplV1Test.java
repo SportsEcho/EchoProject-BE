@@ -1,5 +1,9 @@
 package com.sportsecho.purchase.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberRole;
@@ -13,16 +17,16 @@ import com.sportsecho.purchase.dto.PurchaseResponseDto;
 import com.sportsecho.purchase.exception.PurchaseErrorCode;
 import com.sportsecho.purchase.repository.PurchaseRepository;
 import com.sportsecho.purchaseProduct.repository.PurchaseProductRepository;
-import org.junit.jupiter.api.*;
+import java.util.List;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -54,23 +58,23 @@ class PurchaseServiceImplV1Test {
     @BeforeEach
     void setUp() {
         member = Member.builder()
-                .memberName("name")
-                .email("member@email.com")
-                .password("password")
-                .role(MemberRole.CUSTOMER)
-                .build();
+            .memberName("name")
+            .email("member@email.com")
+            .password("password")
+            .role(MemberRole.CUSTOMER)
+            .build();
         product = Product.builder()
-                .title("상품")
-                .content("설명")
-                .imageUrl("test image")
-                .price(10000)
-                .quantity(100)
-                .build();
+            .title("상품")
+            .content("설명")
+            .imageUrl("test image")
+            .price(10000)
+            .quantity(100)
+            .build();
         memberProduct = MemberProduct.builder()
-                .member(member)
-                .product(product)
-                .productsQuantity(2)
-                .build();
+            .member(member)
+            .product(product)
+            .productsQuantity(2)
+            .build();
 
         ReflectionTestUtils.setField(requestDto, "address", "스포츠시 에코동");
         ReflectionTestUtils.setField(requestDto, "phone", "010-1234-5678");
@@ -92,6 +96,7 @@ class PurchaseServiceImplV1Test {
     @Nested
     @DisplayName("구매 테스트")
     class purchaseTest {
+
         @Test
         @DisplayName("장바구니에 있던 상품 구매 성공")
         void purchaseTest_success() {
@@ -99,9 +104,11 @@ class PurchaseServiceImplV1Test {
             PurchaseResponseDto responseDto = purchaseService.purchase(requestDto, member);
 
             //then
-            assertEquals(product.getPrice() * memberProduct.getProductsQuantity(), responseDto.getTotalPrice());
+            assertEquals(product.getPrice() * memberProduct.getProductsQuantity(),
+                responseDto.getTotalPrice());
             assertEquals(requestDto.getAddress(), responseDto.getAddress());
             assertEquals(product.getTitle(), responseDto.getResponseDtoList().get(0).getTitle());
+            assertTrue(memberProductRepository.findByMemberId(member.getId()).isEmpty());
         }
 
         @Test
@@ -121,6 +128,7 @@ class PurchaseServiceImplV1Test {
     @Nested
     @DisplayName("구매 목록 조회 테스트")
     class getPurchaseListTest {
+
         @Test
         @DisplayName("멤버의 구매 목록 조회 성공")
         void getPurchaseListTest_success() {
@@ -134,11 +142,11 @@ class PurchaseServiceImplV1Test {
             assertEquals(1, responseDtoList.size());
             assertEquals(requestDto.getAddress(), responseDtoList.get(0).getAddress());
             assertEquals(memberProduct.getProductsQuantity() * product.getPrice(),
-                    responseDtoList.get(0).getTotalPrice());
+                responseDtoList.get(0).getTotalPrice());
             assertEquals(product.getTitle(),
-                    responseDtoList.get(0).getResponseDtoList().get(0).getTitle());
+                responseDtoList.get(0).getResponseDtoList().get(0).getTitle());
             assertEquals(memberProduct.getProductsQuantity(),
-                    responseDtoList.get(0).getResponseDtoList().get(0).getProductsQuantity());
+                responseDtoList.get(0).getResponseDtoList().get(0).getProductsQuantity());
         }
 
         @Test
