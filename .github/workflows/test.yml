@@ -7,7 +7,7 @@ on:
 permissions: write-all
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
 
     env:
