@@ -23,6 +23,7 @@ jobs:
       KAKAO_API_KEY: ${{ secrets.KAKAO_API_KEY }}
       NAVER_API_KEY: ${{ secrets.NAVER_API_KEY }}
       NAVER_API_SECRET: ${{ secrets.NAVER_API_SECRET }}
+
     steps:
       - name: Git Checkout
         uses: actions/checkout@v4
