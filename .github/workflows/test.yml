@@ -9,7 +9,7 @@ permissions: write-all
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     env:
       ADMIN_SECRET_KEY: ${{ secrets.ADMIN_SECRET_KEY }}
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
