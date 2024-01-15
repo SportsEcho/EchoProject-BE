@@ -10,26 +10,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      admin-secret-key: ${{ secrets.ADMIN_SECRET_KEY }}
-      aws_accessKey: ${{ secrets.AWS_ACCESS_KEY }}
-      aws_secretKey: ${{ secrets.AWS_SECRET_KEY }}
-      baseball-api-key: ${{ secrets.BASEBALL_API_KEY }}
-      basketball-api-key: ${{ secrets.BASKETBALL_API_KEY }}
-      football-api-key: ${{ secrets.FOOTBALL_API_KEY }}
-      google-api-key: ${{ secrets.GOOGLE_API_KEY }}
-      google-api-secret: ${{ secrets.GOOGLE_API_SECRET }}
-      your_username: ${{ secrets.YOUR_USERNAME }}
-      your_password: ${{ secrets.YOUR_PASSWORD }}
-      jwt.secret_key: ${{ secrets.JWT_SECRET_KEY }}
-      kakao-api-key: ${{ secrets.KAKAO_API_KEY }}
-      naver-api-key: ${{ secrets.NAVER_API_KEY }}
-      naver-api-secret: ${{ secrets.NAVER_API_SECRET }}
-
     steps:
       - uses: actions/checkout@v3
       - name: Run chmod to make gralew executable
         run: chmod +x ./gradlew
+
+      - name: Create appliction-test.properties
+        run: |
+          touch ./src/main/resources/application-ci.yml
+          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-ci.yml
+          cat ./src/main/resources/application-ci.yml
 
       - name: Java Setup
         uses: actions/setup-java@v3
@@ -47,8 +37,6 @@ jobs:
           redis-version: 6
 
       - name: Build with Gradle
-        env:
-          SPRING_PROFILES_ACTIVE: test
         run: |
           ./gradlew build -x test
 
