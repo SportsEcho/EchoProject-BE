@@ -25,12 +25,12 @@ jobs:
       NAVER_API_SECRET: ${{ secrets.NAVER_API_SECRET }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
       - name: Run chmod to make gradlew executable
         run: chmod +x ./gradlew
 
       - name: Java Setup
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v1
         with:
           java-version: '17'
           distribution: 'temurin'
