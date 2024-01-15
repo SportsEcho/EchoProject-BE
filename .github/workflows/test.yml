@@ -15,11 +15,11 @@ jobs:
       - name: Run chmod to make gralew executable
         run: chmod +x ./gradlew
 
-      - name: Create appliction-test.properties
+      - name: Create application-ci.properties
         run: |
-          touch ./src/main/resources/application-ci.yml
-          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-ci.yml
-          cat ./src/main/resources/application-ci.yml
+          touch ./src/main/resources/application-ci.properties
+          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-ci.properties
+          cat ./src/main/resources/application-ci.properties
 
       - name: Java Setup
         uses: actions/setup-java@v3
