@@ -12,20 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      ADMIN_SECRET_KEY: ${{ secrets.ADMIN_SECRET_KEY }}
-      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-      AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-      BASEBALL_API_KEY: ${{ secrets.BASEBALL_API_KEY }}
-      BASKETBALL_API_KEY: ${{ secrets.BASKETBALL_API_KEY }}
-      FOOTBALL_API_KEY: ${{ secrets.FOOTBALL_API_KEY }}
-      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-      GOOGLE_API_SECRET: ${{ secrets.GOOGLE_API_SECRET }}
-      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-      KAKAO_API_KEY: ${{ secrets.KAKAO_API_KEY }}
-      NAVER_API_KEY: ${{ secrets.NAVER_API_KEY }}
-      NAVER_API_SECRET: ${{ secrets.NAVER_API_SECRET }}
-
     steps:
       - uses: actions/checkout@v3
       - name: Run chmod to make gralew executable
@@ -38,9 +24,6 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Restore dependencies
-        run: ./gradlew dependencies
-
       - name: Start Redis
         uses: supercharge/redis-github-action@1.1.0
         with:
@@ -48,20 +31,8 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          ./gradlew build -x test
+          ./gradlew clean build -x test
 
       - name: Test with Gradle
         run: |
           ./gradlew test
-
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: ${{ always() }}
-        with:
-          files: build/test-results/**/*.xml
-
-      - name: Cleanup Gradle Cache
-        if: ${{ always() }}
-        run: |
-          rm -f ~/.gradle/caches/modules-2/modules-2.lock
-          rm -f ~/.gradle/caches/modules-2/gc.properties
