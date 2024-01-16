@@ -1,36 +1,36 @@
 package com.sportsecho.purchase.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.sportsecho.global.exception.GlobalException;
+import com.sportsecho.member.MemberTest;
+import com.sportsecho.member.MemberTestUtil;
 import com.sportsecho.member.entity.Member;
-import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.member.repository.MemberRepository;
+import com.sportsecho.memberProduct.MemberProductTestUtil;
 import com.sportsecho.memberProduct.entity.MemberProduct;
 import com.sportsecho.memberProduct.repository.MemberProductRepository;
+import com.sportsecho.product.ProductTest;
+import com.sportsecho.product.ProductTestUtil;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.repository.ProductRepository;
+import com.sportsecho.purchase.PurchaseTest;
+import com.sportsecho.purchase.PurchaseTestUtil;
 import com.sportsecho.purchase.dto.PurchaseRequestDto;
 import com.sportsecho.purchase.dto.PurchaseResponseDto;
 import com.sportsecho.purchase.exception.PurchaseErrorCode;
 import com.sportsecho.purchase.repository.PurchaseRepository;
 import com.sportsecho.purchaseProduct.repository.PurchaseProductRepository;
-import java.util.List;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
-class PurchaseServiceImplV1Test {
+class PurchaseServiceImplV1Test implements MemberTest, ProductTest, PurchaseTest {
 
     @Autowired
     MemberRepository memberRepository;
@@ -53,31 +53,13 @@ class PurchaseServiceImplV1Test {
     Member member;
     Product product;
     MemberProduct memberProduct;
-    PurchaseRequestDto requestDto = new PurchaseRequestDto();
+    PurchaseRequestDto requestDto = PurchaseTestUtil.getRequestDto();
 
     @BeforeEach
     void setUp() {
-        member = Member.builder()
-            .memberName("name")
-            .email("member@email.com")
-            .password("password")
-            .role(MemberRole.CUSTOMER)
-            .build();
-        product = Product.builder()
-            .title("상품")
-            .content("설명")
-            .imageUrl("test image")
-            .price(10000)
-            .quantity(100)
-            .build();
-        memberProduct = MemberProduct.builder()
-            .member(member)
-            .product(product)
-            .productsQuantity(2)
-            .build();
-
-        ReflectionTestUtils.setField(requestDto, "address", "스포츠시 에코동");
-        ReflectionTestUtils.setField(requestDto, "phone", "010-1234-5678");
+        member = MemberTestUtil.getTestMember("customer@email.com", "pass");
+        product = ProductTestUtil.getTestProduct();
+        memberProduct = MemberProductTestUtil.getMemberProduct(member, product);
 
         memberRepository.save(member);
         productRepository.save(product);
@@ -105,7 +87,7 @@ class PurchaseServiceImplV1Test {
 
             //then
             assertEquals(product.getPrice() * memberProduct.getProductsQuantity(),
-                responseDto.getTotalPrice());
+                    responseDto.getTotalPrice());
             assertEquals(requestDto.getAddress(), responseDto.getAddress());
             assertEquals(product.getTitle(), responseDto.getResponseDtoList().get(0).getTitle());
             assertTrue(memberProductRepository.findByMemberId(member.getId()).isEmpty());
@@ -142,11 +124,11 @@ class PurchaseServiceImplV1Test {
             assertEquals(1, responseDtoList.size());
             assertEquals(requestDto.getAddress(), responseDtoList.get(0).getAddress());
             assertEquals(memberProduct.getProductsQuantity() * product.getPrice(),
-                responseDtoList.get(0).getTotalPrice());
+                    responseDtoList.get(0).getTotalPrice());
             assertEquals(product.getTitle(),
-                responseDtoList.get(0).getResponseDtoList().get(0).getTitle());
+                    responseDtoList.get(0).getResponseDtoList().get(0).getTitle());
             assertEquals(memberProduct.getProductsQuantity(),
-                responseDtoList.get(0).getResponseDtoList().get(0).getProductsQuantity());
+                    responseDtoList.get(0).getResponseDtoList().get(0).getProductsQuantity());
         }
 
         @Test
