@@ -1,5 +1,9 @@
 package com.sportsecho.memberProduct.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.MemberTest;
 import com.sportsecho.member.MemberTestUtil;
@@ -15,14 +19,15 @@ import com.sportsecho.product.ProductTest;
 import com.sportsecho.product.ProductTestUtil;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.repository.ProductRepository;
-import org.junit.jupiter.api.*;
+import java.util.List;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -46,7 +51,7 @@ class MemberProductServiceImplV1IntTest implements MemberTest, ProductTest {
 
     @BeforeEach
     void setUp() {
-        member = MemberTestUtil.getTestMember("customer@email.com", "pass");
+        member = MemberTestUtil.getTestMember(TEST_EMAIL, TEST_PASSWORD);
         product = ProductTestUtil.getTestProduct();
 
         memberRepository.save(member);
@@ -69,11 +74,13 @@ class MemberProductServiceImplV1IntTest implements MemberTest, ProductTest {
     @Nested
     @DisplayName("장바구니에 상품 추가 테스트")
     class addCartTest {
+
         @Test
         @DisplayName("장바구니 추가 성공 - 새 상품")
         void addCartTest_success_new() {
             //when
-            MemberProductResponseDto responseDto = memberProductService.addCart(product.getId(), requestDto, member);
+            MemberProductResponseDto responseDto = memberProductService.addCart(product.getId(),
+                requestDto, member);
 
             //then
             assertEquals(requestDto.getProductsQuantity(), responseDto.getProductsQuantity());
@@ -88,11 +95,12 @@ class MemberProductServiceImplV1IntTest implements MemberTest, ProductTest {
             MemberProduct memberProduct = createMemberProduct();
 
             //when
-            MemberProductResponseDto responseDto = memberProductService.addCart(product.getId(), requestDto, member);
+            MemberProductResponseDto responseDto = memberProductService.addCart(product.getId(),
+                requestDto, member);
 
             //then
             assertEquals(requestDto.getProductsQuantity() + memberProduct.getProductsQuantity(),
-                    responseDto.getProductsQuantity());
+                responseDto.getProductsQuantity());
             assertEquals(product.getPrice(), responseDto.getPrice());
             assertEquals(product.getTitle(), responseDto.getTitle());
         }
@@ -127,6 +135,7 @@ class MemberProductServiceImplV1IntTest implements MemberTest, ProductTest {
     @Nested
     @DisplayName("장바구니 삭제 테스트")
     class deleteCart {
+
         @Test
         @DisplayName("단일 상품 삭제 성공")
         void deleteCartTest_success() {

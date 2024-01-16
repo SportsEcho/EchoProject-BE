@@ -62,7 +62,7 @@ class PurchaseServiceImplV1Test implements MemberTest, ProductTest, PurchaseTest
 
     @BeforeEach
     void setUp() {
-        member = MemberTestUtil.getTestMember("customer@email.com", "pass");
+        member = MemberTestUtil.getTestMember(TEST_EMAIL, TEST_PASSWORD);
         product = ProductTestUtil.getTestProduct();
         memberProduct = MemberProductTestUtil.getMemberProduct(member, product);
 
