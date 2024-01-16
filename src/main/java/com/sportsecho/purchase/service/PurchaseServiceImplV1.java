@@ -12,12 +12,11 @@ import com.sportsecho.purchase.mapper.PurchaseMapper;
 import com.sportsecho.purchase.repository.PurchaseRepository;
 import com.sportsecho.purchaseProduct.entity.PurchaseProduct;
 import com.sportsecho.purchaseProduct.repository.PurchaseProductRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Qualifier("V1")
 @Service
@@ -33,12 +32,17 @@ public class PurchaseServiceImplV1 implements PurchaseService {
     public PurchaseResponseDto purchase(PurchaseRequestDto requestDto, Member member) {
 
         // 장바구니 목록 찾아오기
-        Purchase purchase = PurchaseMapper.INSTANCE.toEntity(requestDto, member);
         List<MemberProduct> memberProductList = memberProductRepository.findByMemberId(
-                member.getId());
+            member.getId());
         if (memberProductList.isEmpty()) {
             throw new GlobalException(PurchaseErrorCode.EMPTY_CART);
         }
+
+        // 재고 확인
+        checkStock(memberProductList);
+
+        // 구매 인스턴스 생성
+        Purchase purchase = PurchaseMapper.INSTANCE.toEntity(requestDto, member);
         purchaseRepository.save(purchase);
 
         // 구매 정보와 장바구니 상품 리스트로 purchaseProduct 엔티티 리스트 생성
@@ -66,25 +70,35 @@ public class PurchaseServiceImplV1 implements PurchaseService {
         }
 
         return purchaseList.stream()
-                .map(Purchase::createResponseDto)
-                .toList();
+            .map(Purchase::createResponseDto)
+            .toList();
     }
 
     private int calTotalPrice(List<PurchaseProduct> purchaseProductList) {
         return purchaseProductList.stream()
-                .mapToInt(purchaseProduct -> purchaseProduct.getProduct().getPrice()
-                        * purchaseProduct.getProductsQuantity())
-                .sum();
+            .mapToInt(purchaseProduct -> purchaseProduct.getProduct().getPrice()
+                * purchaseProduct.getProductsQuantity())
+            .sum();
     }
 
     private List<PurchaseProduct> createPList(List<MemberProduct> memberProductList,
-                                              Purchase purchase) {
+        Purchase purchase) {
         return memberProductList.stream()
-                .map(memberProduct -> PurchaseProduct.builder()
-                        .purchase(purchase)
-                        .product(memberProduct.getProduct())
-                        .productsQuantity(memberProduct.getProductsQuantity())
-                        .build())
-                .toList();
+            .map(memberProduct -> PurchaseProduct.builder()
+                .purchase(purchase)
+                .product(memberProduct.getProduct())
+                .productsQuantity(memberProduct.getProductsQuantity())
+                .build())
+            .toList();
+    }
+
+    private void checkStock(List<MemberProduct> memberProductList) {
+        memberProductList.stream()
+            .filter(memberProduct -> memberProduct.getProductsQuantity() >
+                memberProduct.getProduct().getQuantity())
+            .findFirst()
+            .ifPresent(memberProduct -> {
+                throw new GlobalException(PurchaseErrorCode.OUT_OF_STOCK);
+            });
     }
 }
