@@ -10,10 +10,18 @@ public class MemberProductTestUtil implements MemberProductTest {
 
     public static MemberProduct getMemberProduct(Member member, Product product) {
         return MemberProduct.builder()
-                .member(member)
-                .product(product)
-                .productsQuantity(TEST_QUANTITY)
-                .build();
+            .member(member)
+            .product(product)
+            .productsQuantity(TEST_QUANTITY)
+            .build();
+    }
+
+    public static MemberProduct getMemberProduct(Member member, Product product, int quantity) {
+        return MemberProduct.builder()
+            .member(member)
+            .product(product)
+            .productsQuantity(quantity)
+            .build();
     }
 
     public static MemberProductRequestDto getRequestDto(int quantity) {

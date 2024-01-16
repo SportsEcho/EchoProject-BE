@@ -1,5 +1,9 @@
 package com.sportsecho.purchase.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.MemberTest;
 import com.sportsecho.member.MemberTestUtil;
@@ -19,14 +23,15 @@ import com.sportsecho.purchase.dto.PurchaseResponseDto;
 import com.sportsecho.purchase.exception.PurchaseErrorCode;
 import com.sportsecho.purchase.repository.PurchaseRepository;
 import com.sportsecho.purchaseProduct.repository.PurchaseProductRepository;
-import org.junit.jupiter.api.*;
+import java.util.List;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -87,7 +92,7 @@ class PurchaseServiceImplV1Test implements MemberTest, ProductTest, PurchaseTest
 
             //then
             assertEquals(product.getPrice() * memberProduct.getProductsQuantity(),
-                    responseDto.getTotalPrice());
+                responseDto.getTotalPrice());
             assertEquals(requestDto.getAddress(), responseDto.getAddress());
             assertEquals(product.getTitle(), responseDto.getResponseDtoList().get(0).getTitle());
             assertTrue(memberProductRepository.findByMemberId(member.getId()).isEmpty());
@@ -95,7 +100,7 @@ class PurchaseServiceImplV1Test implements MemberTest, ProductTest, PurchaseTest
 
         @Test
         @DisplayName("구매 실패 - 장바구니가 비어있음")
-        void purchaseTest_fail() {
+        void purchaseTest_fail_emptyCart() {
             //given
             memberProductRepository.deleteAll();
 
@@ -104,6 +109,21 @@ class PurchaseServiceImplV1Test implements MemberTest, ProductTest, PurchaseTest
                 purchaseService.purchase(requestDto, member);
             });
             assertEquals(PurchaseErrorCode.EMPTY_CART, e.getErrorCode());
+        }
+
+        @Test
+        @DisplayName("구매 실패 - 상품 재고 없음")
+        void purchaseTest_fail_outOfStock() {
+            //given
+            memberProductRepository.save(
+                MemberProductTestUtil.getMemberProduct(member, product, 30)
+            );
+
+            //when - then
+            GlobalException e = assertThrows(GlobalException.class, () -> {
+                purchaseService.purchase(requestDto, member);
+            });
+            assertEquals(PurchaseErrorCode.OUT_OF_STOCK, e.getErrorCode());
         }
     }
 
@@ -124,11 +144,11 @@ class PurchaseServiceImplV1Test implements MemberTest, ProductTest, PurchaseTest
             assertEquals(1, responseDtoList.size());
             assertEquals(requestDto.getAddress(), responseDtoList.get(0).getAddress());
             assertEquals(memberProduct.getProductsQuantity() * product.getPrice(),
-                    responseDtoList.get(0).getTotalPrice());
+                responseDtoList.get(0).getTotalPrice());
             assertEquals(product.getTitle(),
-                    responseDtoList.get(0).getResponseDtoList().get(0).getTitle());
+                responseDtoList.get(0).getResponseDtoList().get(0).getTitle());
             assertEquals(memberProduct.getProductsQuantity(),
-                    responseDtoList.get(0).getResponseDtoList().get(0).getProductsQuantity());
+                responseDtoList.get(0).getResponseDtoList().get(0).getProductsQuantity());
         }
 
         @Test
