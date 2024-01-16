@@ -53,6 +53,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MemberServiceImplV2 implements MemberService {
 
+    @Value("${admin.key.secret}")
+    private String adminKey;
+
     private final MemberRepository memberRepository;
 
     private final JwtUtil jwtUtil;
@@ -78,6 +81,15 @@ public class MemberServiceImplV2 implements MemberService {
 
 
         return MemberMapper.MAPPER.toResponseDto(member);
+    }
+
+    @Override
+    public MemberResponseDto adminSignup(MemberRequestDto request, String key) {
+        if(adminKey.equals(key)) {
+            return signup(request, MemberRole.ADMIN);
+        } else {
+            throw new GlobalException(MemberErrorCode.INVALID_ADMIN_KEY);
+        }
     }
 
     @Override

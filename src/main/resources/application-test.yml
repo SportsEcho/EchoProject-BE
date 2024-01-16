@@ -25,18 +25,18 @@ spring:
       port: 6379
 
 jwt:
-  secret_key: ${jwt.secret_key}
+  secret_key: ${JWT_SECRET_KEY}
 
 api-keys:
-  football: ${football-api-key}
-  basketball: ${basketball-api-key}
-  baseball: ${baseball-api-key}
+  football: ${FOOTBALL_API_KEY}
+  basketball: ${BASKETBALL_API_KEY}
+  baseball: ${BASEBALL_API_KEY}
 
 cloud:
   aws:
     credentials:
-      accessKey: ${aws_accessKey}
-      secretKey: ${aws_secretKey}
+      accessKey: ${AWS_ACCESS_KEY}
+      secretKey: ${AWS_SECRET_KEY}
     region:
       static: ap-northeast-2
     stack:
@@ -47,9 +47,13 @@ cloud:
 oauth:
   api:
     secret:
-      naver: ${naver-api-secret}
-      google: ${google-api-secret}
+      naver: ${NAVER_API_SECRET}
+      google: ${GOOGLE_API_SECRET}
     key:
-      kakao: ${kakao-api-key}
-      naver: ${naver-api-key}
-      google: ${google-api-key}
+      kakao: ${KAKAO_API_KEY}
+      naver: ${NAVER_API_KEY}
+      google: ${GOOGLE_API_KEY}
+
+admin:
+  key:
+    secret: ${ADMIN_SECRET_KEY}
