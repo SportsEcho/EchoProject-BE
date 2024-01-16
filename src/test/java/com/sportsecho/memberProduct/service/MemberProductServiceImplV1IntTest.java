@@ -42,7 +42,7 @@ class MemberProductServiceImplV1IntTest implements MemberTest, ProductTest {
 
     Member member;
     Product product;
-    MemberProductRequestDto requestDto = MemberProductTestUtil.createRequestDto(2);
+    MemberProductRequestDto requestDto = MemberProductTestUtil.getRequestDto(2);
 
     @BeforeEach
     void setUp() {

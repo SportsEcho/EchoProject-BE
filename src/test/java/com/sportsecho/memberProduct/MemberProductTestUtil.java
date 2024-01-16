@@ -16,7 +16,7 @@ public class MemberProductTestUtil implements MemberProductTest {
                 .build();
     }
 
-    public static MemberProductRequestDto createRequestDto(int quantity) {
+    public static MemberProductRequestDto getRequestDto(int quantity) {
         MemberProductRequestDto requestDto = new MemberProductRequestDto();
         ReflectionTestUtils.setField(requestDto, "productsQuantity", quantity);
         return requestDto;
