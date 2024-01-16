@@ -1,6 +1,7 @@
 package com.sportsecho.hotdeal;
 
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
+import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.entity.Hotdeal;
 import com.sportsecho.member.MemberTest;
 import com.sportsecho.product.entity.Product;
@@ -29,5 +30,17 @@ public class HotdealTestUtil implements MemberTest, HotdealTest {
         ReflectionTestUtils.setField(hotdealRequestDto, "sale", sale, int.class);
 
         return hotdealRequestDto;
+    }
+
+    public static UpdateHotdealInfoRequestDto createTestUpdateHotdealInfoRequestDto(LocalDateTime startDay,
+        LocalDateTime dueDay, int dealQuantity, int sale) {
+
+        UpdateHotdealInfoRequestDto updateHotdealInfoRequestDto = new UpdateHotdealInfoRequestDto();
+        ReflectionTestUtils.setField(updateHotdealInfoRequestDto, "startDay", startDay, LocalDateTime.class);
+        ReflectionTestUtils.setField(updateHotdealInfoRequestDto, "dueDay", dueDay, LocalDateTime.class);
+        ReflectionTestUtils.setField(updateHotdealInfoRequestDto, "dealQuantity", dealQuantity, int.class);
+        ReflectionTestUtils.setField(updateHotdealInfoRequestDto, "sale", sale, int.class);
+
+        return updateHotdealInfoRequestDto;
     }
 }
