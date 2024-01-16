@@ -1,21 +1,24 @@
 package com.sportsecho.memberProduct.service;
 
 import com.sportsecho.global.exception.GlobalException;
+import com.sportsecho.member.MemberTest;
+import com.sportsecho.member.MemberTestUtil;
 import com.sportsecho.member.entity.Member;
-import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.member.repository.MemberRepository;
+import com.sportsecho.memberProduct.MemberProductTestUtil;
 import com.sportsecho.memberProduct.dto.MemberProductRequestDto;
 import com.sportsecho.memberProduct.dto.MemberProductResponseDto;
 import com.sportsecho.memberProduct.entity.MemberProduct;
 import com.sportsecho.memberProduct.exception.MemberProductErrorCode;
 import com.sportsecho.memberProduct.repository.MemberProductRepository;
+import com.sportsecho.product.ProductTest;
+import com.sportsecho.product.ProductTestUtil;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.repository.ProductRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
@@ -23,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
-class MemberProductServiceImplV1IntTest {
+class MemberProductServiceImplV1IntTest implements MemberTest, ProductTest {
 
     @Autowired
     MemberProductRepository memberProductRepository;
@@ -39,25 +42,12 @@ class MemberProductServiceImplV1IntTest {
 
     Member member;
     Product product;
-    MemberProductRequestDto requestDto = new MemberProductRequestDto();
+    MemberProductRequestDto requestDto = MemberProductTestUtil.createRequestDto(2);
 
     @BeforeEach
     void setUp() {
-        member = Member.builder()
-                .memberName("name")
-                .email("member@email.com")
-                .password("password")
-                .role(MemberRole.CUSTOMER)
-                .build();
-        product = Product.builder()
-                .title("상품")
-                .content("설명")
-                .imageUrl("test image")
-                .price(10000)
-                .quantity(100)
-                .build();
-
-        ReflectionTestUtils.setField(requestDto, "productsQuantity", 3);
+        member = MemberTestUtil.getTestMember("customer@email.com", "pass");
+        product = ProductTestUtil.getTestProduct();
 
         memberRepository.save(member);
         productRepository.save(product);
@@ -71,11 +61,7 @@ class MemberProductServiceImplV1IntTest {
     }
 
     private MemberProduct createMemberProduct() {
-        MemberProduct memberProduct = MemberProduct.builder()
-                .member(member)
-                .product(product)
-                .productsQuantity(2)
-                .build();
+        MemberProduct memberProduct = MemberProductTestUtil.getMemberProduct(member, product);
         memberProductRepository.save(memberProduct);
         return memberProduct;
     }
