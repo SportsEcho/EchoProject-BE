@@ -18,16 +18,15 @@ public class GameController {
     private final GameService gameService;
 
     @Autowired
-    public GameController(@Qualifier("gameServiceImplV1") GameService gameService) {
+    public GameController(@Qualifier("V2")GameService gameService) {
         this.gameService = gameService;
     }
 
-    @GetMapping("/by-league")
-    public ResponseEntity<List<GameResponseDto>> getGamesByDateAndLeague(
-        @RequestParam String date,
-        @RequestParam String league
+    @GetMapping("/football")
+    public ResponseEntity<List<GameResponseDto>> getGamesByDate(
+        @RequestParam String date
     ) {
-        List<GameResponseDto> games = gameService.getGamesByDateAndLeague(date, league);
+        List<GameResponseDto> games = gameService.getGamesByDateAndLeague(date);
         return ResponseEntity.ok(games);
     }
 }
