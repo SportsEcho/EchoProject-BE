@@ -112,10 +112,13 @@ public class HotdealServiceImplV1 implements HotdealService {
     @Override
     @Transactional
     public void deleteHotdeal(Member member, Long hotdealId) {
+        Hotdeal hotdeal = findHotdeal(hotdealId);
+
         if (!isAuthorized(member)) {
             throw new GlobalException(HotdealErrorCode.NO_AUTHORIZATION);
         }
-        Hotdeal hotdeal = findHotdeal(hotdealId);
+        Product product = hotdeal.getProduct();
+        product.unlinkHotdeal();
 
         hotdealRepository.delete(hotdeal);
     }
