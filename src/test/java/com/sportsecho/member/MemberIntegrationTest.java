@@ -22,6 +22,7 @@ import com.sportsecho.member.service.MemberService;
 import jakarta.persistence.EntityManager;
 import java.util.Objects;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +38,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MemberIntegrationTest implements MemberTest {
 
     @Autowired
@@ -53,13 +54,13 @@ public class MemberIntegrationTest implements MemberTest {
     @Autowired
     RedisUtil redisUtil;
 
-    @BeforeAll
+    @BeforeEach
     void setUpAll() {
         //member 회원가입을 통한 테스트 데이터 생성 - 회원가입 테스트는 Unit Test에서 진행
         memberService.signup(TEST_MEMBER_REQUEST_DTO, MemberRole.CUSTOMER);
     }
 
-    @AfterAll
+    @AfterEach
     void tearDownAll() {
         //테스트 데이터 삭제
         memberRepository.deleteAll();
