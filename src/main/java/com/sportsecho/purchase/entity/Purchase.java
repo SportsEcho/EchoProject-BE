@@ -5,14 +5,21 @@ import com.sportsecho.member.entity.Member;
 import com.sportsecho.purchase.dto.PurchaseResponseDto;
 import com.sportsecho.purchaseProduct.entity.PurchaseProduct;
 import com.sportsecho.purchaseProduct.mapper.PurchaseProductMapper;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Entity
@@ -37,7 +44,7 @@ public class Purchase extends TimeStamp {
     private Member member;
 
     @Builder.Default
-    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "purchase", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<PurchaseProduct> purchaseProductList = new ArrayList<>();
 
     public void updateTotalPrice(int totalPrice) {
@@ -47,15 +54,16 @@ public class Purchase extends TimeStamp {
     // 연관 관계가 복잡하여 mapper를 사용하지 않음.. 추후 수정 가능성 있음..
     public PurchaseResponseDto createResponseDto() {
         return PurchaseResponseDto.builder()
-                .totalPrice(this.totalPrice)
-                .address(this.address)
-                .phone(this.phone)
-                .purchaseDate(this.getCreatedAt())
-                .responseDtoList(
-                        this.purchaseProductList.stream()
-                                .map(PurchaseProductMapper.INSTANCE::toResponseDto)
-                                .toList()
-                )
-                .build();
+            .id(this.id)
+            .totalPrice(this.totalPrice)
+            .address(this.address)
+            .phone(this.phone)
+            .purchaseDate(this.getCreatedAt())
+            .responseDtoList(
+                this.purchaseProductList.stream()
+                    .map(PurchaseProductMapper.INSTANCE::toResponseDto)
+                    .toList()
+            )
+            .build();
     }
 }
