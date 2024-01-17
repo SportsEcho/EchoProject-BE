@@ -26,6 +26,8 @@ jobs:
       KAKAO_API_KEY: ${{ secrets.KAKAO_API_KEY }}
       NAVER_API_KEY: ${{ secrets.NAVER_API_KEY }}
       NAVER_API_SECRET: ${{ secrets.NAVER_API_SECRET }}
+      YOUR_USERNAME: ${{ secrets.YOUR_USERNAME }}
+      YOUR_PASSWORD: ${{ secrets.YOUR_PASSWORD }}
 
     steps:
       - name: Checkout
