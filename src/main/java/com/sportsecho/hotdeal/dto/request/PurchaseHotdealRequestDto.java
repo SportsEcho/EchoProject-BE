@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class PurchaseHotdealReqeustDto {
+public class PurchaseHotdealRequestDto {
 
     private Long hotdealId;
     private int quantity;
