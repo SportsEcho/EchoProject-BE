@@ -1,0 +1,59 @@
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database: h2
+    generate-ddl: off
+  datasource:
+    url: jdbc:mysql://localhost:3306/echo_db
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+jwt:
+  secret_key: ${JWT_SECRET_KEY}
+
+api-keys:
+  football: ${FOOTBALL_API_KEY}
+  basketball: ${BASKETBALL_API_KEY}
+  baseball: ${BASEBALL_API_KEY}
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY}
+      secretKey: ${AWS_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    s3:
+      bucket: sports-echo
+
+oauth:
+  api:
+    secret:
+      naver: ${NAVER_API_SECRET}
+      google: ${GOOGLE_API_SECRET}
+    key:
+      kakao: ${KAKAO_API_KEY}
+      naver: ${NAVER_API_KEY}
+      google: ${GOOGLE_API_KEY}
+
+admin:
+  key:
+    secret: ${ADMIN_SECRET_KEY}
