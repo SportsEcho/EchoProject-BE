@@ -1,7 +1,7 @@
 package com.sportsecho.hotdeal.service;
 
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
-import com.sportsecho.hotdeal.dto.request.PurchaseHotdealReqeustDto;
+import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
 import com.sportsecho.hotdeal.dto.response.PurchaseHotdealResponseDto;
@@ -21,5 +21,5 @@ public interface HotdealService {
 
     void deleteHotdeal(Member member, Long hotdealId);
 
-    PurchaseHotdealResponseDto purchaseHotdeal(Member member, PurchaseHotdealReqeustDto requestDto);
+    PurchaseHotdealResponseDto purchaseHotdeal(Member member, PurchaseHotdealRequestDto requestDto);
 }

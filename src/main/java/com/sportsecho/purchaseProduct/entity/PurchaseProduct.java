@@ -36,7 +36,7 @@ public class PurchaseProduct {
 
     private ProductRole role;
 
-    @Builder// 임시로 쓰겠슴다
+    @Builder
     public PurchaseProduct(Purchase purchase, Product product, int productsQuantity, ProductRole role) {
         this.purchase = purchase;
         this.product = product;
