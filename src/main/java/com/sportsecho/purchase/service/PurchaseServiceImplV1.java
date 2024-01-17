@@ -43,7 +43,7 @@ public class PurchaseServiceImplV1 implements PurchaseService {
 
         // 구매 인스턴스 생성
         Purchase purchase = PurchaseMapper.INSTANCE.toEntity(requestDto, member);
-        purchaseRepository.save(purchase);
+        purchase = purchaseRepository.save(purchase);
 
         // 구매 정보와 장바구니 상품 리스트로 purchaseProduct 엔티티 리스트 생성
         List<PurchaseProduct> purchaseProductList = createPList(memberProductList, purchase);
