@@ -2,11 +2,12 @@ package com.sportsecho.hotdeal.service;
 
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
+import com.sportsecho.hotdeal.dto.request.PurchaseHotdealReqeustDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
+import com.sportsecho.hotdeal.dto.response.PurchaseHotdealResponseDto;
 import com.sportsecho.hotdeal.entity.Hotdeal;
 import com.sportsecho.hotdeal.exception.HotdealErrorCode;
-import com.sportsecho.hotdeal.exception.HotdealException;
 import com.sportsecho.hotdeal.mapper.HotdealMapper;
 import com.sportsecho.hotdeal.repository.HotdealRepository;
 import com.sportsecho.member.entity.Member;
@@ -14,12 +15,12 @@ import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.exception.ProductErrorCode;
 import com.sportsecho.product.repository.ProductRepository;
-import com.sportsecho.product.service.ProductService;
+import com.sportsecho.purchaseProduct.entity.ProductRole;
+import com.sportsecho.purchaseProduct.entity.PurchaseProduct;
+import com.sportsecho.purchaseProduct.repository.PurchaseProductRepository;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +34,7 @@ public class HotdealServiceImplV1 implements HotdealService {
 
     private final HotdealRepository hotdealRepository;
     private final ProductRepository productRepository;
+    private final PurchaseProductRepository purchaseProductRepository;
 
     @Override
     @Transactional
@@ -83,17 +85,28 @@ public class HotdealServiceImplV1 implements HotdealService {
 
     @Override
     @Transactional
-    public void decreaseHotdealDealQuantity(Member member, Long hotdealId ,int quantity) {
-        if (!isAuthorized(member)) {
-            throw new GlobalException(HotdealErrorCode.NO_AUTHORIZATION);
-        }
-        Hotdeal hotdeal = findHotdeal(hotdealId);
+    public PurchaseHotdealResponseDto purchaseHotdeal(Member member, PurchaseHotdealReqeustDto requestDto) {
+        Hotdeal hotdeal = findHotdeal(requestDto.getHotdealId());
 
-        if (hotdeal.getDealQuantity() < quantity) {
-            throw new GlobalException(HotdealErrorCode.LACK_DEAL_QUANTITY); // 에러 코드 이름 피드백 받아요
+        if (hotdeal.getDealQuantity() == 0) {
+            throw new GlobalException(HotdealErrorCode.SOLD_OUT); // 핫딜 재고 0일때
         }
 
-        hotdeal.updateDealQuantity(hotdeal.getDealQuantity() - quantity);
+        if (hotdeal.getDealQuantity() < requestDto.getQuantity()) {
+            throw new GlobalException(HotdealErrorCode.LACK_DEAL_QUANTITY); // 핫딜 구매시 재고보다 많은 수량 구매 시도
+        }
+
+        PurchaseProduct purchaseProduct = PurchaseProduct.builder()
+            .product(hotdeal.getProduct())
+            .productsQuantity(requestDto.getQuantity())
+            .role(ProductRole.HOTDEAL)
+            .build();
+        purchaseProductRepository.save(purchaseProduct);
+
+        hotdeal.updateDealQuantity(hotdeal.getDealQuantity() - requestDto.getQuantity()); // 앞에서 예외처리 완료
+        hotdealRepository.save(hotdeal); // 더티 체킹
+
+        return HotdealMapper.INSTANCE.toPurchaseResponseDto(hotdeal);
     }
 
     @Override
