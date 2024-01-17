@@ -3,6 +3,7 @@ package com.sportsecho.game.entity;
 import com.sportsecho.comment.entity.Comment;
 import com.sportsecho.common.time.TimeStamp;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,7 +34,7 @@ public class Game extends TimeStamp {
     private LocalDateTime gameDateTime; // 경기 일시
     private String location; // 경기 장소
 
-    @OneToMany(mappedBy = "game")
+    @OneToMany(mappedBy = "game", fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
 }
