@@ -59,6 +59,7 @@ public class HotdealServiceImplV1 implements HotdealService {
     }
 
     @Override
+    @Transactional
     public HotdealResponseDto getHotdeal(Long hotdealId) {
         Hotdeal hotdeal = findHotdeal(hotdealId);
 
@@ -66,6 +67,7 @@ public class HotdealServiceImplV1 implements HotdealService {
     }
 
     @Override
+    @Transactional
     public List<HotdealResponseDto> getHotdealList(Pageable pageable) {
         Page<Hotdeal> hotdealPage = hotdealRepository.findAll(pageable);
 

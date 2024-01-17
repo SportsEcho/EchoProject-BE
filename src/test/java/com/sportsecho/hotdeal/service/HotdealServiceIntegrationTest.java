@@ -53,8 +53,6 @@ public class HotdealServiceIntegrationTest implements MemberTest, ProductTest, H
 
     @BeforeEach
     void setUp() {
-        hotdealRepository.deleteAll();
-
         customerMember = memberRepository.save(
             MemberTestUtil.getTestMember("customer", TEST_EMAIL, TEST_PASSWORD,
                 MemberRole.CUSTOMER));
