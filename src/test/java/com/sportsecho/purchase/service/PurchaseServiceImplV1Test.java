@@ -5,13 +5,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sportsecho.global.exception.GlobalException;
+import com.sportsecho.member.MemberTest;
+import com.sportsecho.member.MemberTestUtil;
 import com.sportsecho.member.entity.Member;
-import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.member.repository.MemberRepository;
+import com.sportsecho.memberProduct.MemberProductTestUtil;
 import com.sportsecho.memberProduct.entity.MemberProduct;
 import com.sportsecho.memberProduct.repository.MemberProductRepository;
+import com.sportsecho.product.ProductTest;
+import com.sportsecho.product.ProductTestUtil;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.repository.ProductRepository;
+import com.sportsecho.purchase.PurchaseTest;
+import com.sportsecho.purchase.PurchaseTestUtil;
 import com.sportsecho.purchase.dto.PurchaseRequestDto;
 import com.sportsecho.purchase.dto.PurchaseResponseDto;
 import com.sportsecho.purchase.exception.PurchaseErrorCode;
@@ -26,11 +32,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @ActiveProfiles("test")
 @SpringBootTest
-class PurchaseServiceImplV1Test {
+class PurchaseServiceImplV1Test implements MemberTest, ProductTest, PurchaseTest {
 
     @Autowired
     MemberRepository memberRepository;
@@ -53,31 +58,13 @@ class PurchaseServiceImplV1Test {
     Member member;
     Product product;
     MemberProduct memberProduct;
-    PurchaseRequestDto requestDto = new PurchaseRequestDto();
+    PurchaseRequestDto requestDto = PurchaseTestUtil.getRequestDto();
 
     @BeforeEach
     void setUp() {
-        member = Member.builder()
-            .memberName("name")
-            .email("member@email.com")
-            .password("password")
-            .role(MemberRole.CUSTOMER)
-            .build();
-        product = Product.builder()
-            .title("상품")
-            .content("설명")
-            .imageUrl("test image")
-            .price(10000)
-            .quantity(100)
-            .build();
-        memberProduct = MemberProduct.builder()
-            .member(member)
-            .product(product)
-            .productsQuantity(2)
-            .build();
-
-        ReflectionTestUtils.setField(requestDto, "address", "스포츠시 에코동");
-        ReflectionTestUtils.setField(requestDto, "phone", "010-1234-5678");
+        member = MemberTestUtil.getTestMember(TEST_EMAIL, TEST_PASSWORD);
+        product = ProductTestUtil.getTestProduct();
+        memberProduct = MemberProductTestUtil.getMemberProduct(member, product);
 
         memberRepository.save(member);
         productRepository.save(product);
@@ -113,7 +100,7 @@ class PurchaseServiceImplV1Test {
 
         @Test
         @DisplayName("구매 실패 - 장바구니가 비어있음")
-        void purchaseTest_fail() {
+        void purchaseTest_fail_emptyCart() {
             //given
             memberProductRepository.deleteAll();
 
@@ -122,6 +109,21 @@ class PurchaseServiceImplV1Test {
                 purchaseService.purchase(requestDto, member);
             });
             assertEquals(PurchaseErrorCode.EMPTY_CART, e.getErrorCode());
+        }
+
+        @Test
+        @DisplayName("구매 실패 - 상품 재고 없음")
+        void purchaseTest_fail_outOfStock() {
+            //given
+            memberProductRepository.save(
+                MemberProductTestUtil.getMemberProduct(member, product, 30)
+            );
+
+            //when - then
+            GlobalException e = assertThrows(GlobalException.class, () -> {
+                purchaseService.purchase(requestDto, member);
+            });
+            assertEquals(PurchaseErrorCode.OUT_OF_STOCK, e.getErrorCode());
         }
     }
 
