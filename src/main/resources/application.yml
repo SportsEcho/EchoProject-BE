@@ -13,9 +13,9 @@ spring:
     defer-datasource-initialization: true
 
   datasource:
-    url: jdbc:mysql://localhost:3306/echo_db
-    username: ${your_username}
-    password: ${your_password}
+    url: jdbc:mysql://sports-echo-mysql-instance.c8cvx8gfy4m3.ap-northeast-2.rds.amazonaws.com/echo_db
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   h2:
     console:
@@ -28,7 +28,7 @@ spring:
 
   data:
     redis:
-      host: localhost
+      host: 13.125.213.202
       port: 6379
 
 jwt:
