@@ -55,7 +55,9 @@ public class WebSecurityConfig {
 
     public RequestMatcher publicEndPoints() {
         return new OrRequestMatcher(
-            new AntPathRequestMatcher("/api/**")
+            new AntPathRequestMatcher("/api/members/login"),
+            new AntPathRequestMatcher("/api/members/signup/**"),
+            new AntPathRequestMatcher("/api/members/**/callback")
         );
     }
 }
