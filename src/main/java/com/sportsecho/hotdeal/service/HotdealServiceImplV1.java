@@ -15,6 +15,7 @@ import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.exception.ProductErrorCode;
 import com.sportsecho.product.repository.ProductRepository;
 import com.sportsecho.product.service.ProductService;
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -99,10 +100,13 @@ public class HotdealServiceImplV1 implements HotdealService {
     @Override
     @Transactional
     public void deleteHotdeal(Member member, Long hotdealId) {
+        Hotdeal hotdeal = findHotdeal(hotdealId);
+
         if (!isAuthorized(member)) {
             throw new GlobalException(HotdealErrorCode.NO_AUTHORIZATION);
         }
-        Hotdeal hotdeal = findHotdeal(hotdealId);
+        Product product = hotdeal.getProduct();
+        product.unlinkHotdeal();
 
         hotdealRepository.delete(hotdeal);
     }

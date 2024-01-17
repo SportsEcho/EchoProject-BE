@@ -53,6 +53,8 @@ public class HotdealServiceIntegrationTest implements MemberTest, ProductTest, H
 
     @BeforeEach
     void setUp() {
+        hotdealRepository.deleteAll();
+
         customerMember = memberRepository.save(
             MemberTestUtil.getTestMember("customer", TEST_EMAIL, TEST_PASSWORD,
                 MemberRole.CUSTOMER));
@@ -249,10 +251,12 @@ public class HotdealServiceIntegrationTest implements MemberTest, ProductTest, H
                     TEST_SALE, product));
 
             // When
+
             hotdealService.deleteHotdeal(adminMember, hotdeal.getId());
 
             // Then
-            assertFalse(hotdealRepository.findById(hotdeal.getId()).isPresent());
+            assertNotNull(hotdeal.getId());
+            assertTrue(hotdealRepository.findById(hotdeal.getId()).isEmpty());
         }
 
         @Test
