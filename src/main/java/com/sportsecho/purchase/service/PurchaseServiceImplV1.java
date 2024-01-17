@@ -10,6 +10,7 @@ import com.sportsecho.purchase.entity.Purchase;
 import com.sportsecho.purchase.exception.PurchaseErrorCode;
 import com.sportsecho.purchase.mapper.PurchaseMapper;
 import com.sportsecho.purchase.repository.PurchaseRepository;
+import com.sportsecho.purchaseProduct.entity.ProductRole;
 import com.sportsecho.purchaseProduct.entity.PurchaseProduct;
 import com.sportsecho.purchaseProduct.repository.PurchaseProductRepository;
 import java.util.List;
@@ -43,7 +44,7 @@ public class PurchaseServiceImplV1 implements PurchaseService {
 
         // 구매 인스턴스 생성
         Purchase purchase = PurchaseMapper.INSTANCE.toEntity(requestDto, member);
-        purchaseRepository.save(purchase);
+        purchase = purchaseRepository.save(purchase);
 
         // 구매 정보와 장바구니 상품 리스트로 purchaseProduct 엔티티 리스트 생성
         List<PurchaseProduct> purchaseProductList = createPList(memberProductList, purchase);
@@ -88,6 +89,7 @@ public class PurchaseServiceImplV1 implements PurchaseService {
                 .purchase(purchase)
                 .product(memberProduct.getProduct())
                 .productsQuantity(memberProduct.getProductsQuantity())
+                .role(ProductRole.PRODUCT)
                 .build())
             .toList();
     }

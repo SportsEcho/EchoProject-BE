@@ -15,6 +15,9 @@ import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.exception.ProductErrorCode;
 import com.sportsecho.product.repository.ProductRepository;
+import com.sportsecho.purchase.entity.Purchase;
+import com.sportsecho.purchase.mapper.PurchaseMapper;
+import com.sportsecho.purchase.repository.PurchaseRepository;
 import com.sportsecho.purchaseProduct.entity.ProductRole;
 import com.sportsecho.purchaseProduct.entity.PurchaseProduct;
 import com.sportsecho.purchaseProduct.repository.PurchaseProductRepository;
@@ -37,6 +40,7 @@ public class HotdealServiceImplV1 implements HotdealService {
     private final HotdealRepository hotdealRepository;
     private final ProductRepository productRepository;
     private final PurchaseProductRepository purchaseProductRepository;
+    private final PurchaseRepository purchaseRepository;
 
     @Override
     @Transactional
@@ -100,13 +104,23 @@ public class HotdealServiceImplV1 implements HotdealService {
             throw new GlobalException(HotdealErrorCode.LACK_DEAL_QUANTITY); // 핫딜 구매시 재고보다 많은 수량 구매 시도
         }
 
+        Purchase newPurchase = PurchaseMapper.INSTANCE.toEntity(requestDto, member);
+        Purchase purchase = purchaseRepository.save(newPurchase);
+
         Product product = hotdeal.getProduct();
         PurchaseProduct purchaseProduct = PurchaseProduct.builder()
             .product(product)
             .productsQuantity(requestDto.getQuantity())
             .role(ProductRole.HOTDEAL)
             .build();
-        purchaseProductRepository.save(purchaseProduct);
+        purchaseProduct = purchaseProductRepository.save(purchaseProduct);
+
+        int totalPrice = (int) (hotdeal.getProduct().getPrice() * requestDto.getQuantity()
+            * (hotdeal.getSale() / 100.0));
+
+        purchase.getPurchaseProductList().add(purchaseProduct);
+        purchase.updateTotalPrice(totalPrice);
+        purchaseRepository.save(purchase);
 
         hotdeal.updateDealQuantity(hotdeal.getDealQuantity() - requestDto.getQuantity()); // 앞에서 예외처리 완료
         hotdealRepository.save(hotdeal); // 더티 체킹
