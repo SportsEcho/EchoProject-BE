@@ -33,7 +33,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-@ActiveProfiles("mysql")
+@ActiveProfiles("test")
 public class PurchaseHotdealTest implements MemberTest, ProductTest, HotdealTest, PurchaseTest {
 
     @Autowired
