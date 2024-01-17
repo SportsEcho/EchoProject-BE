@@ -21,6 +21,7 @@ import com.sportsecho.member.repository.MemberRepository;
 import com.sportsecho.member.service.MemberService;
 import jakarta.persistence.EntityManager;
 import java.util.Objects;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,6 +57,12 @@ public class MemberIntegrationTest implements MemberTest {
     void setUpAll() {
         //member 회원가입을 통한 테스트 데이터 생성 - 회원가입 테스트는 Unit Test에서 진행
         memberService.signup(TEST_MEMBER_REQUEST_DTO, MemberRole.CUSTOMER);
+    }
+
+    @AfterAll
+    void tearDownAll() {
+        //테스트 데이터 삭제
+        memberRepository.deleteAll();
     }
 
     @Nested
