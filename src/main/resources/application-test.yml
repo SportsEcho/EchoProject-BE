@@ -9,10 +9,10 @@ spring:
     database: h2
     generate-ddl: off
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb;MODE=MySQL
-    username: SA
-    password: ''
+    url: jdbc:mysql://localhost:3306/echo_db
+    username: ${your_username}
+    password: ${your_password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   servlet:
     multipart:
