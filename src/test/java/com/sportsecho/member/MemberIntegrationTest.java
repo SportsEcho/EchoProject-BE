@@ -306,7 +306,7 @@ public class MemberIntegrationTest implements MemberTest {
             MemberResponseDto memberResponseDto = memberService.deleteMember(TEST_MEMBER);
 
             //then
-            assertEquals(TEST_MEMBER.getEmail(), memberResponseDto.getEmail());
+            assertEquals(TEST_MEMBER.getMemberName(), memberResponseDto.getMemberName());
         }
     }
 
