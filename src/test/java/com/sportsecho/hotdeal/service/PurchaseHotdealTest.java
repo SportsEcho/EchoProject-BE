@@ -62,11 +62,11 @@ public class PurchaseHotdealTest implements MemberTest, ProductTest, HotdealTest
         member = memberRepository.save(
             MemberTestUtil.getTestMember("customer", TEST_EMAIL, TEST_PASSWORD,
                 MemberRole.CUSTOMER));
-
     }
 
     @AfterEach
     void tearDown() {
+        memberRepository.deleteAll();
         hotdealRepository.deleteAll();
         purchaseProductRepository.deleteAll();
     }

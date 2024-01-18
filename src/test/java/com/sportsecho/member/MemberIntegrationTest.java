@@ -38,7 +38,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MemberIntegrationTest implements MemberTest {
 
     @Autowired
@@ -54,13 +54,13 @@ public class MemberIntegrationTest implements MemberTest {
     @Autowired
     RedisUtil redisUtil;
 
-    @BeforeEach
+    @BeforeAll
     void setUpAll() {
         //member 회원가입을 통한 테스트 데이터 생성 - 회원가입 테스트는 Unit Test에서 진행
         memberService.signup(TEST_MEMBER_REQUEST_DTO, MemberRole.CUSTOMER);
     }
 
-    @AfterEach
+    @AfterAll
     void tearDownAll() {
         //테스트 데이터 삭제
         memberRepository.deleteAll();
@@ -306,7 +306,7 @@ public class MemberIntegrationTest implements MemberTest {
             MemberResponseDto memberResponseDto = memberService.deleteMember(TEST_MEMBER);
 
             //then
-            assertEquals(TEST_MEMBER.getMemberName(), memberResponseDto.getMemberName());
+            assertEquals(TEST_MEMBER.getEmail(), memberResponseDto.getEmail());
         }
     }
 
