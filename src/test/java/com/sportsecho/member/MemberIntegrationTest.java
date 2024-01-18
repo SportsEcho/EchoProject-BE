@@ -60,12 +60,6 @@ public class MemberIntegrationTest implements MemberTest {
         memberService.signup(TEST_MEMBER_REQUEST_DTO, MemberRole.CUSTOMER);
     }
 
-    @AfterAll
-    void tearDownAll() {
-        //테스트 데이터 삭제
-        memberRepository.deleteAll();
-    }
-
     @Nested
     @DisplayName("Member 로그인 테스트")
     class memberLoginTest {
