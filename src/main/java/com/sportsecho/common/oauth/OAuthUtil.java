@@ -135,7 +135,7 @@ public class OAuthUtil {
         if(SocialType.KAKAO.equals(socialType)) {
             body.add("grant_type", "authorization_code");
             body.add("client_id", kakaoApiKey);
-            body.add("redirect_uri", "http://localhost:8080/api/members/kakao/callback");
+            body.add("redirect_uri", "http://13.125.46.61:8080/api/members/kakao/callback");
             body.add("code", code);
         }
         if(SocialType.NAVER.equals(socialType)) {
@@ -150,7 +150,7 @@ public class OAuthUtil {
             body.add("client_id", googleApiKey);
             body.add("client_secret", googleApiSecret);
             body.add("code", code);
-            body.add("redirect_uri", "http://localhost:8080/api/members/google/callback");
+            body.add("redirect_uri", "http://13.125.46.61:8080/api/members/google/callback");
         }
 
         return body;

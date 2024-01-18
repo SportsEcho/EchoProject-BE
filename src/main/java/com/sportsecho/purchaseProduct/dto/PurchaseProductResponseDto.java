@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PurchaseProductResponseDto {
 
+    private Long id;
+
     private int productsQuantity;
 
     private String title;
