@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PurchaseResponseDto {
 
+    private Long id;
+
     private int totalPrice;
 
     private String address;
