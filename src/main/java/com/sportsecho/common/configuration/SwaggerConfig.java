@@ -15,7 +15,7 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         Info info = new Info()
-            .version("v0.0.1")
+            .version("V 0.0.2")
             .title("Sports echo");
 
         SecurityScheme securityScheme = new SecurityScheme()
