@@ -20,7 +20,12 @@ public class QMember extends EntityPathBase<Member> {
 
     public static final QMember member = new QMember("member1");
 
+    public final com.sportsecho.common.time.QTimeStamp _super = new com.sportsecho.common.time.QTimeStamp(this);
+
     public final ListPath<com.sportsecho.comment.entity.Comment, com.sportsecho.comment.entity.QComment> commentList = this.<com.sportsecho.comment.entity.Comment, com.sportsecho.comment.entity.QComment>createList("commentList", com.sportsecho.comment.entity.Comment.class, com.sportsecho.comment.entity.QComment.class, PathInits.DIRECT2);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final StringPath email = createString("email");
 
@@ -29,6 +34,9 @@ public class QMember extends EntityPathBase<Member> {
     public final StringPath memberName = createString("memberName");
 
     public final ListPath<com.sportsecho.memberProduct.entity.MemberProduct, com.sportsecho.memberProduct.entity.QMemberProduct> memberProductList = this.<com.sportsecho.memberProduct.entity.MemberProduct, com.sportsecho.memberProduct.entity.QMemberProduct>createList("memberProductList", com.sportsecho.memberProduct.entity.MemberProduct.class, com.sportsecho.memberProduct.entity.QMemberProduct.class, PathInits.DIRECT2);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
     public final StringPath password = createString("password");
 

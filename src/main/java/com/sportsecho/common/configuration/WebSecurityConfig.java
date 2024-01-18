@@ -17,6 +17,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -57,7 +60,9 @@ public class WebSecurityConfig {
         return new OrRequestMatcher(
             new AntPathRequestMatcher("/api/members/login"),
             new AntPathRequestMatcher("/api/members/signup/**"),
-            new AntPathRequestMatcher("/api/members/**/callback")
+            new AntPathRequestMatcher("/api/members/**/callback"),
+
+            new AntPathRequestMatcher("/**")
         );
     }
 }
