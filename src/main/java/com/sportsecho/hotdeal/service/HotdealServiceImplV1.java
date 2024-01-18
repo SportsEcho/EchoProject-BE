@@ -2,11 +2,12 @@ package com.sportsecho.hotdeal.service;
 
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
+import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
+import com.sportsecho.hotdeal.dto.response.PurchaseHotdealResponseDto;
 import com.sportsecho.hotdeal.entity.Hotdeal;
 import com.sportsecho.hotdeal.exception.HotdealErrorCode;
-import com.sportsecho.hotdeal.exception.HotdealException;
 import com.sportsecho.hotdeal.mapper.HotdealMapper;
 import com.sportsecho.hotdeal.repository.HotdealRepository;
 import com.sportsecho.member.entity.Member;
@@ -14,12 +15,16 @@ import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.exception.ProductErrorCode;
 import com.sportsecho.product.repository.ProductRepository;
-import com.sportsecho.product.service.ProductService;
+import com.sportsecho.purchase.entity.Purchase;
+import com.sportsecho.purchase.mapper.PurchaseMapper;
+import com.sportsecho.purchase.repository.PurchaseRepository;
+import com.sportsecho.purchaseProduct.entity.ProductRole;
+import com.sportsecho.purchaseProduct.entity.PurchaseProduct;
+import com.sportsecho.purchaseProduct.repository.PurchaseProductRepository;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,10 +34,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Qualifier("V1")
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class HotdealServiceImplV1 implements HotdealService {
 
     private final HotdealRepository hotdealRepository;
     private final ProductRepository productRepository;
+    private final PurchaseProductRepository purchaseProductRepository;
+    private final PurchaseRepository purchaseRepository;
 
     @Override
     @Transactional
@@ -51,6 +59,7 @@ public class HotdealServiceImplV1 implements HotdealService {
     }
 
     @Override
+    @Transactional
     public HotdealResponseDto getHotdeal(Long hotdealId) {
         Hotdeal hotdeal = findHotdeal(hotdealId);
 
@@ -58,6 +67,7 @@ public class HotdealServiceImplV1 implements HotdealService {
     }
 
     @Override
+    @Transactional
     public List<HotdealResponseDto> getHotdealList(Pageable pageable) {
         Page<Hotdeal> hotdealPage = hotdealRepository.findAll(pageable);
 
@@ -83,26 +93,54 @@ public class HotdealServiceImplV1 implements HotdealService {
 
     @Override
     @Transactional
-    public void decreaseHotdealDealQuantity(Member member, Long hotdealId ,int quantity) {
-        if (!isAuthorized(member)) {
-            throw new GlobalException(HotdealErrorCode.NO_AUTHORIZATION);
-        }
-        Hotdeal hotdeal = findHotdeal(hotdealId);
+    public PurchaseHotdealResponseDto purchaseHotdeal(Member member, PurchaseHotdealRequestDto requestDto) {
+        log.info("구매 시작");
+        Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(requestDto.getHotdealId())
+            .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
 
-        if (hotdeal.getDealQuantity() < quantity) {
-            throw new GlobalException(HotdealErrorCode.LACK_DEAL_QUANTITY); // 에러 코드 이름 피드백 받아요
+        if (hotdeal.getDealQuantity() == 0) {
+            throw new GlobalException(HotdealErrorCode.SOLD_OUT); // 핫딜 재고 0일때
         }
 
-        hotdeal.updateDealQuantity(hotdeal.getDealQuantity() - quantity);
+        if (hotdeal.getDealQuantity() < requestDto.getQuantity()) {
+            throw new GlobalException(HotdealErrorCode.LACK_DEAL_QUANTITY); // 핫딜 구매시 재고보다 많은 수량 구매 시도
+        }
+
+        Purchase newPurchase = PurchaseMapper.INSTANCE.toEntity(requestDto, member);
+        Purchase purchase = purchaseRepository.save(newPurchase);
+
+        Product product = hotdeal.getProduct();
+        PurchaseProduct purchaseProduct = PurchaseProduct.builder()
+            .product(product)
+            .productsQuantity(requestDto.getQuantity())
+            .role(ProductRole.HOTDEAL)
+            .build();
+        purchaseProduct = purchaseProductRepository.save(purchaseProduct);
+
+        int totalPrice = (int) (hotdeal.getProduct().getPrice() * requestDto.getQuantity()
+            * (hotdeal.getSale() / 100.0));
+
+        purchase.getPurchaseProductList().add(purchaseProduct);
+        purchase.updateTotalPrice(totalPrice);
+        purchaseRepository.save(purchase);
+
+        hotdeal.updateDealQuantity(hotdeal.getDealQuantity() - requestDto.getQuantity()); // 앞에서 예외처리 완료
+        hotdealRepository.save(hotdeal); // 더티 체킹
+
+        log.info("=============끝==============");
+        return HotdealMapper.INSTANCE.toPurchaseResponseDto(hotdeal);
     }
 
     @Override
     @Transactional
     public void deleteHotdeal(Member member, Long hotdealId) {
+        Hotdeal hotdeal = findHotdeal(hotdealId);
+
         if (!isAuthorized(member)) {
             throw new GlobalException(HotdealErrorCode.NO_AUTHORIZATION);
         }
-        Hotdeal hotdeal = findHotdeal(hotdealId);
+        Product product = hotdeal.getProduct();
+        product.unlinkHotdeal();
 
         hotdealRepository.delete(hotdeal);
     }

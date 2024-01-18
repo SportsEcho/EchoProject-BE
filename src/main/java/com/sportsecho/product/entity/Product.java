@@ -7,6 +7,7 @@ import com.sportsecho.purchaseProduct.entity.PurchaseProduct;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -43,13 +44,13 @@ public class Product extends TimeStamp {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Hotdeal hotdeal;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseProduct> PurchaseProductList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberProduct> memberProductList = new ArrayList<>();
 
     @Builder

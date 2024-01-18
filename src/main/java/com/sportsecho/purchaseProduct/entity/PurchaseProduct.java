@@ -44,4 +44,5 @@ public class PurchaseProduct {
         this.productsQuantity = productsQuantity;
         this.role = role;
     }
+
 }
