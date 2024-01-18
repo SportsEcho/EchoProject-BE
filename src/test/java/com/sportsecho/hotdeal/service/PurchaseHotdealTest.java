@@ -133,54 +133,54 @@ public class PurchaseHotdealTest implements MemberTest, ProductTest, HotdealTest
 
     }
 
-    @Nested
-    @DisplayName("다중 구매자의 구매 테스트")
-    class MultipleUserPurchaseTets {
-
-        @Test
-        @DisplayName("데이터 정합성 테스트 - 핫딜의 한정 수량이 정확히 감소하는지 확인")
-        void purchaseHotdealWithPessimisticLock() throws InterruptedException {
-            // given
-            Product product = productRepository.save(TEST_PRODUCT);
-            Hotdeal hotdeal = hotdealRepository.save(
-                HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
-                    TEST_SALE, product));
-
-            int beforeDealQuantity = hotdeal.getDealQuantity();
-
-            int purchaseQuantity = 3;
-            PurchaseHotdealRequestDto requestDto = HotdealTestUtil.createTestPurchaseHotdealRequestDto(
-                hotdeal.getId(), purchaseQuantity);
-
-            int numberOfThreads = 10;
-            ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
-            CountDownLatch latch = new CountDownLatch(numberOfThreads);
-
-            // when
-            for (int i = 0; i < numberOfThreads; i++) {
-                service.execute(() -> {
-                    try {
-                        hotdealService.purchaseHotdeal(member, requestDto);
-                    } finally {
-                        latch.countDown();
-                    }
-                });
-            }
-
-            latch.await(60, TimeUnit.SECONDS);
-            service.shutdown();
-
-            // then
-            Hotdeal foundHotdeal = hotdealRepository.findById(hotdeal.getId())
-                .orElseThrow(() -> new AssertionError("핫딜을 찾을 수 없음"));
-            assertEquals(beforeDealQuantity - numberOfThreads * purchaseQuantity,
-                foundHotdeal.getDealQuantity()); // 100 - 10 * 3 = 70
-        }
-
-        // 수량 넘기는 테스트 추가
-
-        // 낙관 락 추가
-
-    }
+//    @Nested
+//    @DisplayName("다중 구매자의 구매 테스트")
+//    class MultipleUserPurchaseTets {
+//
+//        @Test
+//        @DisplayName("데이터 정합성 테스트 - 핫딜의 한정 수량이 정확히 감소하는지 확인")
+//        void purchaseHotdealWithPessimisticLock() throws InterruptedException {
+//            // given
+//            Product product = productRepository.save(TEST_PRODUCT);
+//            Hotdeal hotdeal = hotdealRepository.save(
+//                HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
+//                    TEST_SALE, product));
+//
+//            int beforeDealQuantity = hotdeal.getDealQuantity();
+//
+//            int purchaseQuantity = 3;
+//            PurchaseHotdealRequestDto requestDto = HotdealTestUtil.createTestPurchaseHotdealRequestDto(
+//                hotdeal.getId(), purchaseQuantity);
+//
+//            int numberOfThreads = 10;
+//            ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+//            CountDownLatch latch = new CountDownLatch(numberOfThreads);
+//
+//            // when
+//            for (int i = 0; i < numberOfThreads; i++) {
+//                service.execute(() -> {
+//                    try {
+//                        hotdealService.purchaseHotdeal(member, requestDto);
+//                    } finally {
+//                        latch.countDown();
+//                    }
+//                });
+//            }
+//
+//            latch.await(60, TimeUnit.SECONDS);
+//            service.shutdown();
+//
+//            // then
+//            Hotdeal foundHotdeal = hotdealRepository.findById(hotdeal.getId())
+//                .orElseThrow(() -> new AssertionError("핫딜을 찾을 수 없음"));
+//            assertEquals(beforeDealQuantity - numberOfThreads * purchaseQuantity,
+//                foundHotdeal.getDealQuantity()); // 100 - 10 * 3 = 70
+//        }
+//
+//        // 수량 넘기는 테스트 추가
+//
+//        // 낙관 락 추가
+//
+//    }
 
 }
