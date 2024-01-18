@@ -2,9 +2,7 @@ package com.sportsecho.member;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -17,9 +15,7 @@ import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.member.exception.MemberErrorCode;
-import com.sportsecho.member.repository.MemberRepository;
 import com.sportsecho.member.service.MemberService;
-import jakarta.persistence.EntityManager;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,9 +38,6 @@ public class MemberIntegrationTest implements MemberTest {
     @Autowired
     @Qualifier("V2")
     MemberService memberService;
-
-    @Autowired
-    MemberRepository memberRepository;
 
     @Autowired
     JwtUtil jwtUtil;
