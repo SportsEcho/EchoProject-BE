@@ -173,13 +173,14 @@ class PurchaseServiceImplV1Test implements MemberTest, ProductTest, PurchaseTest
         @DisplayName("구매 취소 성공")
         void cancelPurchaseTest_success() {
             //given
-            purchaseService.purchase(requestDto, member);
+            PurchaseResponseDto responseDto = purchaseService.purchase(requestDto, member);
+            Long purchaseId = responseDto.getId();
 
             //when
-            purchaseService.cancelPurchase(1L, member);
+            purchaseService.cancelPurchase(purchaseId, member);
 
             //then
-            assertTrue(purchaseRepository.findById(1L).isEmpty());
+            assertTrue(purchaseRepository.findById(purchaseId).isEmpty());
             assertTrue(purchaseProductRepository.findAll().isEmpty());
             assertEquals(product.getQuantity(), productRepository.findAll().get(0).getQuantity());
         }
@@ -188,13 +189,13 @@ class PurchaseServiceImplV1Test implements MemberTest, ProductTest, PurchaseTest
         @DisplayName("구매 취소 실패 - 권한 없음")
         void cancelPurchaseTest_fail_accessDenied() {
             //given
-            purchaseService.purchase(requestDto, member);
+            PurchaseResponseDto responseDto = purchaseService.purchase(requestDto, member);
             Member newMember = MemberTestUtil.getTestMember(TEST_EMAIL, TEST_PASSWORD);
             memberRepository.save(newMember);
 
             //when - then
             GlobalException e = assertThrows(GlobalException.class, () -> {
-                purchaseService.cancelPurchase(1L, newMember);
+                purchaseService.cancelPurchase(responseDto.getId(), newMember);
             });
             assertEquals(PurchaseErrorCode.ACCESS_DENIED, e.getErrorCode());
         }
