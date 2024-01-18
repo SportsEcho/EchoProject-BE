@@ -7,22 +7,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      ADMIN_SECRET_KEY: ${{ secrets.ADMIN_SECRET_KEY }}
-      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-      AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-      BASEBALL_API_KEY: ${{ secrets.BASEBALL_API_KEY }}
-      BASKETBALL_API_KEY: ${{ secrets.BASKETBALL_API_KEY }}
-      FOOTBALL_API_KEY: ${{ secrets.FOOTBALL_API_KEY }}
-      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-      GOOGLE_API_SECRET: ${{ secrets.GOOGLE_API_SECRET }}
-      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-      KAKAO_API_KEY: ${{ secrets.KAKAO_API_KEY }}
-      NAVER_API_KEY: ${{ secrets.NAVER_API_KEY }}
-      NAVER_API_SECRET: ${{ secrets.NAVER_API_SECRET }}
-      RDS_USERNAME: ${{ secrets.RDS_USERNAME }}
-      RDS_PASSWORD: ${{ secrets.RDS_PASSWORD }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
