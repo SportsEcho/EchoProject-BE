@@ -34,12 +34,14 @@ public class PurchaseProduct {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    private ProductRole role;
+
     @Builder
-    public PurchaseProduct(Purchase purchase, Product product, int productsQuantity) {
+    public PurchaseProduct(Purchase purchase, Product product, int productsQuantity,
+        ProductRole role) {
         this.purchase = purchase;
         this.product = product;
         this.productsQuantity = productsQuantity;
+        this.role = role;
     }
-
-
 }
