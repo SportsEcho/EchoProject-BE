@@ -5,6 +5,7 @@ import com.sportsecho.member.entity.Member;
 import com.sportsecho.memberProduct.entity.MemberProduct;
 import com.sportsecho.memberProduct.repository.MemberProductRepository;
 import com.sportsecho.product.entity.Product;
+import com.sportsecho.product.repository.ProductRepository;
 import com.sportsecho.purchase.dto.PurchaseRequestDto;
 import com.sportsecho.purchase.dto.PurchaseResponseDto;
 import com.sportsecho.purchase.entity.Purchase;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PurchaseServiceImplV1 implements PurchaseService {
 
+    private final ProductRepository productRepository;
     private final PurchaseRepository purchaseRepository;
     private final PurchaseProductRepository purchaseProductRepository;
     private final MemberProductRepository memberProductRepository;
@@ -79,7 +81,8 @@ public class PurchaseServiceImplV1 implements PurchaseService {
     public void cancelPurchase(Long purchaseId, Member member) {
 
         Purchase purchase = purchaseRepository.findById(purchaseId).orElseThrow(
-            () -> new GlobalException(PurchaseErrorCode.NOT_FOUND_PURCHASE));
+            () -> new GlobalException(PurchaseErrorCode.NOT_FOUND_PURCHASE)
+        );
         checkMember(purchase, member);
         updateStock(purchase);
 
@@ -114,9 +117,11 @@ public class PurchaseServiceImplV1 implements PurchaseService {
 
     private void updateStock(Purchase purchase) {
         List<PurchaseProduct> purchaseProductList = purchase.getPurchaseProductList();
+
         for (PurchaseProduct purchaseProduct : purchaseProductList) {
             Product product = purchaseProduct.getProduct();
-            product.increaseQuantity(product.getQuantity());
+            product.increaseQuantity(purchaseProduct.getProductsQuantity());
+            productRepository.save(product);
         }
     }
 
@@ -129,6 +134,7 @@ public class PurchaseServiceImplV1 implements PurchaseService {
                 throw new GlobalException(PurchaseErrorCode.OUT_OF_STOCK);
             } else {
                 product.decreaseQuantity(memberProduct.getProductsQuantity());
+                productRepository.save(product);
             }
         }
     }
