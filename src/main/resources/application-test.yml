@@ -6,20 +6,13 @@ spring:
     console:
       enabled: true
   jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
-    defer-datasource-initialization: true
+    database: h2
+    generate-ddl: off
   datasource:
-    url: jdbc:mysql://localhost:3306/echo_db
-    username: root
-    password: root
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;MODE=MySQL
+    username: SA
+    password: ''
   servlet:
     multipart:
       enabled: true
