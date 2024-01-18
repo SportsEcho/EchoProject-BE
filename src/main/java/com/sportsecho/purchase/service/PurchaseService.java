@@ -21,4 +21,11 @@ public interface PurchaseService {
      * @return 구매 상품 목록
      */
     List<PurchaseResponseDto> getPurchaseList(Member member);
+
+    /***
+     *
+     * @param purchaseId
+     * @param member
+     */
+    void cancelPurchase(Long purchaseId, Member member);
 }

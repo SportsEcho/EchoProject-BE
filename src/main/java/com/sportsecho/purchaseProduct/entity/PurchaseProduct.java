@@ -37,7 +37,8 @@ public class PurchaseProduct {
     private ProductRole role;
 
     @Builder
-    public PurchaseProduct(Purchase purchase, Product product, int productsQuantity, ProductRole role) {
+    public PurchaseProduct(Purchase purchase, Product product, int productsQuantity,
+        ProductRole role) {
         this.purchase = purchase;
         this.product = product;
         this.productsQuantity = productsQuantity;

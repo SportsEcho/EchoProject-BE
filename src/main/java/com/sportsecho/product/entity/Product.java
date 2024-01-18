@@ -54,7 +54,7 @@ public class Product extends TimeStamp {
     private List<MemberProduct> memberProductList = new ArrayList<>();
 
     @Builder
-    public Product (String title, String content, String imageUrl, int price, int quantity) {
+    public Product(String title, String content, String imageUrl, int price, int quantity) {
         this.title = title;
         this.content = content;
         this.imageUrl = imageUrl;
@@ -75,4 +75,11 @@ public class Product extends TimeStamp {
         this.hotdeal = null;
     }
 
+    public void decreaseQuantity(int quantity) {
+        this.quantity -= quantity;
+    }
+
+    public void increaseQuantity(int quantity) {
+        this.quantity += quantity;
+    }
 }
