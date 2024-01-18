@@ -88,6 +88,7 @@ class PurchaseServiceImplV1Test implements MemberTest, ProductTest, PurchaseTest
         @DisplayName("장바구니에 있던 상품 구매 성공")
         void purchaseTest_success() {
             //when
+            int productQuantity = product.getQuantity();
             PurchaseResponseDto responseDto = purchaseService.purchase(requestDto, member);
 
             //then
@@ -96,6 +97,8 @@ class PurchaseServiceImplV1Test implements MemberTest, ProductTest, PurchaseTest
             assertEquals(requestDto.getAddress(), responseDto.getAddress());
             assertEquals(product.getTitle(), responseDto.getResponseDtoList().get(0).getTitle());
             assertTrue(memberProductRepository.findByMemberId(member.getId()).isEmpty());
+            assertEquals(productQuantity - memberProduct.getProductsQuantity(),
+                productRepository.findAll().get(0).getQuantity());
         }
 
         @Test
@@ -158,8 +161,52 @@ class PurchaseServiceImplV1Test implements MemberTest, ProductTest, PurchaseTest
             GlobalException e = assertThrows(GlobalException.class, () -> {
                 purchaseService.getPurchaseList(member);
             });
-            assertEquals(PurchaseErrorCode.EMPTY_PURCHASE_LIST, e.getErrorCode());
+            assertEquals(PurchaseErrorCode.NOT_FOUND_PURCHASE, e.getErrorCode());
         }
     }
 
+    @Nested
+    @DisplayName("구매 취소 테스트")
+    class cancelPurchaseTest {
+
+        @Test
+        @DisplayName("구매 취소 성공")
+        void cancelPurchaseTest_success() {
+            //given
+            purchaseService.purchase(requestDto, member);
+
+            //when
+            purchaseService.cancelPurchase(1L, member);
+
+            //then
+            assertTrue(purchaseRepository.findById(1L).isEmpty());
+            assertTrue(purchaseProductRepository.findAll().isEmpty());
+            assertEquals(product.getQuantity(), productRepository.findAll().get(0).getQuantity());
+        }
+
+        @Test
+        @DisplayName("구매 취소 실패 - 권한 없음")
+        void cancelPurchaseTest_fail_accessDenied() {
+            //given
+            purchaseService.purchase(requestDto, member);
+            Member newMember = MemberTestUtil.getTestMember(TEST_EMAIL, TEST_PASSWORD);
+            memberRepository.save(newMember);
+
+            //when - then
+            GlobalException e = assertThrows(GlobalException.class, () -> {
+                purchaseService.cancelPurchase(1L, newMember);
+            });
+            assertEquals(PurchaseErrorCode.ACCESS_DENIED, e.getErrorCode());
+        }
+
+        @Test
+        @DisplayName("구매 취소 실패 - 구매 내역 없음")
+        void cancelPurchaseTest_fail_notFound() {
+            //when - then
+            GlobalException e = assertThrows(GlobalException.class, () -> {
+                purchaseService.cancelPurchase(1L, member);
+            });
+            assertEquals(PurchaseErrorCode.NOT_FOUND_PURCHASE, e.getErrorCode());
+        }
+    }
 }
