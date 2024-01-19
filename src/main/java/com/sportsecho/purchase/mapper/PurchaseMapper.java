@@ -1,5 +1,6 @@
 package com.sportsecho.purchase.mapper;
 
+import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.purchase.dto.PurchaseRequestDto;
 import com.sportsecho.purchase.entity.Purchase;
@@ -17,4 +18,8 @@ public interface PurchaseMapper {
     @Mapping(target = "totalPrice", constant = "0")
     @Mapping(target = "member", source = "member")
     Purchase toEntity(PurchaseRequestDto requestDto, Member member);
+
+    @Mapping(target = "totalPrice", constant = "0")
+    @Mapping(target = "member", source = "member")
+    Purchase toEntity(PurchaseHotdealRequestDto requestDto, Member member);
 }
