@@ -26,6 +26,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.TableGenerator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.Pattern;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -72,6 +73,9 @@ public class MemberServiceImplV2 implements MemberService {
         //email duplicate check
         if(memberRepository.findByEmail(request.getEmail()).isPresent())
             throw new GlobalException(MemberErrorCode.DUPLICATED_EMAIL);
+
+        if(!request.getMemberName().matches("^[a-zA-Z0-9]{4,20}$"))
+            throw new GlobalException(MemberErrorCode.INVALID_MEMBER_NAME);
 
         //MemberMapper를 이용한 Entity 생성
         Member member = MemberMapper.MAPPER.toEntity(request, role);
