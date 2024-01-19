@@ -30,6 +30,8 @@ public class QPurchaseProduct extends EntityPathBase<PurchaseProduct> {
 
     public final com.sportsecho.purchase.entity.QPurchase purchase;
 
+    public final EnumPath<ProductRole> role = createEnum("role", ProductRole.class);
+
     public QPurchaseProduct(String variable) {
         this(PurchaseProduct.class, forVariable(variable), INITS);
     }

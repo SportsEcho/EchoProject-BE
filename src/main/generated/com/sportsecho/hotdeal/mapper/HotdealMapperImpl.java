@@ -3,6 +3,8 @@ package com.sportsecho.hotdeal.mapper;
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto.HotdealResponseDtoBuilder;
+import com.sportsecho.hotdeal.dto.response.PurchaseHotdealResponseDto;
+import com.sportsecho.hotdeal.dto.response.PurchaseHotdealResponseDto.PurchaseHotdealResponseDtoBuilder;
 import com.sportsecho.hotdeal.entity.Hotdeal;
 import com.sportsecho.hotdeal.entity.Hotdeal.HotdealBuilder;
 import com.sportsecho.product.entity.Product;
@@ -10,7 +12,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-01-19T13:28:19+0900",
+    date = "2024-01-19T13:36:19+0900",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.6 (Oracle Corporation)"
 )
 public class HotdealMapperImpl implements HotdealMapper {
@@ -60,6 +62,21 @@ public class HotdealMapperImpl implements HotdealMapper {
         hotdealResponseDto.dealQuantity( entity.getDealQuantity() );
 
         return hotdealResponseDto.build();
+    }
+
+    @Override
+    public PurchaseHotdealResponseDto toPurchaseResponseDto(Hotdeal hotdeal) {
+        if ( hotdeal == null ) {
+            return null;
+        }
+
+        PurchaseHotdealResponseDtoBuilder purchaseHotdealResponseDto = PurchaseHotdealResponseDto.builder();
+
+        purchaseHotdealResponseDto.title( entityProductTitle( hotdeal ) );
+
+        afterMappingToPurchaseResponseDto( hotdeal, purchaseHotdealResponseDto );
+
+        return purchaseHotdealResponseDto.build();
     }
 
     private String entityProductTitle(Hotdeal hotdeal) {
