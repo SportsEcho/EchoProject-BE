@@ -88,6 +88,7 @@ public class MemberServiceImplV2 implements MemberService {
     }
 
     @Override
+    @Transactional
     public MemberResponseDto adminSignup(MemberRequestDto request, String key) {
         if(adminKey.equals(key)) {
             return signup(request, MemberRole.ADMIN);
