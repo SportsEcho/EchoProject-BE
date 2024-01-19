@@ -5,7 +5,7 @@ import com.sportsecho.member.entity.Member;
 
 public interface MemberTest {
 
-    String TEST_MEMBER_NAME = "test_member_name";
+    String TEST_MEMBER_NAME = "testMemberName";
     String TEST_EMAIL = "test_email@echo.com";
     String TEST_PASSWORD = "test_password1A~";
 

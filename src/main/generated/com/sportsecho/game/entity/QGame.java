@@ -20,13 +20,21 @@ public class QGame extends EntityPathBase<Game> {
 
     public static final QGame game = new QGame("game");
 
+    public final com.sportsecho.common.time.QTimeStamp _super = new com.sportsecho.common.time.QTimeStamp(this);
+
     public final ListPath<com.sportsecho.comment.entity.Comment, com.sportsecho.comment.entity.QComment> comments = this.<com.sportsecho.comment.entity.Comment, com.sportsecho.comment.entity.QComment>createList("comments", com.sportsecho.comment.entity.Comment.class, com.sportsecho.comment.entity.QComment.class, PathInits.DIRECT2);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final DateTimePath<java.time.LocalDateTime> gameDateTime = createDateTime("gameDateTime", java.time.LocalDateTime.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath location = createString("location");
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
     public final StringPath sportType = createString("sportType");
 

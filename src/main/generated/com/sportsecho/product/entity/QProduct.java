@@ -22,7 +22,12 @@ public class QProduct extends EntityPathBase<Product> {
 
     public static final QProduct product = new QProduct("product");
 
+    public final com.sportsecho.common.time.QTimeStamp _super = new com.sportsecho.common.time.QTimeStamp(this);
+
     public final StringPath content = createString("content");
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final com.sportsecho.hotdeal.entity.QHotdeal hotdeal;
 
@@ -31,6 +36,9 @@ public class QProduct extends EntityPathBase<Product> {
     public final StringPath imageUrl = createString("imageUrl");
 
     public final ListPath<com.sportsecho.memberProduct.entity.MemberProduct, com.sportsecho.memberProduct.entity.QMemberProduct> memberProductList = this.<com.sportsecho.memberProduct.entity.MemberProduct, com.sportsecho.memberProduct.entity.QMemberProduct>createList("memberProductList", com.sportsecho.memberProduct.entity.MemberProduct.class, com.sportsecho.memberProduct.entity.QMemberProduct.class, PathInits.DIRECT2);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
     public final NumberPath<Integer> price = createNumber("price", Integer.class);
 

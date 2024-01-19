@@ -22,13 +22,21 @@ public class QComment extends EntityPathBase<Comment> {
 
     public static final QComment comment = new QComment("comment");
 
+    public final com.sportsecho.common.time.QTimeStamp _super = new com.sportsecho.common.time.QTimeStamp(this);
+
     public final StringPath content = createString("content");
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final com.sportsecho.game.entity.QGame game;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final com.sportsecho.member.entity.QMember member;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
     public QComment(String variable) {
         this(Comment.class, forVariable(variable), INITS);
