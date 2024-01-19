@@ -53,7 +53,7 @@ public class GameScheduler {
     }
 
 //    @Scheduled(fixedRate = 900000) // 매 15분마다 실행 (900000ms = 30분) = 하루 96번 호출
-    @Scheduled(fixedRate = 86400000) // 매일 자정에 실행 (86400000ms = 24시간) // 과금 이슈로 최종 베포 전까지 하루 1회만 수행
+    @Scheduled(cron = "0 0 * * * ?") // 과금 이슈로 최종 베포 전까지 한 시간 마다 수행
     public void updateTodayGame() throws IOException, InterruptedException, JSONException {
 
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
@@ -63,7 +63,7 @@ public class GameScheduler {
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(
                 "https://api-football-v1.p.rapidapi.com/v3/fixtures?date=" + todayString
-                    + "&league=39&season=" + season))
+                    + "&league=39&season=" + season + "&timezone=timezone%3DAsia%252FSeoul"))
             .header("X-RapidAPI-Key", "d789e7aa74msh95a2867cc80a6d0p11239ajsna2c01db4ee85")
             .header("X-RapidAPI-Host", "api-football-v1.p.rapidapi.com")
             .method("GET", HttpRequest.BodyPublishers.noBody())
@@ -80,6 +80,7 @@ public class GameScheduler {
         }
 
         JSONArray gameList = jsonObject.getJSONArray("response");
+        log.info(gameList.toString());
 
         for (int i = 0; i < gameList.length(); i++) {
             JSONObject fixture = gameList.getJSONObject(i).getJSONObject("fixture");
@@ -89,12 +90,12 @@ public class GameScheduler {
             JSONObject goals = gameList.getJSONObject(i).getJSONObject("goals");
 
             String dateString = fixture.getString("date");
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
-                "yyyy-MM-dd'T'HH:mm");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
             LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
-            ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("UTC"))
-                .withZoneSameInstant(
-                    ZoneId.of("Asia/Seoul"));
+
+            // 이미 시작하지 않은 경기는 null값을 주고 있으므로 0으로 처리
+            int homeScore = goals.isNull("home") ? 0 : goals.getInt("home");
+            int awayScore = goals.isNull("away") ? 0 : goals.getInt("away");
 
             Game game = Game.createGame(
                 teams.getJSONObject("home").getString("name"),
@@ -102,10 +103,10 @@ public class GameScheduler {
                 teams.getJSONObject("away").getString("name"),
                 teams.getJSONObject("away").getString("logo"),
                 league.getString("logo"),
-                zonedDateTime.toLocalDateTime(),
+                localDateTime,
                 venue.getString("name"),
-                goals.getJSONObject("home").getString("score"),
-                goals.getJSONObject("away").getString("score")
+                homeScore,
+                awayScore
             );
             log.info(game.toString());
             gameRepository.save(game);
@@ -114,7 +115,7 @@ public class GameScheduler {
 
     }
 
-    @Scheduled(fixedRate = 86400000) // 매일 자정에 실행 (86400000ms = 24시간)
+    @Scheduled(cron = "0 0 0 20 * ?") // 월 단위로 진행 자정에 실행
     public void fetchUpcomingGames() throws IOException, InterruptedException, JSONException {
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
         LocalDate oneMonthLater = now.plusMonths(1);
@@ -125,9 +126,10 @@ public class GameScheduler {
 
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(
-                "https://api-football-v1.p.rapidapi.com/v3/fixtures?date=2024-01-17&league=39" +
+                "https://api-football-v1.p.rapidapi.com/v3/fixtures?&league=39" +
                     "&season=" + season +
-                    "&from=" + from + "&to=" + to))
+                    "&from=" + from + "&to=" + to +
+                    "&timezone=timezone%3DAsia%252FSeoul"))
             .header("X-RapidAPI-Key", "d789e7aa74msh95a2867cc80a6d0p11239ajsna2c01db4ee85")
             .header("X-RapidAPI-Host", "api-football-v1.p.rapidapi.com")
             .method("GET", HttpRequest.BodyPublishers.noBody())
@@ -139,6 +141,7 @@ public class GameScheduler {
         JSONObject jsonObject = new JSONObject(jsonData);
 
         JSONArray gameList = jsonObject.getJSONArray("response");
+        log.info(gameList.toString());
 
         for (int i = 0; i < gameList.length(); i++) {
             JSONObject fixture = gameList.getJSONObject(i).getJSONObject("fixture");
@@ -147,11 +150,13 @@ public class GameScheduler {
             JSONObject venue = fixture.getJSONObject("venue");
             JSONObject goals = gameList.getJSONObject(i).getJSONObject("goals");
 
-            String fixtureDateString = fixture.getString("date");
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-            LocalDateTime localDateTime = LocalDateTime.parse(fixtureDateString, formatter);
-            ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("UTC"))
-                .withZoneSameInstant(ZoneId.of("Asia/Seoul"));
+            String dateString = fixture.getString("date");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
+            LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
+
+            // 이미 시작하지 않은 경기는 null값을 주고 있으므로 0으로 처리
+            int homeScore = goals.isNull("home") ? 0 : goals.getInt("home");
+            int awayScore = goals.isNull("away") ? 0 : goals.getInt("away");
 
             Game game = Game.createGame(
                 teams.getJSONObject("home").getString("name"),
@@ -159,14 +164,14 @@ public class GameScheduler {
                 teams.getJSONObject("away").getString("name"),
                 teams.getJSONObject("away").getString("logo"),
                 league.getString("logo"),
-                zonedDateTime.toLocalDateTime(),
+                localDateTime,
                 venue.getString("name"),
-                goals.getJSONObject("home").getString("score"),
-                goals.getJSONObject("away").getString("score")
+                homeScore,
+                awayScore
             );
-
-            log.info("Fetching game for " + zonedDateTime.toLocalDate() + ": " + game.toString());
+            log.info(game.toString());
             gameRepository.save(game);
+
         }
     }
 }
