@@ -4,6 +4,7 @@ import com.sportsecho.member.entity.MemberDetailsImpl;
 import com.sportsecho.memberProduct.dto.MemberProductRequestDto;
 import com.sportsecho.memberProduct.dto.MemberProductResponseDto;
 import com.sportsecho.memberProduct.service.MemberProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class MemberProductController {
     @PostMapping("/products/{productId}")
     public ResponseEntity<MemberProductResponseDto> addCart(
         @PathVariable Long productId,
-        @RequestBody MemberProductRequestDto requestDto,
+        @Valid @RequestBody MemberProductRequestDto requestDto,
         @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
 
         MemberProductResponseDto responseDto = memberProductService.addCart(productId, requestDto,
