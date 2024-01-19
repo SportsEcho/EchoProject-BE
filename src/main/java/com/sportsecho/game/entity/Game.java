@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import jdk.jfr.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,14 +37,14 @@ public class Game extends TimeStamp {
     private String leagueLogo;
     private LocalDateTime date;
     private String venueName;
-    private String homeGoal;
-    private String awayGoal;
+    private int homeGoal;
+    private int awayGoal;
 
     @OneToMany(mappedBy = "game", fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
     public static Game createGame(String homeTeamName, String homeTeamLogo, String awayTeamName,
-        String awayTeamLogo, String leagueLogo, LocalDateTime date, String venueName, String homeGoal, String awayGoal) {
+        String awayTeamLogo, String leagueLogo, LocalDateTime date, String venueName, int homeGoal, int awayGoal) {
         return Game.builder()
             .homeTeamName(homeTeamName)
             .homeTeamLogo(homeTeamLogo)
