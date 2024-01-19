@@ -11,10 +11,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GameResponseDto {
-    private String sportType;
-    private String teamA;
-    private String teamB;
-    private LocalDateTime gameDateTime;
-    private String location;
+
+    private String homeTeamName;
+    private String homeTeamLogo;
+    private String awayTeamName;
+    private String awayTeamLogo;
+    private String leagueLogo;
+    private LocalDateTime date;
+    private String venueName;
+    private String homeGoal;
+    private String awayGoal;
 
 }
