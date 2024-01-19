@@ -4,6 +4,7 @@ import com.sportsecho.member.entity.MemberDetailsImpl;
 import com.sportsecho.purchase.dto.PurchaseRequestDto;
 import com.sportsecho.purchase.dto.PurchaseResponseDto;
 import com.sportsecho.purchase.service.PurchaseService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class PurchaseController {
 
     @PostMapping
     public ResponseEntity<PurchaseResponseDto> purchase(
-        @RequestBody PurchaseRequestDto requestDto,
+        @Valid @RequestBody PurchaseRequestDto requestDto,
         @AuthenticationPrincipal MemberDetailsImpl memberDetails
     ) {
         PurchaseResponseDto responseDto = purchaseService.purchase(requestDto,
