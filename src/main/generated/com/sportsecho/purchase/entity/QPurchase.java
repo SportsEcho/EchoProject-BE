@@ -22,11 +22,19 @@ public class QPurchase extends EntityPathBase<Purchase> {
 
     public static final QPurchase purchase = new QPurchase("purchase");
 
+    public final com.sportsecho.common.time.QTimeStamp _super = new com.sportsecho.common.time.QTimeStamp(this);
+
     public final StringPath address = createString("address");
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final com.sportsecho.member.entity.QMember member;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
     public final StringPath phone = createString("phone");
 

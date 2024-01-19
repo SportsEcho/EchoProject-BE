@@ -8,7 +8,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-01-17T20:08:23+0900",
+    date = "2024-01-19T13:28:19+0900",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.6 (Oracle Corporation)"
 )
 public class PurchaseProductMapperImpl implements PurchaseProductMapper {
@@ -23,6 +23,7 @@ public class PurchaseProductMapperImpl implements PurchaseProductMapper {
 
         purchaseProductResponseDto.title( purchaseProductProductTitle( purchaseProduct ) );
         purchaseProductResponseDto.price( purchaseProductProductPrice( purchaseProduct ) );
+        purchaseProductResponseDto.id( purchaseProduct.getId() );
         purchaseProductResponseDto.productsQuantity( purchaseProduct.getProductsQuantity() );
 
         return purchaseProductResponseDto.build();
