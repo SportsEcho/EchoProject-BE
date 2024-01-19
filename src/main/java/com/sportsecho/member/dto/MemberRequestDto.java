@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberRequestDto {
 
-    @Pattern(regexp = "^[a-zA-Z0-9]{4,20}$")
     private String memberName;
 
     @Pattern(regexp = "^[a-zA-Z0-9_]+@[a-zA-Z]+\\.[a-zA-Z]+$")
