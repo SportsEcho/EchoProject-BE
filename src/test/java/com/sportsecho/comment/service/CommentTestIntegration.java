@@ -54,8 +54,7 @@ class CommentTestIntegration {
         );
 
         testGame = gameRepository.save(
-            GameTestUtil.createTestGame("Football", "Team A", "Team B", LocalDateTime.now(),
-                "Stadium")
+            GameTestUtil.createTestGame()
         );
     }
 

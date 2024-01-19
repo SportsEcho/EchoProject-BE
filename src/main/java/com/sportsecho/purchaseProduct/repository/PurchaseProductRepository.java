@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PurchaseProductRepository extends JpaRepository<PurchaseProduct, Long> {
 
+    void deleteByPurchaseId(Long purchaseId);
 }

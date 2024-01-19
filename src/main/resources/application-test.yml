@@ -13,7 +13,6 @@ spring:
     url: jdbc:h2:mem:testdb;MODE=MySQL
     username: SA
     password: ''
-
   servlet:
     multipart:
       enabled: true

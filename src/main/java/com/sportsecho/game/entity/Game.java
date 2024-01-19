@@ -3,6 +3,7 @@ package com.sportsecho.game.entity;
 import com.sportsecho.comment.entity.Comment;
 import com.sportsecho.common.time.TimeStamp;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,17 +24,37 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 public class Game extends TimeStamp {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String sportType; // 축구, 농구, 야구 구분
-    private String teamA;
-    private String teamB;
-    private LocalDateTime gameDateTime; // 경기 일시
-    private String location; // 경기 장소
+    private String homeTeamName;
+    private String homeTeamLogo;
+    private String awayTeamName;
+    private String awayTeamLogo;
+    private String leagueLogo;
+    private LocalDateTime date;
+    private String venueName;
+    private String homeGoal;
+    private String awayGoal;
 
-    @OneToMany(mappedBy = "game")
+    @OneToMany(mappedBy = "game", fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
+
+    public static Game createGame(String homeTeamName, String homeTeamLogo, String awayTeamName,
+        String awayTeamLogo, String leagueLogo, LocalDateTime date, String venueName, String homeGoal, String awayGoal) {
+        return Game.builder()
+            .homeTeamName(homeTeamName)
+            .homeTeamLogo(homeTeamLogo)
+            .awayTeamName(awayTeamName)
+            .awayTeamLogo(awayTeamLogo)
+            .leagueLogo(leagueLogo)
+            .date(date)
+            .venueName(venueName)
+            .homeGoal(homeGoal)
+            .awayGoal(awayGoal)
+            .build();
+    }
 
 }

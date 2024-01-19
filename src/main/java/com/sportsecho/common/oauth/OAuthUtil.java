@@ -150,7 +150,7 @@ public class OAuthUtil {
             body.add("client_id", googleApiKey);
             body.add("client_secret", googleApiSecret);
             body.add("code", code);
-            body.add("redirect_uri", "http://13.125.46.61:8080/api/members/google/callback");
+            body.add("redirect_uri", "http://ec2-13-125-46-61.ap-northeast-2.compute.amazonaws.com:8080/api/members/google/callback");
         }
 
         return body;
