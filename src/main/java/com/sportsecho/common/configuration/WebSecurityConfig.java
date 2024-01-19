@@ -31,7 +31,8 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
+        throws Exception {
         return configuration.getAuthenticationManager();
     }
 
@@ -48,14 +49,19 @@ public class WebSecurityConfig {
             .anyRequest().authenticated());
 
         //JwtFilter 설정
-        httpSecurity.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(jwtAuthorizationFilter,
+            UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
 
     public RequestMatcher publicEndPoints() {
         return new OrRequestMatcher(
-            new AntPathRequestMatcher("/api/**")
+            new AntPathRequestMatcher("/api/members/login"),
+            new AntPathRequestMatcher("/api/members/signup/**"),
+            new AntPathRequestMatcher("/api/members/**/callback"),
+            new AntPathRequestMatcher("/v3/**"),
+            new AntPathRequestMatcher("/swagger-ui/**")
         );
     }
 }

@@ -3,6 +3,7 @@ package com.sportsecho.game.entity;
 import com.sportsecho.comment.entity.Comment;
 import com.sportsecho.common.time.TimeStamp;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,7 +39,7 @@ public class Game extends TimeStamp {
     private String homeGoal;
     private String awayGoal;
 
-    @OneToMany(mappedBy = "game")
+    @OneToMany(mappedBy = "game", fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
     public static Game createGame(String homeTeamName, String homeTeamLogo, String awayTeamName,

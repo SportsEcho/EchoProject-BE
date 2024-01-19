@@ -2,8 +2,10 @@ package com.sportsecho.hotdeal.controller;
 
 import com.sportsecho.common.dto.ApiResponse;
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
+import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
+import com.sportsecho.hotdeal.dto.response.PurchaseHotdealResponseDto;
 import com.sportsecho.hotdeal.entity.Hotdeal;
 import com.sportsecho.hotdeal.service.HotdealService;
 import com.sportsecho.member.entity.Member;
@@ -101,16 +103,24 @@ public class HotdealController {
     }
 
     @DeleteMapping("/hotdeal/{hotdealId}")
-    public ResponseEntity<ApiResponse<Void>> deleteHotdeal(
+    public ResponseEntity<Void> deleteHotdeal(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @PathVariable Long hotdealId
     ) {
 
         hotdealService.deleteHotdeal(memberDetails.getMember(), hotdealId);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(
-            ApiResponse.of("핫딜 삭제 성공", 204, null)
-        );
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PostMapping("/hotdeal/purchase")
+    public ResponseEntity<PurchaseHotdealResponseDto> purchaseHotdeal(
+        @AuthenticationPrincipal MemberDetailsImpl memberDetails,
+        @RequestBody PurchaseHotdealRequestDto requestDto
+    ) {
+        PurchaseHotdealResponseDto responseDto = hotdealService.purchaseHotdeal(
+            memberDetails.getMember(), requestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
 }
