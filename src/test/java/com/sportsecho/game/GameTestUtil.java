@@ -13,8 +13,8 @@ public class GameTestUtil {
             .leagueLogo("leagueLogo")
             .date(LocalDateTime.now())
             .venueName("venueName")
-            .homeGoal("homeGoal")
-            .awayGoal("awayGoal")
+            .homeGoal(3)
+            .awayGoal(4)
             .build();
     }
 

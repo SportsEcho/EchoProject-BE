@@ -60,6 +60,14 @@ public class WebSecurityConfig {
             new AntPathRequestMatcher("/api/members/login"),
             new AntPathRequestMatcher("/api/members/signup/**"),
             new AntPathRequestMatcher("/api/members/**/callback"),
+
+            //game data load
+            new AntPathRequestMatcher("/api/games/football"),
+            new AntPathRequestMatcher("/api/games/baseball"),
+            new AntPathRequestMatcher("/api/games/basketball"),
+
+            //웹소켓 endpoint
+            new AntPathRequestMatcher("/websocket"),
             new AntPathRequestMatcher("/v3/**"),
             new AntPathRequestMatcher("/swagger-ui/**")
         );
