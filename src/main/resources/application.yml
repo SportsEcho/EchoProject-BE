@@ -28,7 +28,7 @@ spring:
 
   data:
     redis:
-      host: 13.125.213.202
+      host: 13.125.46.61
       port: 6379
 
 jwt:
