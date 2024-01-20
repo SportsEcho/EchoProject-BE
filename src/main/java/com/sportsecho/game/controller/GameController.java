@@ -24,9 +24,17 @@ public class GameController {
 
     @GetMapping("/football")
     public ResponseEntity<List<GameResponseDto>> getGamesByDate(
-        @RequestParam String date
+        @RequestParam("date") String date
     ) {
         List<GameResponseDto> games = gameService.getGamesByDateAndLeague(date);
         return ResponseEntity.ok(games);
+    }
+
+    @GetMapping("/details/{gameId}")
+    public ResponseEntity<GameResponseDto> getGameDetails(
+        @RequestParam("gameId") Long gameId
+    ) {
+        GameResponseDto game = gameService.getGameDetails(gameId);
+        return ResponseEntity.ok(game);
     }
 }
