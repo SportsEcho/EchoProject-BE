@@ -4,13 +4,17 @@ import com.sportsecho.game.entity.Game;
 import java.time.LocalDateTime;
 
 public class GameTestUtil {
-    public static Game createTestGame(String sportType, String teamA, String teamB, LocalDateTime dateTime, String location) {
+    public static Game createTestGame() {
         return Game.builder()
-            .sportType(sportType)
-            .teamA(teamA)
-            .teamB(teamB)
-            .gameDateTime(dateTime)
-            .location(location)
+            .homeTeamName("homeTeamName")
+            .homeTeamLogo("homeTeamLogo")
+            .awayTeamName("awayTeamName")
+            .awayTeamLogo("awayTeamLogo")
+            .leagueLogo("leagueLogo")
+            .date(LocalDateTime.now())
+            .venueName("venueName")
+            .homeGoal(3)
+            .awayGoal(4)
             .build();
     }
 

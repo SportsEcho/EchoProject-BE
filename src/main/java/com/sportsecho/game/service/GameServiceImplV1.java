@@ -16,11 +16,11 @@ import java.util.concurrent.CompletableFuture;
 
 @Service("gameServiceImplV1")
 @RequiredArgsConstructor
-public class GameServiceImplV1 implements GameService {
+public class GameServiceImplV1{
     private final AsyncHttpClient asyncHttpClient = Dsl.asyncHttpClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Override
+//    @Override
     public List<GameResponseDto> getGamesByDateAndLeague(String date, String league) {
         try {
             String apiUrl = determineApiUrl(league, date);
