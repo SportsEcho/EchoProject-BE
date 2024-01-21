@@ -59,7 +59,7 @@ public class PurchaseServiceImplV1 implements PurchaseService {
         // 장바구니 비우기
         memberProductRepository.deleteAllByMemberId(member.getId());
 
-        return purchase.createResponseDto();
+        return PurchaseMapper.INSTANCE.toResponseDto(purchase);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class PurchaseServiceImplV1 implements PurchaseService {
         }
 
         return purchaseList.stream()
-            .map(Purchase::createResponseDto)
+            .map(PurchaseMapper.INSTANCE::toResponseDto)
             .toList();
     }
 
