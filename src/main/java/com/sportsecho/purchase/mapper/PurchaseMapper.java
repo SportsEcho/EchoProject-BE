@@ -7,6 +7,7 @@ import com.sportsecho.product.entity.Product;
 import com.sportsecho.purchase.dto.PurchaseRequestDto;
 import com.sportsecho.purchase.dto.PurchaseResponseDto;
 import com.sportsecho.purchase.entity.Purchase;
+import com.sportsecho.purchaseProduct.mapper.PurchaseProductMapper;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
