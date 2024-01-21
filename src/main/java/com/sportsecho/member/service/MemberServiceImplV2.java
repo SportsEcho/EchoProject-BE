@@ -157,6 +157,11 @@ public class MemberServiceImplV2 implements MemberService {
     }
 
     @Override
+    public MemberResponseDto readMember(Member member) {
+        return MemberMapper.MAPPER.toResponseDto(member);
+    }
+
+    @Override
     @Transactional
     public MemberResponseDto deleteMember(Member member) {
         memberRepository.delete(member);
