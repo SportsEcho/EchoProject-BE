@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GameResponseDto {
 
+    private Long id;
     private String homeTeamName;
     private String homeTeamLogo;
     private String awayTeamName;
