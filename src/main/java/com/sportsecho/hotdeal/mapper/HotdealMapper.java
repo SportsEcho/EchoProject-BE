@@ -18,10 +18,7 @@ public interface HotdealMapper {
     HotdealMapper INSTANCE = Mappers.getMapper(HotdealMapper.class);
 
     @Mapping(target = "product", ignore = true)
-        // request에 product는 pathVariable로 받고 있기에 ignore
     Hotdeal toEntity(HotdealRequestDto requestDto);
-
-    HotdealRequestDto toRequestDto(Hotdeal entity);
 
     @Mapping(source = "product.title", target = "title")
     @Mapping(source = "product.content", target = "content")
@@ -33,22 +30,20 @@ public interface HotdealMapper {
     HotdealResponseDto toResponseDto(Hotdeal entity);
 
     @Mapping(source = "product.title", target = "title")
-    @Mapping(target = "price", ignore = true) // price는 커스텀 매핑을 사용
+    @Mapping(target = "price", ignore = true)
     @Mapping(target = "remainQuantity", ignore = true) // remainQuantity는 커스텀 매핑을 사용
-    @Mapping(target = "remainTime", ignore = true)
-        // remainTime은 커스텀 매핑을 사용
+    @Mapping(target = "remainTime", ignore = true) // remainTime은 커스텀 매핑을 사용
     PurchaseHotdealResponseDto toPurchaseResponseDto(Hotdeal hotdeal);
 
     @AfterMapping
     default void afterMappingToPurchaseResponseDto(Hotdeal hotdeal,
         @MappingTarget PurchaseHotdealResponseDto.PurchaseHotdealResponseDtoBuilder dtoBuilder) {
-        // 여기에 필요한 custom 로직을 추가
         dtoBuilder.price(calculateDiscountPrice(hotdeal.getProduct().getPrice(), hotdeal.getSale()))
-            .remainQuantity(hotdeal.getDealQuantity())
+            .remainQuantity(hotdeal.getDealQuantity()) // 남은 수량은 모든 로직 이후 update로 처리
             .remainTime(calculateRemainTime(hotdeal.getDueDay()));
     }
 
-    // 여기에 필요한 private helper 메서드들을 구현
+    // helper 메서드들을 구현
     private int calculateDiscountPrice(int originalPrice, int sale) {
         return originalPrice - (originalPrice * sale / 100);
     }
