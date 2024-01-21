@@ -9,5 +9,7 @@ public class PurchaseHotdealRequestDto {
 
     private Long hotdealId;
     private int quantity;
+    private String address;
+    private String phone;
 
 }
