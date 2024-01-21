@@ -2,8 +2,10 @@ package com.sportsecho.game.service;
 
 import com.sportsecho.game.dto.GameResponseDto;
 import com.sportsecho.game.entity.Game;
+import com.sportsecho.game.exception.GameErrorCode;
 import com.sportsecho.game.mapper.GameMapper;
 import com.sportsecho.game.repository.GameRepository;
+import com.sportsecho.global.exception.GlobalException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -30,4 +32,12 @@ public class GameServiceImplV2 implements GameService{
         return gameResponseDtoList;
     }
 
+    @Override
+    public GameResponseDto getGameDetails(Long gameId) {
+        Game game = gameRepository.findById(gameId).orElseThrow(
+            () -> new GlobalException(GameErrorCode.GAME_NOT_FOUND)
+        );
+
+        return GameMapper.INSTANCE.gameToGameResponseDto(game);
+    }
 }
