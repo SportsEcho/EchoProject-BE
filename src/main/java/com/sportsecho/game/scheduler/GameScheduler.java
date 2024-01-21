@@ -80,7 +80,6 @@ public class GameScheduler {
         }
 
         JSONArray gameList = jsonObject.getJSONArray("response");
-        log.info(gameList.toString());
 
         for (int i = 0; i < gameList.length(); i++) {
             JSONObject fixture = gameList.getJSONObject(i).getJSONObject("fixture");
@@ -108,8 +107,9 @@ public class GameScheduler {
                 homeScore,
                 awayScore
             );
-            log.info(game.toString());
-            gameRepository.save(game);
+            if (!gameRepository.existsGameByDate(localDateTime)) {
+                gameRepository.save(game);
+            }
 
         }
 

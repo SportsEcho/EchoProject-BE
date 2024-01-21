@@ -14,4 +14,6 @@ public interface GameRepository extends JpaRepository<Game, Long> {
 
     @Query("SELECT g FROM Game g WHERE DATE_FORMAT(g.date, '%Y-%m-%d') = :date")
     List<Game> findByDate(@Param("date") String date);
+
+    boolean existsGameByDate(LocalDateTime date);
 }
