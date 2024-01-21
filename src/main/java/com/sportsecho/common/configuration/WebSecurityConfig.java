@@ -31,8 +31,9 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
-        throws Exception {
+    public AuthenticationManager authenticationManager(
+        AuthenticationConfiguration configuration
+    ) throws Exception {
         return configuration.getAuthenticationManager();
     }
 
@@ -49,8 +50,9 @@ public class WebSecurityConfig {
             .anyRequest().authenticated());
 
         //JwtFilter 설정
-        httpSecurity.addFilterBefore(jwtAuthorizationFilter,
-            UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(
+            jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class
+        );
 
         return httpSecurity.build();
     }
@@ -65,9 +67,11 @@ public class WebSecurityConfig {
             new AntPathRequestMatcher("/api/games/football"),
             new AntPathRequestMatcher("/api/games/baseball"),
             new AntPathRequestMatcher("/api/games/basketball"),
+            new AntPathRequestMatcher("/api/games/details/**"),
 
             //웹소켓 endpoint
             new AntPathRequestMatcher("/websocket"),
+
             new AntPathRequestMatcher("/v3/**"),
             new AntPathRequestMatcher("/swagger-ui/**")
         );

@@ -5,9 +5,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class MessageRequestDto {
-    private String type;
+public class GameChatRequestDto {
+
     private String message;
-    private Long roomId;
-    private Long userId;
+
+    public GameChatRequestDto(String message) {
+        this.message = message;
+    }
 }

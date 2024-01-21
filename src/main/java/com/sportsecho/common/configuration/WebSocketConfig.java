@@ -1,4 +1,4 @@
-package com.sportsecho.gamechat;
+package com.sportsecho.common.configuration;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
