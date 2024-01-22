@@ -52,8 +52,8 @@ public class GameScheduler {
             (date.getMonthValue() < seasonStartMonth) ? currentYear - 1 : currentYear);
     }
 
-    @Scheduled(fixedRate = 900000) // 매 15분마다 실행 (900000ms = 30분) = 하루 96번 호출
-//    @Scheduled(cron = "0 0 * * * ?") // 과금 이슈로 최종 베포 전까지 한 시간 마다 수행
+//    @Scheduled(fixedRate = 900000) // 매 15분마다 실행 (900000ms = 30분) = 하루 96번 호출
+    @Scheduled(cron = "0 */15 * * * ?") // 과금 이슈로 최종 베포 전까지 한 시간 마다 수행
     public void updateTodayGame() throws IOException, InterruptedException, JSONException {
 
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
