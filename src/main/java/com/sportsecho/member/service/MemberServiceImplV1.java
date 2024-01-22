@@ -86,6 +86,11 @@ public class MemberServiceImplV1 implements MemberService {
     public void refresh(HttpServletRequest request, HttpServletResponse response) {}
 
     @Override
+    public MemberResponseDto readMember(Member member) {
+        return null;
+    }
+
+    @Override
     @Transactional
     public MemberResponseDto deleteMember(Member member) {
         memberRepository.delete(member);
