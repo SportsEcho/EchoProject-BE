@@ -45,6 +45,12 @@ public interface MemberService {
     void refresh(HttpServletRequest request, HttpServletResponse response);
 
     /**
+     * Member 정보 조회
+     * @param member 조회할 Member 객체
+     * */
+    MemberResponseDto readMember(Member member);
+
+    /**
      * Member 삭제
      * @param member 삭제할 Member 객체
      * @return 삭제된 Member 정보
