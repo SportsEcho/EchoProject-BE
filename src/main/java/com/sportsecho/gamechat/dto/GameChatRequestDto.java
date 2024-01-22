@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GameChatRequestDto {
 
+    private String sender;
     private String message;
-
-    public GameChatRequestDto(String message) {
-        this.message = message;
-    }
 }

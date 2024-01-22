@@ -81,6 +81,15 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
+    @GetMapping("")
+    public ResponseEntity<MemberResponseDto> readMember(
+        @AuthenticationPrincipal MemberDetailsImpl memberDetails
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+            memberService.readMember(memberDetails.getMember())
+        );
+    }
+
     @DeleteMapping("")
     public ResponseEntity<MemberResponseDto> deleteMember(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails
