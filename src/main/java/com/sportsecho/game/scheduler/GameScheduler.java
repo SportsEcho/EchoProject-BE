@@ -53,7 +53,7 @@ public class GameScheduler {
     }
 
 //    @Scheduled(fixedRate = 900000) // 매 15분마다 실행 (900000ms = 30분) = 하루 96번 호출
-    @Scheduled(cron = "0 0 * * * ?") // 과금 이슈로 최종 베포 전까지 한 시간 마다 수행
+    @Scheduled(cron = "0 */15 * * * ?") // 과금 이슈로 최종 베포 전까지 한 시간 마다 수행
     public void updateTodayGame() throws IOException, InterruptedException, JSONException {
 
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
@@ -63,7 +63,7 @@ public class GameScheduler {
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(
                 "https://api-football-v1.p.rapidapi.com/v3/fixtures?date=" + todayString
-                    + "&league=39&season=" + season + "&timezone=timezone%3DAsia%252FSeoul"))
+                    + "&league=39&season=" + season + "&timezone=Asia%2FSeoul"))
             .header("X-RapidAPI-Key", "d789e7aa74msh95a2867cc80a6d0p11239ajsna2c01db4ee85")
             .header("X-RapidAPI-Host", "api-football-v1.p.rapidapi.com")
             .method("GET", HttpRequest.BodyPublishers.noBody())
@@ -80,7 +80,6 @@ public class GameScheduler {
         }
 
         JSONArray gameList = jsonObject.getJSONArray("response");
-        log.info(gameList.toString());
 
         for (int i = 0; i < gameList.length(); i++) {
             JSONObject fixture = gameList.getJSONObject(i).getJSONObject("fixture");
@@ -108,8 +107,12 @@ public class GameScheduler {
                 homeScore,
                 awayScore
             );
-            log.info(game.toString());
-            gameRepository.save(game);
+            gameRepository.findByDateAndHomeTeamNameAndAwayTeamName(localDateTime, game.getHomeTeamName(), game.getAwayTeamName())
+                .map(todayGame -> {
+                    todayGame.updateGameScore(game.getHomeGoal(), game.getAwayGoal());
+                    return gameRepository.save(todayGame);
+                })
+                .orElseGet(() -> gameRepository.save(game));
 
         }
 
@@ -129,7 +132,7 @@ public class GameScheduler {
                 "https://api-football-v1.p.rapidapi.com/v3/fixtures?&league=39" +
                     "&season=" + season +
                     "&from=" + from + "&to=" + to +
-                    "&timezone=timezone%3DAsia%252FSeoul"))
+                    "&timezone=Asia%2FSeoul"))
             .header("X-RapidAPI-Key", "d789e7aa74msh95a2867cc80a6d0p11239ajsna2c01db4ee85")
             .header("X-RapidAPI-Host", "api-football-v1.p.rapidapi.com")
             .method("GET", HttpRequest.BodyPublishers.noBody())

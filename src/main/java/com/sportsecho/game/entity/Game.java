@@ -58,4 +58,9 @@ public class Game extends TimeStamp {
             .build();
     }
 
+    public void updateGameScore(int homeGoal, int awayGoal) {
+        this.homeGoal = homeGoal;
+        this.awayGoal = awayGoal;
+    }
+
 }
