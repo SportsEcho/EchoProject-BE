@@ -1,4 +1,4 @@
-package com.sportsecho.gamechat;
+package com.sportsecho.common.configuration;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -13,24 +13,18 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-//    private final SocketTextHandler socketTextHandler;
-
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry
-            .addEndpoint("/chat")
-            .setAllowedOrigins("*")
-            .withSockJS();
+            .addEndpoint("/websocket")
+            .setAllowedOrigins("*");
     }
 
-//    @Bean
-//    public WebSocketInterceptor webSocketInterceptor() {
-//        return new WebSocketInterceptor();
-//    }
-
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/subscribe");
-        registry.setApplicationDestinationPrefixes("/publish");
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+
+        config.enableSimpleBroker("/topic");
+
+        config.setApplicationDestinationPrefixes("/app");
     }
 }

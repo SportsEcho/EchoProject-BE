@@ -94,7 +94,6 @@ public class HotdealServiceImplV1 implements HotdealService {
     @Override
     @Transactional
     public PurchaseHotdealResponseDto purchaseHotdeal(Member member, PurchaseHotdealRequestDto requestDto) {
-        log.info("구매 시작");
         Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(requestDto.getHotdealId())
             .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
 
@@ -106,28 +105,22 @@ public class HotdealServiceImplV1 implements HotdealService {
             throw new GlobalException(HotdealErrorCode.LACK_DEAL_QUANTITY); // 핫딜 구매시 재고보다 많은 수량 구매 시도
         }
 
-        Purchase newPurchase = PurchaseMapper.INSTANCE.toEntity(requestDto, member);
-        Purchase purchase = purchaseRepository.save(newPurchase);
-
         Product product = hotdeal.getProduct();
+        int dicountedPrice = product.getPrice() - (product.getPrice() * hotdeal.getSale() / 100);
+
+        Purchase purchase = PurchaseMapper.INSTANCE.fromPurchaseHotdealReqeustDto(requestDto, dicountedPrice, member);
+        purchaseRepository.save(purchase);
+
         PurchaseProduct purchaseProduct = PurchaseProduct.builder()
             .product(product)
             .productsQuantity(requestDto.getQuantity())
             .role(ProductRole.HOTDEAL)
             .build();
-        purchaseProduct = purchaseProductRepository.save(purchaseProduct);
-
-        int totalPrice = (int) (hotdeal.getProduct().getPrice() * requestDto.getQuantity()
-            * (hotdeal.getSale() / 100.0));
-
-        purchase.getPurchaseProductList().add(purchaseProduct);
-        purchase.updateTotalPrice(totalPrice);
-        purchaseRepository.save(purchase);
+        purchaseProductRepository.save(purchaseProduct);
 
         hotdeal.updateDealQuantity(hotdeal.getDealQuantity() - requestDto.getQuantity()); // 앞에서 예외처리 완료
         hotdealRepository.save(hotdeal); // 더티 체킹
 
-        log.info("=============끝==============");
         return HotdealMapper.INSTANCE.toPurchaseResponseDto(hotdeal);
     }
 

@@ -24,5 +24,5 @@ public class PurchaseResponseDto {
 
     private LocalDateTime purchaseDate;
 
-    private List<PurchaseProductResponseDto> responseDtoList;
+    private List<PurchaseProductResponseDto> purchaseProductList;
 }
