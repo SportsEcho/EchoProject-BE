@@ -1,5 +1,6 @@
 package com.sportsecho.game.dto;
 
+import com.sportsecho.game.entity.SportsType;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,5 +23,6 @@ public class GameResponseDto {
     private String venueName;
     private String homeGoal;
     private String awayGoal;
+    private SportsType sportsType;
 
 }
