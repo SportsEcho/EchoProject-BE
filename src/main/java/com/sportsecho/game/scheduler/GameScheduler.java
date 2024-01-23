@@ -138,7 +138,8 @@ public class GameScheduler {
 
     }
 
-    @Scheduled(cron = "0 0 0 1 * ?") // 월 단위로 진행 자정에 실행
+//    @Scheduled(cron = "0 0 0 1 * ?") // 월 단위로 진행 자정에 실행
+    @Scheduled(fixedRate = 900000) // 매 15분마다 실행 (900000ms = 30분) = 하루 96번 호출
     public void fetchUpcomingFootballGames() throws IOException, InterruptedException {
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
         LocalDate firstDayOfMonth = now.withDayOfMonth(1); // 해당 월의 첫째 날
@@ -252,7 +253,7 @@ public class GameScheduler {
                 venue.getString("name"),
                 homeScore,
                 awayScore,
-                SportsType.EPL
+                SportsType.NBA
             );
             gameRepository.findByDateAndHomeTeamNameAndAwayTeamName(localDateTime,
                     nbaGame.getHomeTeamName(), nbaGame.getAwayTeamName())
