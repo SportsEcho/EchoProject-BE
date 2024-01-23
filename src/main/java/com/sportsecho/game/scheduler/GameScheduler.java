@@ -2,6 +2,7 @@ package com.sportsecho.game.scheduler;
 
 
 import com.sportsecho.game.entity.Game;
+import com.sportsecho.game.entity.SportsType;
 import com.sportsecho.game.repository.GameRepository;
 import java.io.IOException;
 import java.net.URI;
@@ -14,6 +15,7 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
@@ -47,14 +49,27 @@ public class GameScheduler {
         }
 
         int currentYear = date.getYear();
-        // 현재 날짜가 시즌 시작 월 이전인 경우, 시즌은 이전 연도에 시작함
-        return String.valueOf(
-            (date.getMonthValue() < seasonStartMonth) ? currentYear - 1 : currentYear);
+
+        if (sport.equals("EPL")) {
+            return String.valueOf(
+                (date.getMonthValue() < seasonStartMonth) ? currentYear - 1 : currentYear);
+        } else if (sport.equals("NBA")) {
+            if (date.getMonthValue() < seasonStartMonth
+                || date.getMonthValue() <= Month.APRIL.getValue()) {
+                return (currentYear - 1) + "-" + currentYear;
+            } else {
+                return currentYear + "-" + (currentYear + 1);
+            }
+        } else {
+            // MLB
+            return String.valueOf(currentYear);
+        }
     }
 
-//    @Scheduled(fixedRate = 900000) // 매 15분마다 실행 (900000ms = 30분) = 하루 96번 호출
-    @Scheduled(cron = "0 */15 * * * ?") // 과금 이슈로 최종 베포 전까지 한 시간 마다 수행
-    public void updateTodayGame() throws IOException, InterruptedException, JSONException {
+
+    //    @Scheduled(fixedRate = 900000) // 매 15분마다 실행 (900000ms = 30분) = 하루 96번 호출
+    @Scheduled(cron = "0 10,20,30,40,50 * * * ?")
+    public void updateTodayFootballGames() throws IOException, InterruptedException, JSONException {
 
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         String todayString = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -80,6 +95,9 @@ public class GameScheduler {
         }
 
         JSONArray gameList = jsonObject.getJSONArray("response");
+        log.info(
+            "=============================================== EPL 경기 업데이트 ===============================================");
+        log.info(gameList.toString());
 
         for (int i = 0; i < gameList.length(); i++) {
             JSONObject fixture = gameList.getJSONObject(i).getJSONObject("fixture");
@@ -105,9 +123,11 @@ public class GameScheduler {
                 localDateTime,
                 venue.getString("name"),
                 homeScore,
-                awayScore
+                awayScore,
+                SportsType.EPL
             );
-            gameRepository.findByDateAndHomeTeamNameAndAwayTeamName(localDateTime, game.getHomeTeamName(), game.getAwayTeamName())
+            gameRepository.findByDateAndHomeTeamNameAndAwayTeamName(localDateTime,
+                    game.getHomeTeamName(), game.getAwayTeamName())
                 .map(todayGame -> {
                     todayGame.updateGameScore(game.getHomeGoal(), game.getAwayGoal());
                     return gameRepository.save(todayGame);
@@ -118,14 +138,15 @@ public class GameScheduler {
 
     }
 
-    @Scheduled(cron = "0 0 0 20 * ?") // 월 단위로 진행 자정에 실행
-    public void fetchUpcomingGames() throws IOException, InterruptedException, JSONException {
+    @Scheduled(cron = "0 0 0 1 * ?") // 월 단위로 진행 자정에 실행
+    public void fetchUpcomingFootballGames() throws IOException, InterruptedException {
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        LocalDate oneMonthLater = now.plusMonths(1);
+        LocalDate firstDayOfMonth = now.withDayOfMonth(1); // 해당 월의 첫째 날
+        LocalDate lastDayOfMonth = now.with(TemporalAdjusters.lastDayOfMonth()); // 해당 월의 마지막 날
         String season = calculateSeason("EPL", now);
 
-        String from = now.format(DateTimeFormatter.ISO_DATE);
-        String to = oneMonthLater.format(DateTimeFormatter.ISO_DATE);
+        String from = firstDayOfMonth.format(DateTimeFormatter.ISO_DATE);
+        String to = lastDayOfMonth.format(DateTimeFormatter.ISO_DATE);
 
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(
@@ -161,7 +182,7 @@ public class GameScheduler {
             int homeScore = goals.isNull("home") ? 0 : goals.getInt("home");
             int awayScore = goals.isNull("away") ? 0 : goals.getInt("away");
 
-            Game game = Game.createGame(
+            Game footballGame = Game.createGame(
                 teams.getJSONObject("home").getString("name"),
                 teams.getJSONObject("home").getString("logo"),
                 teams.getJSONObject("away").getString("name"),
@@ -170,11 +191,141 @@ public class GameScheduler {
                 localDateTime,
                 venue.getString("name"),
                 homeScore,
-                awayScore
+                awayScore,
+                SportsType.EPL
             );
-            log.info(game.toString());
-            gameRepository.save(game);
+            log.info(footballGame.toString());
+            gameRepository.save(footballGame);
 
+        }
+    }
+
+    @Scheduled(cron = "0 10,20,30,40,50 * * * ?")
+    public void updateTodayNbaGames() throws IOException, InterruptedException, JSONException {
+        LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        String season = calculateSeason("NBA", now);
+
+        String today = now.format(DateTimeFormatter.ISO_DATE);
+
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(
+                "https://api-basketball.p.rapidapi.com/games?timezone=Asia%2FSeoul&" +
+                    "season=" + season +
+                    "&league=12&date=" + today))
+            .header("X-RapidAPI-Key", "d789e7aa74msh95a2867cc80a6d0p11239ajsna2c01db4ee85")
+            .header("X-RapidAPI-Host", "api-basketball.p.rapidapi.com")
+            .method("GET", HttpRequest.BodyPublishers.noBody())
+            .build();
+        HttpResponse<String> response = HttpClient.newHttpClient()
+            .send(request, HttpResponse.BodyHandlers.ofString());
+
+        String jsonData = response.body();
+        JSONObject jsonObject = new JSONObject(jsonData);
+
+        JSONArray gameList = jsonObject.getJSONArray("response");
+        log.info(
+            "=============================================== NBA 경기 업데이트 ===============================================");
+        log.info(gameList.toString());
+
+        for (int i = 0; i < gameList.length(); i++) {
+            JSONObject game = gameList.getJSONObject(i);
+            JSONObject teams = game.getJSONObject("teams");
+            JSONObject scores = game.getJSONObject("scores");
+            JSONObject league = game.getJSONObject("league");
+            JSONObject venue = game.getJSONObject("country");
+
+            String dateString = game.getString("date");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
+            LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
+
+            // 이미 시작하지 않은 경기는 null값을 주고 있으므로 0으로 처리
+            int homeScore = scores.getJSONObject("home").isNull("total") ? 0 : scores.getJSONObject("home").getInt("total");
+            int awayScore = scores.getJSONObject("away").isNull("total") ? 0 : scores.getJSONObject("away").getInt("total");
+
+            Game nbaGame = Game.createGame(
+                teams.getJSONObject("home").getString("name"),
+                teams.getJSONObject("home").getString("logo"),
+                teams.getJSONObject("away").getString("name"),
+                teams.getJSONObject("away").getString("logo"),
+                league.getString("logo"),
+                localDateTime,
+                venue.getString("name"),
+                homeScore,
+                awayScore,
+                SportsType.EPL
+            );
+            gameRepository.findByDateAndHomeTeamNameAndAwayTeamName(localDateTime,
+                    nbaGame.getHomeTeamName(), nbaGame.getAwayTeamName())
+                .map(todayGame -> {
+                    todayGame.updateGameScore(nbaGame.getHomeGoal(), nbaGame.getAwayGoal());
+                    return gameRepository.save(todayGame);
+                })
+                .orElseGet(() -> gameRepository.save(nbaGame));
+        }
+    }
+
+    @Scheduled(cron = "0 10,20,30,40,50 * * * ?")
+    public void updateTodayMlbGames() throws IOException, InterruptedException {
+        LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        String season = calculateSeason("MLB", now);
+
+        String today = now.format(DateTimeFormatter.ISO_DATE);
+
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(
+                "https://api-baseball.p.rapidapi.com/games?" +
+                    "league=1&season=" + season +
+                    "&date=" + today +
+                    "&timezone=Asia%2FSeoul"))
+            .header("X-RapidAPI-Key", "d789e7aa74msh95a2867cc80a6d0p11239ajsna2c01db4ee85")
+            .header("X-RapidAPI-Host", "api-baseball.p.rapidapi.com")
+            .method("GET", HttpRequest.BodyPublishers.noBody())
+            .build();
+        HttpResponse<String> response = HttpClient.newHttpClient()
+            .send(request, HttpResponse.BodyHandlers.ofString());
+
+        String jsonData = response.body();
+        JSONObject jsonObject = new JSONObject(jsonData);
+
+        JSONArray gameList = jsonObject.getJSONArray("response");
+        log.info(
+            "=============================================== MLB 경기 업데이트 ===============================================");
+        log.info(gameList.toString());
+
+        for (int i = 0; i < gameList.length(); i++) {
+            JSONObject game = gameList.getJSONObject(i);
+            JSONObject teams = game.getJSONObject("teams");
+            JSONObject scores = game.getJSONObject("scores");
+            JSONObject league = game.getJSONObject("league");
+            JSONObject venue = game.getJSONObject("country");
+
+            String dateString = game.getString("date");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
+            LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
+
+            // 이미 시작하지 않은 경기는 null값을 주고 있으므로 0으로 처리
+            int homeScore = scores.getJSONObject("home").isNull("total") ? 0 : scores.getJSONObject("home").getInt("total");
+            int awayScore = scores.getJSONObject("away").isNull("total") ? 0 : scores.getJSONObject("away").getInt("total");
+
+            Game mlbGame = Game.createGame(
+                teams.getJSONObject("home").getString("name"),
+                teams.getJSONObject("home").getString("logo"),
+                teams.getJSONObject("away").getString("name"),
+                teams.getJSONObject("away").getString("logo"),
+                league.getString("logo"),
+                localDateTime,
+                venue.getString("name"),
+                homeScore,
+                awayScore,
+                SportsType.MLB
+            );
+            gameRepository.findByDateAndHomeTeamNameAndAwayTeamName(localDateTime,
+                    mlbGame.getHomeTeamName(), mlbGame.getAwayTeamName())
+                .map(todayGame -> {
+                    todayGame.updateGameScore(mlbGame.getHomeGoal(), mlbGame.getAwayGoal());
+                    return gameRepository.save(todayGame);
+                })
+                .orElseGet(() -> gameRepository.save(mlbGame));
         }
     }
 }
