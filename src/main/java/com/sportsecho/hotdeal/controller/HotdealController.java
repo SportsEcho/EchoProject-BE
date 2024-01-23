@@ -6,17 +6,11 @@ import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
 import com.sportsecho.hotdeal.dto.response.PurchaseHotdealResponseDto;
-import com.sportsecho.hotdeal.entity.Hotdeal;
 import com.sportsecho.hotdeal.service.HotdealService;
-import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberDetailsImpl;
 import java.util.List;
-import lombok.Getter;
-import org.apache.coyote.Request;
-import org.hibernate.annotations.Fetch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.DomainEvents;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -55,7 +49,7 @@ public class HotdealController {
         );
     }
 
-    @GetMapping("products/{productId}/hotdeals")
+    @GetMapping("/hotdeals")
     public ResponseEntity<ApiResponse<List<HotdealResponseDto>>> getHotdealList(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size,
@@ -75,7 +69,7 @@ public class HotdealController {
 
     }
 
-    @GetMapping("/products/{productId}/hotdeals/{hotdealId}")
+    @GetMapping("/hotdeals/{hotdealId}")
     public ResponseEntity<ApiResponse<HotdealResponseDto>> getHotdeal(
         @PathVariable Long hotdealId
     ) {
