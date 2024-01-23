@@ -30,6 +30,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -96,6 +97,7 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
         @DisplayName("단건 조회 테스트")
         class getSingleProductTest {
 
+            @Transactional
             @Test
             @DisplayName("성공 - 상품 단건 조회")
             void getProductSuccess() {
@@ -136,6 +138,7 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
                 }
             }
 
+            @Transactional
             @Test
             @DisplayName("성공 - 상품 목록 조회(가격기준 오름차순)")
             void getProductListSuccess() {
