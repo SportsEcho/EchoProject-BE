@@ -187,9 +187,7 @@ public class MemberServiceImplV2 implements MemberService {
         //Member객체를 이용해 서비스에 저장
         Member socialMember = oAuthUtil.registerSocialMemberIfNeeded(kakaoId, memberName, email, SocialType.KAKAO);
 
-        String aToken = jwtUtil.generateAccessToken(socialMember.getEmail(), socialMember.getRole());
-        String rToken = jwtUtil.generateRefreshToken();
-        jwtUtil.setJwtHeader(response, aToken, rToken);
+        setTokenHeaderAndRedis(response, socialMember);
     }
 
     @Override
@@ -211,9 +209,7 @@ public class MemberServiceImplV2 implements MemberService {
         //Member객체를 이용해 서비스에 저장
         Member socialMember = oAuthUtil.registerSocialMemberIfNeeded(0L, memberName, email, SocialType.NAVER);
 
-        String aToken = jwtUtil.generateAccessToken(socialMember.getEmail(), socialMember.getRole());
-        String rToken = jwtUtil.generateRefreshToken();
-        jwtUtil.setJwtHeader(response, aToken, rToken);
+        setTokenHeaderAndRedis(response, socialMember);
     }
 
     @Override
@@ -240,11 +236,18 @@ public class MemberServiceImplV2 implements MemberService {
 
             Member socialMember = oAuthUtil.registerSocialMemberIfNeeded(0L, memberName, email, SocialType.GOOGLE);
 
-            String aToken = jwtUtil.generateAccessToken(socialMember.getEmail(), socialMember.getRole());
-            String rToken = jwtUtil.generateRefreshToken();
-            jwtUtil.setJwtHeader(response, aToken, rToken);
+            setTokenHeaderAndRedis(response, socialMember);
         } catch(Exception e) {
             throw new GlobalException(OAuthErrorCode.ILLEGAL_REQUEST);
         }
+    }
+
+    private void setTokenHeaderAndRedis(HttpServletResponse response, Member socialMember) {
+        String aToken = jwtUtil.generateAccessToken(socialMember.getEmail(), socialMember.getRole());
+        String rToken = jwtUtil.generateRefreshToken();
+
+        jwtUtil.setJwtHeader(response, aToken, rToken);
+
+        redisUtil.saveRefreshToken(rToken, socialMember.getEmail());
     }
 }

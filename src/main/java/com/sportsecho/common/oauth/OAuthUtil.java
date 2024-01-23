@@ -135,7 +135,7 @@ public class OAuthUtil {
         if(SocialType.KAKAO.equals(socialType)) {
             body.add("grant_type", "authorization_code");
             body.add("client_id", kakaoApiKey);
-            body.add("redirect_uri", "http://sportsecho.life:3000/kakao/redirect");
+            body.add("redirect_uri", "http://sportsecho.life:3000/redirect/kakao");
             body.add("code", code);
         }
         if(SocialType.NAVER.equals(socialType)) {
