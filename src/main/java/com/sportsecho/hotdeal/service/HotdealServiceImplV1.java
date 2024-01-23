@@ -1,5 +1,6 @@
 package com.sportsecho.hotdeal.service;
 
+import com.sportsecho.common.redis.RedisUtil;
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
@@ -41,6 +42,7 @@ public class HotdealServiceImplV1 implements HotdealService {
     private final ProductRepository productRepository;
     private final PurchaseProductRepository purchaseProductRepository;
     private final PurchaseRepository purchaseRepository;
+    private final RedisUtil redisUtil;
 
     @Override
     @Transactional
@@ -91,24 +93,36 @@ public class HotdealServiceImplV1 implements HotdealService {
         return HotdealMapper.INSTANCE.toResponseDto(hotdeal);
     }
 
-    @Override
-    @Transactional
-    public PurchaseHotdealResponseDto purchaseHotdeal(Member member, PurchaseHotdealRequestDto requestDto) {
-        Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(requestDto.getHotdealId())
+    public void addQueue(Member member, PurchaseHotdealRequestDto requestDto) {
+        Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(
+                requestDto.getHotdealId())
             .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
 
+        redisUtil.addQueue(hotdeal, member);
+    }
+
+    @Transactional
+    public PurchaseHotdealResponseDto purchaseHotdeal(Member member,
+        PurchaseHotdealRequestDto requestDto) {
+        Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(
+                requestDto.getHotdealId())
+            .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
+
+        addQueue(member, requestDto);
         if (hotdeal.getDealQuantity() == 0) {
             throw new GlobalException(HotdealErrorCode.SOLD_OUT); // 핫딜 재고 0일때
         }
 
         if (hotdeal.getDealQuantity() < requestDto.getQuantity()) {
-            throw new GlobalException(HotdealErrorCode.LACK_DEAL_QUANTITY); // 핫딜 구매시 재고보다 많은 수량 구매 시도
+            throw new GlobalException(
+                HotdealErrorCode.LACK_DEAL_QUANTITY); // 핫딜 구매시 재고보다 많은 수량 구매 시도
         }
 
         Product product = hotdeal.getProduct();
-        int dicountedPrice = product.getPrice() - (product.getPrice() * hotdeal.getSale() / 100);
+        int discountedPrice = product.getPrice() - (product.getPrice() * hotdeal.getSale() / 100);
 
-        Purchase purchase = PurchaseMapper.INSTANCE.fromPurchaseHotdealReqeustDto(requestDto, dicountedPrice, member);
+        Purchase purchase = PurchaseMapper.INSTANCE.fromPurchaseHotdealReqeustDto(requestDto,
+            discountedPrice, member);
         purchaseRepository.save(purchase);
 
         PurchaseProduct purchaseProduct = PurchaseProduct.builder()
@@ -118,7 +132,8 @@ public class HotdealServiceImplV1 implements HotdealService {
             .build();
         purchaseProductRepository.save(purchaseProduct);
 
-        hotdeal.updateDealQuantity(hotdeal.getDealQuantity() - requestDto.getQuantity()); // 앞에서 예외처리 완료
+        hotdeal.updateDealQuantity(
+            hotdeal.getDealQuantity() - requestDto.getQuantity()); // 앞에서 예외처리 완료
         hotdealRepository.save(hotdeal); // 더티 체킹
 
         return HotdealMapper.INSTANCE.toPurchaseResponseDto(hotdeal);

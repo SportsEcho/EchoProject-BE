@@ -1,5 +1,6 @@
 package com.sportsecho.hotdeal.scheduler;
 
+import com.sportsecho.common.redis.RedisUtil;
 import com.sportsecho.hotdeal.entity.Hotdeal;
 import com.sportsecho.hotdeal.repository.HotdealRepository;
 import com.sportsecho.product.entity.Product;
@@ -18,9 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class HotdealScheduler {
 
     private final HotdealRepository hotdealRepository;
+    private final RedisUtil redisUtil;
+
 
     // 매분마다 시행
-    @Scheduled(cron = "0 * * * * *")
+    //@Scheduled(cron = "0 * * * * *")
     @Transactional
     public void deleteClosedHotdeal() {
         LocalDateTime now = LocalDateTime.now();
@@ -51,4 +54,17 @@ public class HotdealScheduler {
         }
     }
 
+    @Scheduled(fixedDelay = 1000)
+    public void hotdealEventScheduler() {
+        log.info("==== 이벤트 스케줄러 실행 =====");
+        if (redisUtil.hotdealEnd()) {
+            log.info("===== 선착순 이벤트가 종료되었습니다. =====");
+            return;
+        }
+
+        Hotdeal hotdeal = hotdealRepository.findAll().get(0);
+
+        redisUtil.publish(hotdeal);
+        redisUtil.getPurchase(hotdeal);
+    }
 }

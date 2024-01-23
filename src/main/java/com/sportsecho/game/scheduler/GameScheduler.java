@@ -13,15 +13,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONArray;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -68,7 +66,7 @@ public class GameScheduler {
 
 
     //    @Scheduled(fixedRate = 900000) // 매 15분마다 실행 (900000ms = 30분) = 하루 96번 호출
-    @Scheduled(cron = "0 10,20,30,40,50 * * * ?")
+    // @Scheduled(cron = "0 10,20,30,40,50 * * * ?")
     public void updateTodayFootballGames() throws IOException, InterruptedException, JSONException {
 
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
@@ -138,7 +136,7 @@ public class GameScheduler {
 
     }
 
-    @Scheduled(cron = "0 0 0 1 * ?") // 월 단위로 진행 자정에 실행
+    //@Scheduled(cron = "0 0 0 1 * ?") // 월 단위로 진행 자정에 실행
     public void fetchUpcomingFootballGames() throws IOException, InterruptedException {
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
         LocalDate firstDayOfMonth = now.withDayOfMonth(1); // 해당 월의 첫째 날
@@ -200,7 +198,7 @@ public class GameScheduler {
         }
     }
 
-    @Scheduled(cron = "0 10,20,30,40,50 * * * ?")
+    //@Scheduled(cron = "0 10,20,30,40,50 * * * ?")
     public void updateTodayNbaGames() throws IOException, InterruptedException, JSONException {
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
         String season = calculateSeason("NBA", now);
@@ -239,8 +237,10 @@ public class GameScheduler {
             LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
 
             // 이미 시작하지 않은 경기는 null값을 주고 있으므로 0으로 처리
-            int homeScore = scores.getJSONObject("home").isNull("total") ? 0 : scores.getJSONObject("home").getInt("total");
-            int awayScore = scores.getJSONObject("away").isNull("total") ? 0 : scores.getJSONObject("away").getInt("total");
+            int homeScore = scores.getJSONObject("home").isNull("total") ? 0
+                : scores.getJSONObject("home").getInt("total");
+            int awayScore = scores.getJSONObject("away").isNull("total") ? 0
+                : scores.getJSONObject("away").getInt("total");
 
             Game nbaGame = Game.createGame(
                 teams.getJSONObject("home").getString("name"),
@@ -264,7 +264,7 @@ public class GameScheduler {
         }
     }
 
-    @Scheduled(cron = "0 10,20,30,40,50 * * * ?")
+    //@Scheduled(cron = "0 10,20,30,40,50 * * * ?")
     public void updateTodayMlbGames() throws IOException, InterruptedException {
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
         String season = calculateSeason("MLB", now);
@@ -304,8 +304,10 @@ public class GameScheduler {
             LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
 
             // 이미 시작하지 않은 경기는 null값을 주고 있으므로 0으로 처리
-            int homeScore = scores.getJSONObject("home").isNull("total") ? 0 : scores.getJSONObject("home").getInt("total");
-            int awayScore = scores.getJSONObject("away").isNull("total") ? 0 : scores.getJSONObject("away").getInt("total");
+            int homeScore = scores.getJSONObject("home").isNull("total") ? 0
+                : scores.getJSONObject("home").getInt("total");
+            int awayScore = scores.getJSONObject("away").isNull("total") ? 0
+                : scores.getJSONObject("away").getInt("total");
 
             Game mlbGame = Game.createGame(
                 teams.getJSONObject("home").getString("name"),
