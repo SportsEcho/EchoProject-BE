@@ -39,8 +39,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if(StringUtils.hasText(tokenValue)) {
             String token = jwtUtil.substringToken(tokenValue);
 
-            //token 검증 - 토큰이 유효하지 않으면 false 반환
-            if(!jwtUtil.validateToken(token)) return;
+            //token 검증 - 토큰이 유효하지 않으면 exception throw
+            jwtUtil.validateToken(token);
 
             String email = jwtUtil.getSubject(token);
 
