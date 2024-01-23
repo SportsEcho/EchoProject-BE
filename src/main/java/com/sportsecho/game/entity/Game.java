@@ -3,6 +3,8 @@ package com.sportsecho.game.entity;
 import com.sportsecho.comment.entity.Comment;
 import com.sportsecho.common.time.TimeStamp;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -39,6 +41,7 @@ public class Game extends TimeStamp {
     private String venueName;
     private int homeGoal;
     private int awayGoal;
+    @Enumerated(EnumType.ORDINAL)
     private SportsType sportsType;
 
     @OneToMany(mappedBy = "game", fetch = FetchType.LAZY)
