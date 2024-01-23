@@ -40,7 +40,7 @@ public class HotdealController {
     @Autowired
     private @Qualifier("V1") HotdealService hotdealService;
 
-    @PostMapping("/products/{productId}/hotdeal")
+    @PostMapping("/products/{productId}/hotdeals")
     public ResponseEntity<ApiResponse<HotdealResponseDto>> createHotdeal(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @PathVariable Long productId,
@@ -75,7 +75,7 @@ public class HotdealController {
 
     }
 
-    @GetMapping("/products/{productId}/hotdeal/{hotdealId}")
+    @GetMapping("/products/{productId}/hotdeals/{hotdealId}")
     public ResponseEntity<ApiResponse<HotdealResponseDto>> getHotdeal(
         @PathVariable Long hotdealId
     ) {
@@ -87,7 +87,7 @@ public class HotdealController {
         );
     }
 
-    @PatchMapping("/products/{productId}/hotdeal/{hotdealId}")
+    @PatchMapping("/products/{productId}/hotdeals/{hotdealId}")
     public ResponseEntity<ApiResponse<HotdealResponseDto>> updateHotdeal(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @PathVariable Long hotdealId,
@@ -102,7 +102,7 @@ public class HotdealController {
         );
     }
 
-    @DeleteMapping("/hotdeal/{hotdealId}")
+    @DeleteMapping("/hotdeals/{hotdealId}")
     public ResponseEntity<Void> deleteHotdeal(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @PathVariable Long hotdealId
@@ -113,7 +113,7 @@ public class HotdealController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PostMapping("/hotdeal/purchase")
+    @PostMapping("/hotdeals/purchase")
     public ResponseEntity<PurchaseHotdealResponseDto> purchaseHotdeal(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @RequestBody PurchaseHotdealRequestDto requestDto
