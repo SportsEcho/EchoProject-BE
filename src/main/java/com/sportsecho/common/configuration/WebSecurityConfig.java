@@ -74,6 +74,8 @@ public class WebSecurityConfig {
             new AntPathRequestMatcher("/api/games/**"),
             new AntPathRequestMatcher("/api/games/details/**"),
 
+            new AntPathRequestMatcher("/api/products"),
+
             //웹소켓 endpoint
             new AntPathRequestMatcher("/websocket"),
 
