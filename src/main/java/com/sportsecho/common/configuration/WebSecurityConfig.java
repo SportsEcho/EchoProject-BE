@@ -71,9 +71,7 @@ public class WebSecurityConfig {
             new AntPathRequestMatcher("/api/members/**/callback"),
 
             //game data load
-            new AntPathRequestMatcher("/api/games/football"),
-            new AntPathRequestMatcher("/api/games/baseball"),
-            new AntPathRequestMatcher("/api/games/basketball"),
+            new AntPathRequestMatcher("/api/games/**"),
             new AntPathRequestMatcher("/api/games/details/**"),
 
             //웹소켓 endpoint
