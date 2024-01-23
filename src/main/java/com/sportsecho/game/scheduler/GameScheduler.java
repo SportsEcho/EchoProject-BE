@@ -252,7 +252,7 @@ public class GameScheduler {
                 venue.getString("name"),
                 homeScore,
                 awayScore,
-                SportsType.EPL
+                SportsType.NBA
             );
             gameRepository.findByDateAndHomeTeamNameAndAwayTeamName(localDateTime,
                     nbaGame.getHomeTeamName(), nbaGame.getAwayTeamName())

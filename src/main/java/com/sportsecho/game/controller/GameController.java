@@ -23,7 +23,7 @@ public class GameController {
         this.gameService = gameService;
     }
 
-    @GetMapping("/football")
+    @GetMapping
     public ResponseEntity<List<GameResponseDto>> getGamesByDate(
         @RequestParam("date") String date
     ) {
