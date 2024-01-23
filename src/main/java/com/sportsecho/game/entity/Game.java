@@ -39,12 +39,13 @@ public class Game extends TimeStamp {
     private String venueName;
     private int homeGoal;
     private int awayGoal;
+    private SportsType sportsType;
 
     @OneToMany(mappedBy = "game", fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
     public static Game createGame(String homeTeamName, String homeTeamLogo, String awayTeamName,
-        String awayTeamLogo, String leagueLogo, LocalDateTime date, String venueName, int homeGoal, int awayGoal) {
+        String awayTeamLogo, String leagueLogo, LocalDateTime date, String venueName, int homeGoal, int awayGoal, SportsType sportsType) {
         return Game.builder()
             .homeTeamName(homeTeamName)
             .homeTeamLogo(homeTeamLogo)
@@ -55,6 +56,7 @@ public class Game extends TimeStamp {
             .venueName(venueName)
             .homeGoal(homeGoal)
             .awayGoal(awayGoal)
+            .sportsType(sportsType)
             .build();
     }
 
