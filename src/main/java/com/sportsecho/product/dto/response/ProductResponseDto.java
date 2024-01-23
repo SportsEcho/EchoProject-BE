@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductResponseDto {
 
+    private Long id;
     private String title;
     private String content;
     private int price;
