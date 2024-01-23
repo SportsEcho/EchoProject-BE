@@ -4,6 +4,7 @@ import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
 import com.sportsecho.hotdeal.dto.response.PurchaseHotdealResponseDto;
 import com.sportsecho.hotdeal.entity.Hotdeal;
+import com.sportsecho.product.entity.ProductImage;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import org.mapstruct.AfterMapping;
@@ -22,7 +23,6 @@ public interface HotdealMapper {
 
     @Mapping(source = "product.title", target = "title")
     @Mapping(source = "product.content", target = "content")
-    @Mapping(source = "product.imageUrl", target = "imageUrl")
     @Mapping(source = "product.price", target = "price")
     @Mapping(source = "sale", target = "sale")
     @Mapping(source = "startDay", target = "startDay")
@@ -32,7 +32,8 @@ public interface HotdealMapper {
     @Mapping(source = "product.title", target = "title")
     @Mapping(target = "price", ignore = true)
     @Mapping(target = "remainQuantity", ignore = true) // remainQuantity는 커스텀 매핑을 사용
-    @Mapping(target = "remainTime", ignore = true) // remainTime은 커스텀 매핑을 사용
+    @Mapping(target = "remainTime", ignore = true)
+        // remainTime은 커스텀 매핑을 사용
     PurchaseHotdealResponseDto toPurchaseResponseDto(Hotdeal hotdeal);
 
     @AfterMapping
@@ -41,6 +42,17 @@ public interface HotdealMapper {
         dtoBuilder.price(calculateDiscountPrice(hotdeal.getProduct().getPrice(), hotdeal.getSale()))
             .remainQuantity(hotdeal.getDealQuantity()) // 남은 수량은 모든 로직 이후 update로 처리
             .remainTime(calculateRemainTime(hotdeal.getDueDay()));
+    }
+
+    @AfterMapping
+    default void afterMappingToHotdealResponseDto(Hotdeal hotdeal,
+        @MappingTarget HotdealResponseDto.HotdealResponseDtoBuilder dtoBuilder) {
+
+        dtoBuilder.imageUrlList(
+            hotdeal.getProduct().getProductImageList().stream()
+                .map(ProductImage::getImageUrl)
+                .toList()
+        );
     }
 
     // helper 메서드들을 구현

@@ -35,9 +35,6 @@ public class Product extends TimeStamp {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "imageUrl", nullable = false)
-    private String imageUrl;
-
     @Column(name = "price", nullable = false)
     private int price;
 
@@ -47,25 +44,26 @@ public class Product extends TimeStamp {
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Hotdeal hotdeal;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY , cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseProduct> PurchaseProductList = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberProduct> memberProductList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductImage> productImageList = new ArrayList<>();
+
     @Builder
-    public Product(String title, String content, String imageUrl, int price, int quantity) {
+    public Product(String title, String content, int price, int quantity) {
         this.title = title;
         this.content = content;
-        this.imageUrl = imageUrl;
         this.price = price;
         this.quantity = quantity;
     }
 
-    public Product update(String title, String content, String imageUrl, int price, int quantity) {
+    public Product update(String title, String content, int price, int quantity) {
         this.title = title;
         this.content = content;
-        this.imageUrl = imageUrl;
         this.price = price;
         this.quantity = quantity;
         return this;
