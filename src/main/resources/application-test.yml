@@ -13,7 +13,6 @@ spring:
     url: jdbc:h2:mem:testdb;MODE=MySQL
     username: SA
     password: ''
-
   servlet:
     multipart:
       enabled: true
@@ -40,7 +39,10 @@ cloud:
     region:
       static: ap-northeast-2
     stack:
-      
+      auto: false
+    s3:
+      bucket: sports-echo
+
 oauth:
   api:
     secret:

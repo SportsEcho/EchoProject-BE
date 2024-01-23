@@ -2,19 +2,15 @@ package com.sportsecho.hotdeal.controller;
 
 import com.sportsecho.common.dto.ApiResponse;
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
+import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
-import com.sportsecho.hotdeal.entity.Hotdeal;
+import com.sportsecho.hotdeal.dto.response.PurchaseHotdealResponseDto;
 import com.sportsecho.hotdeal.service.HotdealService;
-import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberDetailsImpl;
 import java.util.List;
-import lombok.Getter;
-import org.apache.coyote.Request;
-import org.hibernate.annotations.Fetch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.DomainEvents;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -38,7 +34,7 @@ public class HotdealController {
     @Autowired
     private @Qualifier("V1") HotdealService hotdealService;
 
-    @PostMapping("/products/{productId}/hotdeal")
+    @PostMapping("/products/{productId}/hotdeals")
     public ResponseEntity<ApiResponse<HotdealResponseDto>> createHotdeal(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @PathVariable Long productId,
@@ -53,7 +49,7 @@ public class HotdealController {
         );
     }
 
-    @GetMapping("products/{productId}/hotdeals")
+    @GetMapping("/hotdeals")
     public ResponseEntity<ApiResponse<List<HotdealResponseDto>>> getHotdealList(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size,
@@ -73,7 +69,7 @@ public class HotdealController {
 
     }
 
-    @GetMapping("/products/{productId}/hotdeal/{hotdealId}")
+    @GetMapping("/hotdeals/{hotdealId}")
     public ResponseEntity<ApiResponse<HotdealResponseDto>> getHotdeal(
         @PathVariable Long hotdealId
     ) {
@@ -85,7 +81,7 @@ public class HotdealController {
         );
     }
 
-    @PatchMapping("/products/{productId}/hotdeal/{hotdealId}")
+    @PatchMapping("/products/{productId}/hotdeals/{hotdealId}")
     public ResponseEntity<ApiResponse<HotdealResponseDto>> updateHotdeal(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @PathVariable Long hotdealId,
@@ -100,17 +96,25 @@ public class HotdealController {
         );
     }
 
-    @DeleteMapping("/hotdeal/{hotdealId}")
-    public ResponseEntity<ApiResponse<Void>> deleteHotdeal(
+    @DeleteMapping("/hotdeals/{hotdealId}")
+    public ResponseEntity<Void> deleteHotdeal(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @PathVariable Long hotdealId
     ) {
 
         hotdealService.deleteHotdeal(memberDetails.getMember(), hotdealId);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(
-            ApiResponse.of("핫딜 삭제 성공", 204, null)
-        );
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PostMapping("/hotdeals/purchase")
+    public ResponseEntity<PurchaseHotdealResponseDto> purchaseHotdeal(
+        @AuthenticationPrincipal MemberDetailsImpl memberDetails,
+        @RequestBody PurchaseHotdealRequestDto requestDto
+    ) {
+        PurchaseHotdealResponseDto responseDto = hotdealService.purchaseHotdeal(
+            memberDetails.getMember(), requestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
 }

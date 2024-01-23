@@ -88,10 +88,9 @@ public class JwtUtil {
         throw new GlobalException(JwtErrorCode.ILLEGAL_ARGUMENT_EXCEPTION);
     }
 
-    public boolean validateToken(String token) {
+    public void validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
             throw new GlobalException(JwtErrorCode.SIGNATURE_EXCEPTION);
         } catch (ExpiredJwtException e) {

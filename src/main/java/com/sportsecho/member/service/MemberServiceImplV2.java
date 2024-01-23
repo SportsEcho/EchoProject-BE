@@ -26,6 +26,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.TableGenerator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.Pattern;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -73,6 +74,9 @@ public class MemberServiceImplV2 implements MemberService {
         if(memberRepository.findByEmail(request.getEmail()).isPresent())
             throw new GlobalException(MemberErrorCode.DUPLICATED_EMAIL);
 
+        if(!request.getMemberName().matches("^[a-zA-Z0-9]{4,20}$"))
+            throw new GlobalException(MemberErrorCode.INVALID_MEMBER_NAME);
+
         //MemberMapper를 이용한 Entity 생성
         Member member = MemberMapper.MAPPER.toEntity(request, role);
         member.passwordEncode(passwordEncoder);
@@ -84,6 +88,7 @@ public class MemberServiceImplV2 implements MemberService {
     }
 
     @Override
+    @Transactional
     public MemberResponseDto adminSignup(MemberRequestDto request, String key) {
         if(adminKey.equals(key)) {
             return signup(request, MemberRole.ADMIN);
@@ -152,6 +157,11 @@ public class MemberServiceImplV2 implements MemberService {
     }
 
     @Override
+    public MemberResponseDto readMember(Member member) {
+        return MemberMapper.MAPPER.toResponseDto(member);
+    }
+
+    @Override
     @Transactional
     public MemberResponseDto deleteMember(Member member) {
         memberRepository.delete(member);
@@ -177,9 +187,7 @@ public class MemberServiceImplV2 implements MemberService {
         //Member객체를 이용해 서비스에 저장
         Member socialMember = oAuthUtil.registerSocialMemberIfNeeded(kakaoId, memberName, email, SocialType.KAKAO);
 
-        String aToken = jwtUtil.generateAccessToken(socialMember.getEmail(), socialMember.getRole());
-        String rToken = jwtUtil.generateRefreshToken();
-        jwtUtil.setJwtHeader(response, aToken, rToken);
+        setTokenHeaderAndRedis(response, socialMember);
     }
 
     @Override
@@ -201,9 +209,7 @@ public class MemberServiceImplV2 implements MemberService {
         //Member객체를 이용해 서비스에 저장
         Member socialMember = oAuthUtil.registerSocialMemberIfNeeded(0L, memberName, email, SocialType.NAVER);
 
-        String aToken = jwtUtil.generateAccessToken(socialMember.getEmail(), socialMember.getRole());
-        String rToken = jwtUtil.generateRefreshToken();
-        jwtUtil.setJwtHeader(response, aToken, rToken);
+        setTokenHeaderAndRedis(response, socialMember);
     }
 
     @Override
@@ -230,11 +236,18 @@ public class MemberServiceImplV2 implements MemberService {
 
             Member socialMember = oAuthUtil.registerSocialMemberIfNeeded(0L, memberName, email, SocialType.GOOGLE);
 
-            String aToken = jwtUtil.generateAccessToken(socialMember.getEmail(), socialMember.getRole());
-            String rToken = jwtUtil.generateRefreshToken();
-            jwtUtil.setJwtHeader(response, aToken, rToken);
+            setTokenHeaderAndRedis(response, socialMember);
         } catch(Exception e) {
             throw new GlobalException(OAuthErrorCode.ILLEGAL_REQUEST);
         }
+    }
+
+    private void setTokenHeaderAndRedis(HttpServletResponse response, Member socialMember) {
+        String aToken = jwtUtil.generateAccessToken(socialMember.getEmail(), socialMember.getRole());
+        String rToken = jwtUtil.generateRefreshToken();
+
+        jwtUtil.setJwtHeader(response, aToken, rToken);
+
+        redisUtil.saveRefreshToken(rToken, socialMember.getEmail());
     }
 }

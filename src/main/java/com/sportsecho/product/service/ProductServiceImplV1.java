@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Qualifier("V1")
 @Service
 @RequiredArgsConstructor
-public class ProductServiceImplV1 implements ProductService{
+public class ProductServiceImplV1 implements ProductService {
 
     private final ProductRepository productRepository;
 
@@ -58,14 +58,16 @@ public class ProductServiceImplV1 implements ProductService{
 
     @Override
     @Transactional
-    public ProductResponseDto updateProduct(Member member, Long productId, ProductRequestDto requestDto) {
+    public ProductResponseDto updateProduct(Member member, Long productId,
+        ProductRequestDto requestDto) {
 
         if (!isAuthorized(member)) {
             throw new GlobalException(ProductErrorCode.NO_AUTHORIZATION);
         }
 
         Product product = findProduct(productId);
-        product.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getImageUrl(), requestDto.getPrice(), requestDto.getQuantity());
+        product.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getPrice(),
+            requestDto.getQuantity());
         productRepository.save(product);
 
         return ProductMapper.INSTANCE.toResponseDto(product);

@@ -16,7 +16,9 @@ public enum MemberErrorCode implements BaseErrorCode {
 
     DUPLICATED_EMAIL(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
 
-    INVALID_ADMIN_KEY(HttpStatus.UNAUTHORIZED, "유효하지 않은 관리자 키입니다.")
+    INVALID_ADMIN_KEY(HttpStatus.UNAUTHORIZED, "유효하지 않은 관리자 키입니다."),
+
+    INVALID_MEMBER_NAME(HttpStatus.BAD_REQUEST, "유효하지 않은 이름입니다."),
 
     ;
 

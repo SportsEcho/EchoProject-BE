@@ -4,18 +4,18 @@ spring:
       on-profile: default
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: none
+#    show-sql: true
     properties:
       hibernate:
-        format_sql: true
+#        format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
     defer-datasource-initialization: true
 
   datasource:
-    url: jdbc:mysql://localhost:3306/echo_db
-    username: ${YOUR_USERNAME}
-    password: ${YOUR_PASSWORD}
+    url: jdbc:mysql://sports-echo-mysql-instance.c8cvx8gfy4m3.ap-northeast-2.rds.amazonaws.com/echo_db
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   h2:
     console:
@@ -28,7 +28,7 @@ spring:
 
   data:
     redis:
-      host: localhost
+      host: 13.125.46.61
       port: 6379
 
 jwt:
@@ -47,6 +47,9 @@ cloud:
     region:
       static: ap-northeast-2
     stack:
+      auto: false
+    s3:
+      bucket: sports-echo
 
 oauth:
   api:

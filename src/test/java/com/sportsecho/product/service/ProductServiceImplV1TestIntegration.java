@@ -1,7 +1,9 @@
 package com.sportsecho.product.service;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.MemberTest;
@@ -28,6 +30,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -57,7 +60,7 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
                 MemberRole.ADMIN));
         product = ProductTestUtil.getTestProduct();
         requestDto = ProductTestUtil.createTestProductRequestDto("제목", "내용",
-            "image.com", 3000, 10);
+            3000, 10);
     }
 
     @AfterEach
@@ -94,6 +97,7 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
         @DisplayName("단건 조회 테스트")
         class getSingleProductTest {
 
+            @Transactional
             @Test
             @DisplayName("성공 - 상품 단건 조회")
             void getProductSuccess() {
@@ -103,7 +107,6 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
                 assertNotNull(result);
                 assertEquals(result.getTitle(), product.getTitle());
                 assertEquals(result.getContent(), product.getContent());
-                assertEquals(result.getImageUrl(), product.getImageUrl());
                 assertEquals(result.getPrice(), product.getPrice());
                 assertEquals(result.getQuantity(), product.getQuantity());
             }
@@ -129,13 +132,13 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
                     productRepository.save(Product.builder()
                         .title(i + "번 상품 제목")
                         .content(i + "번 상품내용")
-                        .imageUrl("image.com")
                         .price(i * 1000)
                         .quantity(i * 100)
                         .build());
                 }
             }
 
+            @Transactional
             @Test
             @DisplayName("성공 - 상품 목록 조회(가격기준 오름차순)")
             void getProductListSuccess() {
@@ -167,7 +170,6 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
 
             assertEquals(requestDto.getTitle(), responseDto.getTitle());
             assertEquals(requestDto.getContent(), responseDto.getContent());
-            assertEquals(requestDto.getImageUrl(), responseDto.getImageUrl());
             assertEquals(requestDto.getPrice(), responseDto.getPrice());
             assertEquals(requestDto.getQuantity(), responseDto.getQuantity());
         }
