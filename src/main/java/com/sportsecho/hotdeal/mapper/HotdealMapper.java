@@ -22,7 +22,6 @@ public interface HotdealMapper {
 
     @Mapping(source = "product.title", target = "title")
     @Mapping(source = "product.content", target = "content")
-    @Mapping(source = "product.imageUrl", target = "imageUrl")
     @Mapping(source = "product.price", target = "price")
     @Mapping(source = "sale", target = "sale")
     @Mapping(source = "startDay", target = "startDay")
@@ -32,7 +31,8 @@ public interface HotdealMapper {
     @Mapping(source = "product.title", target = "title")
     @Mapping(target = "price", ignore = true)
     @Mapping(target = "remainQuantity", ignore = true) // remainQuantity는 커스텀 매핑을 사용
-    @Mapping(target = "remainTime", ignore = true) // remainTime은 커스텀 매핑을 사용
+    @Mapping(target = "remainTime", ignore = true)
+        // remainTime은 커스텀 매핑을 사용
     PurchaseHotdealResponseDto toPurchaseResponseDto(Hotdeal hotdeal);
 
     @AfterMapping

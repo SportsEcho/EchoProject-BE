@@ -13,7 +13,6 @@ public class HotdealResponseDto {
     private Long id;
     private String title;
     private String content;
-    private String imageUrl;
     private int price;
     private int sale;
     private int dealQuantity;
