@@ -1,6 +1,7 @@
 package com.sportsecho.hotdeal.dto.response;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,5 +19,6 @@ public class HotdealResponseDto {
     private int dealQuantity;
     private LocalDateTime startDay;
     private LocalDateTime dueDay;
+    private List<String> imageUrlList;
 
 }
