@@ -1,6 +1,5 @@
 package com.sportsecho.product.controller;
 
-import com.sportsecho.common.dto.ApiResponse;
 import com.sportsecho.member.entity.MemberDetailsImpl;
 import com.sportsecho.product.dto.request.ProductRequestDto;
 import com.sportsecho.product.dto.response.ProductResponseDto;
@@ -20,12 +19,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -35,41 +32,46 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping("/products")
+    @PostMapping("")
     public ResponseEntity<ProductResponseDto> createProduct(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @Valid @RequestBody ProductRequestDto requestDto
     ) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(productService.createProduct(requestDto, memberDetails.getMember()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+            productService.createProduct(requestDto, memberDetails.getMember())
+        );
     }
 
-    @GetMapping("/products/{productId}")
+    @GetMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> getProduct(
         @PathVariable Long productId
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(productService.getProduct(productId));
+        return ResponseEntity.status(HttpStatus.OK).body(
+            productService.getProduct(productId)
+        );
     }
 
-    @GetMapping("/products")
+    @GetMapping("")
     public ResponseEntity<List<ProductResponseDto>> getProductListWithPageNation(
         Pageable pageable
     ) {
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(productService.getProductListWithPagiNation(pageable));
+        return ResponseEntity.status(HttpStatus.OK).body(
+            productService.getProductListWithPagiNation(pageable)
+        );
     }
 
-    @PatchMapping("/products/{productId}")
+    @PatchMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> updateProduct(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @PathVariable Long productId,
         @Valid @RequestBody ProductRequestDto requestDto
     ) {
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(productService.updateProduct(memberDetails.getMember(), productId, requestDto));
+        return ResponseEntity.status(HttpStatus.OK).body(
+            productService.updateProduct(memberDetails.getMember(), productId, requestDto)
+        );
     }
 
-    @DeleteMapping("/products/{productId}")
+    @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @PathVariable Long productId
