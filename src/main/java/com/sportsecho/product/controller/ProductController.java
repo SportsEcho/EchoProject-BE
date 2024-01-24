@@ -34,11 +34,10 @@ public class ProductController {
 
     @PostMapping("")
     public ResponseEntity<ProductResponseDto> createProduct(
-        @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @Valid @RequestBody ProductRequestDto requestDto
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-            productService.createProduct(requestDto, memberDetails.getMember())
+            productService.createProduct(requestDto)
         );
     }
 
@@ -62,21 +61,19 @@ public class ProductController {
 
     @PatchMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> updateProduct(
-        @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @PathVariable Long productId,
         @Valid @RequestBody ProductRequestDto requestDto
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
-            productService.updateProduct(memberDetails.getMember(), productId, requestDto)
+            productService.updateProduct(productId, requestDto)
         );
     }
 
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(
-        @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @PathVariable Long productId
     ) {
-        productService.deleteProduct(memberDetails.getMember(), productId);
+        productService.deleteProduct(productId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
