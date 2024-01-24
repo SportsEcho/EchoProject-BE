@@ -28,12 +28,7 @@ public class ProductServiceImplV1 implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponseDto createProduct(ProductRequestDto requestDto, Member member) {
-
-        if (!isAuthorized(member)) {
-            throw new GlobalException(ProductErrorCode.NO_AUTHORIZATION);
-        }
-
+    public ProductResponseDto createProduct(ProductRequestDto requestDto) {
         Product product = ProductMapper.INSTANCE.toEntity(requestDto);
         productRepository.save(product);
 
@@ -58,12 +53,8 @@ public class ProductServiceImplV1 implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponseDto updateProduct(Member member, Long productId,
+    public ProductResponseDto updateProduct(Long productId,
         ProductRequestDto requestDto) {
-
-        if (!isAuthorized(member)) {
-            throw new GlobalException(ProductErrorCode.NO_AUTHORIZATION);
-        }
 
         Product product = findProduct(productId);
         product.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getPrice(),
@@ -74,12 +65,8 @@ public class ProductServiceImplV1 implements ProductService {
     }
 
     @Override
-    public void deleteProduct(Member member, Long productId) {
+    public void deleteProduct(Long productId) {
         Product product = findProduct(productId);
-
-        if (!isAuthorized(member)) {
-            throw new GlobalException(ProductErrorCode.NO_AUTHORIZATION);
-        }
 
         productRepository.delete(product);
     }
