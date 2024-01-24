@@ -2,6 +2,7 @@ package com.sportsecho.common.configuration;
 
 import com.sportsecho.common.jwt.JwtAuthorizationFilter;
 import com.sportsecho.common.jwt.JwtExceptionFilter;
+import com.sportsecho.member.entity.MemberRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,12 @@ public class WebSecurityConfig {
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
 
+    //@Bean 내부에서 사용할 변수이기 때문에 static final로 선언
+    private static final String GET = HttpMethod.GET.name();
+    private static final String POST = HttpMethod.POST.name();
+    private static final String PATCH = HttpMethod.PATCH.name();
+    private static final String DELETE = HttpMethod.DELETE.name();
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -50,6 +57,7 @@ public class WebSecurityConfig {
 
         httpSecurity.authorizeHttpRequests(auth -> auth
             .requestMatchers(publicEndPoints()).permitAll()
+            .requestMatchers(adminEndPoints()).hasAuthority(MemberRole.ADMIN.name())
             .anyRequest().authenticated());
 
         //JwtFilter 설정
@@ -66,9 +74,6 @@ public class WebSecurityConfig {
     }
 
     private RequestMatcher publicEndPoints() {
-        String GET = HttpMethod.GET.name();
-        String POST = HttpMethod.POST.name();
-
         return new OrRequestMatcher(
             //사용자(관리자) 로그인,회원가입 및 소셜로그인
             new AntPathRequestMatcher("/api/members/login", POST),
@@ -93,6 +98,15 @@ public class WebSecurityConfig {
             //Swagger
             new AntPathRequestMatcher("/v3/**"),
             new AntPathRequestMatcher("/swagger-ui/**")
+        );
+    }
+
+    private RequestMatcher adminEndPoints() {
+        return new OrRequestMatcher(
+            //상품 생성, 수정, 삭제
+            new AntPathRequestMatcher("/api/products", POST),
+            new AntPathRequestMatcher("/api/products/{productId}", PATCH),
+            new AntPathRequestMatcher("/api/products/{productId}", DELETE)
         );
     }
 }
