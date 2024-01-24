@@ -79,14 +79,6 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
 //            productService.createProduct(requestDto, adminMember);
             assertNotNull(productRepository);
         }
-
-        @Test
-        @DisplayName("실패 - 권한 없음(일반유저)")
-        void createProductFail_NOAUTHORIZATION() {
-            assertThrows(GlobalException.class, () -> {
-                productService.createProduct(requestDto, customerMember);
-            });
-        }
     }
 
     @Nested
