@@ -5,6 +5,7 @@ import com.sportsecho.common.jwt.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -64,26 +65,32 @@ public class WebSecurityConfig {
         return httpSecurity.build();
     }
 
-    public RequestMatcher publicEndPoints() {
+    private RequestMatcher publicEndPoints() {
+        String GET = HttpMethod.GET.name();
+        String POST = HttpMethod.POST.name();
+
         return new OrRequestMatcher(
-            new AntPathRequestMatcher("/api/members/login"),
-            new AntPathRequestMatcher("/api/members/signup/**"),
-            new AntPathRequestMatcher("/api/members/**/callback"),
+            //사용자(관리자) 로그인,회원가입 및 소셜로그인
+            new AntPathRequestMatcher("/api/members/login", POST),
+            new AntPathRequestMatcher("/api/members/signup/**", GET),
+            new AntPathRequestMatcher("/api/members/**/callback", GET),
 
-            //game data load
-            new AntPathRequestMatcher("/api/games/**"),
-            new AntPathRequestMatcher("/api/games/details/**"),
+            //게임 전체 조회와 게임 단건조회
+            new AntPathRequestMatcher("/api/games", GET),
+            new AntPathRequestMatcher("/api/games/details/{gameId}", GET),
 
-            new AntPathRequestMatcher("/api/products"),
-            new AntPathRequestMatcher("/api/products/*"),
+            //상품 페이지 조회와 상품 단건조회
+            new AntPathRequestMatcher("/api/products", GET),
+            new AntPathRequestMatcher("/api/products/{productId}", GET),
 
-            new AntPathRequestMatcher("/api/products/**/hotdeals"),
-            new AntPathRequestMatcher("/api/products/**/hotdeals/*"),
-            new AntPathRequestMatcher("/api/hotdeals/**"),
+            //핫딜 페이지 조회와 핫딜 단건조회
+            new AntPathRequestMatcher("/api/hotdeals", GET),
+            new AntPathRequestMatcher("/api/hotdeals/{hotdealId}", GET),
 
-            //웹소켓 endpoint
+            //STOMP Connection
             new AntPathRequestMatcher("/websocket"),
 
+            //Swagger
             new AntPathRequestMatcher("/v3/**"),
             new AntPathRequestMatcher("/swagger-ui/**")
         );
