@@ -5,6 +5,7 @@ import com.sportsecho.member.entity.MemberDetailsImpl;
 import com.sportsecho.product.dto.request.ProductRequestDto;
 import com.sportsecho.product.dto.response.ProductResponseDto;
 import com.sportsecho.product.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api")
 public class ProductController {
 
     private final ProductService productService;
@@ -34,55 +35,47 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping("")
+    @PostMapping("/products")
     public ResponseEntity<ProductResponseDto> createProduct(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails,
-        @RequestBody ProductRequestDto requestDto
+        @Valid @RequestBody ProductRequestDto requestDto
     ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-            productService.createProduct(
-                requestDto,
-                memberDetails.getMember()
-            )
-        );
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(productService.createProduct(requestDto, memberDetails.getMember()));
     }
 
-    @GetMapping("/{productId}")
+    @GetMapping("/products/{productId}")
     public ResponseEntity<ProductResponseDto> getProduct(
-        @PathVariable("productId") Long productId
+        @PathVariable Long productId
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-            productService.getProduct(productId)
-        );
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getProduct(productId));
     }
 
-    @GetMapping("")
+    @GetMapping("/products")
     public ResponseEntity<List<ProductResponseDto>> getProductListWithPageNation(
         Pageable pageable
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-            productService.getProductListWithPagiNation(pageable)
-        );
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(productService.getProductListWithPagiNation(pageable));
     }
 
-    @PatchMapping("/{productId}")
+    @PatchMapping("/products/{productId}")
     public ResponseEntity<ProductResponseDto> updateProduct(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @PathVariable Long productId,
-        @RequestBody ProductRequestDto requestDto
-    )  {
-        return ResponseEntity.status(HttpStatus.OK).body(
-            productService.updateProduct(memberDetails.getMember(), productId, requestDto)
-        );
+        @Valid @RequestBody ProductRequestDto requestDto
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(productService.updateProduct(memberDetails.getMember(), productId, requestDto));
     }
 
-    @DeleteMapping("/{productId}")
+    @DeleteMapping("/products/{productId}")
     public ResponseEntity<Void> deleteProduct(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @PathVariable Long productId
     ) {
         productService.deleteProduct(memberDetails.getMember(), productId);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
 }
