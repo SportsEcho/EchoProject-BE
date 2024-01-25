@@ -122,8 +122,6 @@ public class HotdealServiceImplV1 implements HotdealService {
     @Transactional
     public void deleteHotdeal(Long hotdealId) {
         Hotdeal hotdeal = findHotdeal(hotdealId);
-        Product product = hotdeal.getProduct();
-        product.unlinkHotdeal();
 
         hotdealRepository.delete(hotdeal);
     }

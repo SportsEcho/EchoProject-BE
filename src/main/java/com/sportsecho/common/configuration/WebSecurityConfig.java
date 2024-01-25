@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -49,13 +50,15 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.cors(Customizer.withDefaults())// CORS 활성화
+            .csrf(AbstractHttpConfigurer::disable);
 
         httpSecurity.sessionManagement(sess ->
             sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
         httpSecurity.authorizeHttpRequests(auth -> auth
+            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .requestMatchers(publicEndPoints()).permitAll()
             .requestMatchers(adminEndPoints()).hasAuthority(MemberRole.ADMIN.name())
             .anyRequest().authenticated());
@@ -77,7 +80,7 @@ public class WebSecurityConfig {
         return new OrRequestMatcher(
             //사용자(관리자) 로그인,회원가입 및 소셜로그인
             new AntPathRequestMatcher("/api/members/login", POST),
-            new AntPathRequestMatcher("/api/members/signup/**", GET),
+            new AntPathRequestMatcher("/api/members/signup/**", POST),
             new AntPathRequestMatcher("/api/members/**/callback", GET),
 
             //게임 전체 조회와 게임 단건조회

@@ -27,10 +27,10 @@ public interface MemberProductService {
 
     /***
      * 장바구니 상품 삭제 API
-     * @param productId 상품 Id
+     * @param cartId 장바구니 Id
      * @param member 유저 정보
      */
-    void deleteCart(Long productId, Member member);
+    void deleteCart(Long cartId, Member member);
 
     /***
      * 장바구니 비우기 API
