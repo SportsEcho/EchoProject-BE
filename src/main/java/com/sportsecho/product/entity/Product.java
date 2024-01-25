@@ -19,6 +19,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 @Getter
 @Entity
@@ -41,17 +42,15 @@ public class Product extends TimeStamp {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
-    @OneToOne(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Hotdeal hotdeal;
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<PurchaseProduct> PurchaseProductList = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PurchaseProduct> PurchaseProductList = new ArrayList<>();
+    private final List<MemberProduct> memberProductList = new ArrayList<>();
 
+    @BatchSize(size = 20)
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberProduct> memberProductList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductImage> productImageList = new ArrayList<>();
+    private final List<ProductImage> productImageList = new ArrayList<>();
 
     @Builder
     public Product(String title, String content, int price, int quantity) {
@@ -67,10 +66,6 @@ public class Product extends TimeStamp {
         this.price = price;
         this.quantity = quantity;
         return this;
-    }
-
-    public void unlinkHotdeal() {
-        this.hotdeal = null;
     }
 
     public void decreaseQuantity(int quantity) {

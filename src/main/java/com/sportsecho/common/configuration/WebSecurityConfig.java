@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -49,13 +50,15 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.cors(Customizer.withDefaults())// CORS 활성화
+            .csrf(AbstractHttpConfigurer::disable);
 
         httpSecurity.sessionManagement(sess ->
             sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
         httpSecurity.authorizeHttpRequests(auth -> auth
+            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .requestMatchers(publicEndPoints()).permitAll()
             .requestMatchers(adminEndPoints()).hasAuthority(MemberRole.ADMIN.name())
             .anyRequest().authenticated());
@@ -106,7 +109,12 @@ public class WebSecurityConfig {
             //상품 생성, 수정, 삭제
             new AntPathRequestMatcher("/api/products", POST),
             new AntPathRequestMatcher("/api/products/{productId}", PATCH),
-            new AntPathRequestMatcher("/api/products/{productId}", DELETE)
+            new AntPathRequestMatcher("/api/products/{productId}", DELETE),
+
+            //핫딜 생성, 수정, 삭제
+            new AntPathRequestMatcher("/api/products/{productId}/hotdeals", POST),
+            new AntPathRequestMatcher("/api/hotdeals/{hotdealId}", PATCH),
+            new AntPathRequestMatcher("/api/hotdeals/{hotdealId}", DELETE)
         );
     }
 }
