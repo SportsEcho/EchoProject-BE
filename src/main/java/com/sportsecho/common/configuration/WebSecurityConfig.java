@@ -106,7 +106,12 @@ public class WebSecurityConfig {
             //상품 생성, 수정, 삭제
             new AntPathRequestMatcher("/api/products", POST),
             new AntPathRequestMatcher("/api/products/{productId}", PATCH),
-            new AntPathRequestMatcher("/api/products/{productId}", DELETE)
+            new AntPathRequestMatcher("/api/products/{productId}", DELETE),
+
+            //핫딜 생성, 수정, 삭제
+            new AntPathRequestMatcher("/api/products/{productId}/hotdeals", POST),
+            new AntPathRequestMatcher("/api/hotdeals/{hotdealId}", PATCH),
+            new AntPathRequestMatcher("/api/hotdeals/{hotdealId}", DELETE)
         );
     }
 }
