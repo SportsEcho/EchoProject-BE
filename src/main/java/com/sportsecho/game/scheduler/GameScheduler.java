@@ -67,7 +67,7 @@ public class GameScheduler {
 
 
     //    @Scheduled(fixedRate = 900000) // 매 15분마다 실행 (900000ms = 30분) = 하루 96번 호출
-    @Scheduled(cron = "0 10,20,30,40,50 * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void updateTodayFootballGames() throws IOException, InterruptedException, JSONException {
 
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
@@ -199,7 +199,7 @@ public class GameScheduler {
         }
     }
 
-    @Scheduled(cron = "0 10,20,30,40,50 * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void updateTodayNbaGames() throws IOException, InterruptedException, JSONException {
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
         String season = calculateSeason("NBA", now);
@@ -263,7 +263,7 @@ public class GameScheduler {
         }
     }
 
-    @Scheduled(cron = "0 10,20,30,40,50 * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void updateTodayMlbGames() throws IOException, InterruptedException {
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
         String season = calculateSeason("MLB", now);
