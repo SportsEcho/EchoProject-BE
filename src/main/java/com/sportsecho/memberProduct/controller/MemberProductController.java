@@ -50,13 +50,13 @@ public class MemberProductController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDtoList);
     }
 
-    @DeleteMapping("/products/{productId}")
+    @DeleteMapping("/{cartId}")
     public ResponseEntity<Void> deleteCart(
-        @PathVariable Long productId,
+        @PathVariable Long cartId,
         @AuthenticationPrincipal MemberDetailsImpl memberDetails
     ) {
 
-        memberProductService.deleteCart(productId, memberDetails.getMember());
+        memberProductService.deleteCart(cartId, memberDetails.getMember());
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }

@@ -28,11 +28,11 @@ public class MemberProductServiceImplV1 implements MemberProductService {
     @Override
     @Transactional
     public MemberProductResponseDto addCart(Long productId, MemberProductRequestDto requestDto,
-                                            Member member) {
+        Member member) {
 
         Product product = findProduct(productId);
         Optional<MemberProduct> memberProduct = memberProductRepository.findByProductIdAndMemberId(
-                productId, member.getId());
+            productId, member.getId());
         MemberProductResponseDto responseDto;
 
         if (memberProduct.isPresent()) {
@@ -40,7 +40,7 @@ public class MemberProductServiceImplV1 implements MemberProductService {
             responseDto = MemberProductMapper.INSTANCE.toResponseDto(memberProduct.get());
         } else {
             MemberProduct savedMemberProduct = MemberProductMapper.INSTANCE.toEntity(
-                    requestDto, member, product);
+                requestDto, member, product);
             memberProductRepository.save(savedMemberProduct);
             responseDto = MemberProductMapper.INSTANCE.toResponseDto(savedMemberProduct);
         }
@@ -53,17 +53,17 @@ public class MemberProductServiceImplV1 implements MemberProductService {
     public List<MemberProductResponseDto> getCart(Member member) {
 
         List<MemberProduct> memberProductList = memberProductRepository.findByMemberId(
-                member.getId());
+            member.getId());
 
         return memberProductList.stream()
-                .map(MemberProductMapper.INSTANCE::toResponseDto)
-                .toList();
+            .map(MemberProductMapper.INSTANCE::toResponseDto)
+            .toList();
     }
 
     @Override
     @Transactional
-    public void deleteCart(Long productId, Member member) {
-        MemberProduct memberProduct = findMemberProduct(productId, member.getId());
+    public void deleteCart(Long cartId, Member member) {
+        MemberProduct memberProduct = findMemberProduct(cartId);
         checkMember(member.getId(), memberProduct);
         memberProductRepository.delete(memberProduct);
     }
@@ -76,14 +76,14 @@ public class MemberProductServiceImplV1 implements MemberProductService {
 
     private Product findProduct(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new GlobalException(MemberProductErrorCode.NOT_FOUND_PRODUCT)
-                );
+            .orElseThrow(() -> new GlobalException(MemberProductErrorCode.NOT_FOUND_PRODUCT)
+            );
     }
 
-    private MemberProduct findMemberProduct(Long productId, Long memberId) {
-        return memberProductRepository.findByProductIdAndMemberId(productId, memberId)
-                .orElseThrow(() -> new GlobalException(MemberProductErrorCode.NOT_FOUND_PRODUCT_IN_CART)
-                );
+    private MemberProduct findMemberProduct(Long cartId) {
+        return memberProductRepository.findById(cartId)
+            .orElseThrow(() -> new GlobalException(MemberProductErrorCode.NOT_FOUND_PRODUCT_IN_CART)
+            );
     }
 
     private void checkMember(Long memberId, MemberProduct memberProduct) {

@@ -77,7 +77,7 @@ public class WebSecurityConfig {
         return new OrRequestMatcher(
             //사용자(관리자) 로그인,회원가입 및 소셜로그인
             new AntPathRequestMatcher("/api/members/login", POST),
-            new AntPathRequestMatcher("/api/members/signup/**", GET),
+            new AntPathRequestMatcher("/api/members/signup/**", POST),
             new AntPathRequestMatcher("/api/members/**/callback", GET),
 
             //게임 전체 조회와 게임 단건조회
