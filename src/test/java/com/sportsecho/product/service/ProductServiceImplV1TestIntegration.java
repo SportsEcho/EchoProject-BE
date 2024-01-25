@@ -143,8 +143,9 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
                     .map(Product::getPrice)
                     .toList();
 
-                List<ProductResponseDto> productList = productService.getProductListWithPageNation(
-                    pageable);
+                String keyword = "";
+                List<ProductResponseDto> productList = productService.getProductListWithPageNation(pageable, keyword);
+
                 assertEquals(pageSize, productList.size());
                 assertEquals(productList.get(0).getPrice(), allPrices.get(0));
             }

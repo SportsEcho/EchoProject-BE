@@ -4,10 +4,12 @@ import com.sportsecho.product.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    // QueryDsl, JPQL을 사용할때 모두 비교하고 벤치마킹
-    Page<Product> findAll(Pageable pageable);
+    Page<Product> findAllByTitleContaining(Pageable pageable, String keyword);
 
 }

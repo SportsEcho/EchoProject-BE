@@ -1,9 +1,9 @@
 package com.sportsecho.product.service;
 
-import com.sportsecho.member.entity.Member;
 import com.sportsecho.product.dto.ProductRequestDto;
 import com.sportsecho.product.dto.ProductResponseDto;
 import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
@@ -27,7 +27,7 @@ public interface ProductService {
      * @param pageable 페이지 page, size 정보를 담은 Pegeable 객체
      * @return 페이지 Product 정보 반환
      * */
-    List<ProductResponseDto> getProductListWithPagiNation(Pageable pageable);
+    List<ProductResponseDto> getProductListWithPageNation(Pageable pageable, String keyword);
 
     /**
      * Product 수정 - ADMIN 권한이 있는 사용자만 수정 가능
