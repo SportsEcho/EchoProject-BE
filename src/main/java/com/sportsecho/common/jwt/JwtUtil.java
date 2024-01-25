@@ -2,7 +2,7 @@ package com.sportsecho.common.jwt;
 
 
 import com.sportsecho.common.jwt.exception.JwtErrorCode;
-import com.sportsecho.global.exception.GlobalException;
+import com.sportsecho.common.exception.GlobalException;
 import com.sportsecho.member.entity.MemberRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

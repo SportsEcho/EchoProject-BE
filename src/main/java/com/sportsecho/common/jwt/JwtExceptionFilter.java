@@ -1,7 +1,7 @@
 package com.sportsecho.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sportsecho.global.exception.GlobalException;
+import com.sportsecho.common.exception.GlobalException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

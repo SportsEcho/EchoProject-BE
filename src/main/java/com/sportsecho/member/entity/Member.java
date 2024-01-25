@@ -1,6 +1,5 @@
 package com.sportsecho.member.entity;
 
-import com.sportsecho.comment.entity.Comment;
 import com.sportsecho.common.oauth.SocialType;
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.memberProduct.entity.MemberProduct;
@@ -51,9 +50,6 @@ public class Member extends TimeStamp {
 
     @Column(name = "social_id")
     private Long socialId;
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<Comment> commentList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<MemberProduct> memberProductList = new ArrayList<>();

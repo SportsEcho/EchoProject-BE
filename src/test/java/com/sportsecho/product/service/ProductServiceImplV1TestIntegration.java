@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.sportsecho.global.exception.GlobalException;
+import com.sportsecho.common.exception.GlobalException;
 import com.sportsecho.member.MemberTest;
 import com.sportsecho.member.MemberTestUtil;
 import com.sportsecho.member.entity.Member;
@@ -13,8 +13,8 @@ import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.member.repository.MemberRepository;
 import com.sportsecho.product.ProductTest;
 import com.sportsecho.product.ProductTestUtil;
-import com.sportsecho.product.dto.request.ProductRequestDto;
-import com.sportsecho.product.dto.response.ProductResponseDto;
+import com.sportsecho.product.dto.ProductRequestDto;
+import com.sportsecho.product.dto.ProductResponseDto;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.exception.ProductErrorCode;
 import com.sportsecho.product.repository.ProductRepository;
@@ -78,14 +78,6 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
         void createProductSuccess() {
 //            productService.createProduct(requestDto, adminMember);
             assertNotNull(productRepository);
-        }
-
-        @Test
-        @DisplayName("실패 - 권한 없음(일반유저)")
-        void createProductFail_NOAUTHORIZATION() {
-            assertThrows(GlobalException.class, () -> {
-                productService.createProduct(requestDto, customerMember);
-            });
         }
     }
 
@@ -165,8 +157,7 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
         @DisplayName("성공 - 상품 수정")
         void updateProductSuccess() {
             productRepository.save(product);
-            ProductResponseDto responseDto = productService.updateProduct(adminMember,
-                product.getId(), requestDto);
+            ProductResponseDto responseDto = productService.updateProduct(product.getId(), requestDto);
 
             assertEquals(requestDto.getTitle(), responseDto.getTitle());
             assertEquals(requestDto.getContent(), responseDto.getContent());
@@ -174,14 +165,6 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
             assertEquals(requestDto.getQuantity(), responseDto.getQuantity());
         }
 
-        @Test
-        @DisplayName("실패 - 권한 없음(일반유저)")
-        void updateProductFail_NOAUTHORIZATION() {
-            GlobalException thrown = assertThrows(GlobalException.class, () -> {
-                productService.updateProduct(customerMember, product.getId(), requestDto);
-            });
-            assertEquals(ProductErrorCode.NO_AUTHORIZATION, thrown.getErrorCode());
-        }
     }
 
     @Nested
@@ -192,7 +175,7 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
         @DisplayName("성공 - 상품 삭제")
         void deleteProductSuccess() {
             productRepository.save(product);
-            productService.deleteProduct(adminMember, product.getId());
+            productService.deleteProduct(product.getId());
             assertTrue(productRepository.findById(product.getId()).isEmpty());
         }
 
@@ -201,7 +184,7 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
         void deleteProductFail_NOTFOUNDPRODUCT() {
             Long productId = 99L;
             GlobalException thrown = assertThrows(GlobalException.class, () -> {
-                productService.deleteProduct(adminMember, productId);
+                productService.deleteProduct(productId);
             });
             assertEquals(ProductErrorCode.NOT_FOUND_PRODUCT, thrown.getErrorCode());
         }

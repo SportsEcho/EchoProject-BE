@@ -1,6 +1,6 @@
 package com.sportsecho.purchase.service;
 
-import com.sportsecho.global.exception.GlobalException;
+import com.sportsecho.common.exception.GlobalException;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.memberProduct.entity.MemberProduct;
 import com.sportsecho.memberProduct.repository.MemberProductRepository;

@@ -1,6 +1,5 @@
-package com.sportsecho.global.handler;
+package com.sportsecho.common.exception;
 
-import com.sportsecho.global.exception.GlobalException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;

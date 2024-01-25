@@ -2,7 +2,7 @@ package com.sportsecho.hotdeal.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.sportsecho.global.exception.GlobalException;
+import com.sportsecho.common.exception.GlobalException;
 import com.sportsecho.hotdeal.HotdealTest;
 import com.sportsecho.hotdeal.HotdealTestUtil;
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;

@@ -1,5 +1,6 @@
 package com.sportsecho.memberProduct.dto;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,4 +19,6 @@ public class MemberProductResponseDto {
     private String title;
 
     private int price;
+
+    private List<String> imageUrlList;
 }

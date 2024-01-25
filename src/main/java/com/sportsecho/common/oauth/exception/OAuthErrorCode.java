@@ -1,6 +1,6 @@
 package com.sportsecho.common.oauth.exception;
 
-import com.sportsecho.global.exception.BaseErrorCode;
+import com.sportsecho.common.exception.BaseErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
