@@ -8,7 +8,8 @@ spring:
       hibernate:
 #        format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
-    defer-datasource-initialization: true
+        query:
+          in_clause_parameter_padding=true:defer-datasource-initialization: true
 
   datasource:
     url: jdbc:mysql://sports-echo-mysql-instance.c8cvx8gfy4m3.ap-northeast-2.rds.amazonaws.com/echo_db
