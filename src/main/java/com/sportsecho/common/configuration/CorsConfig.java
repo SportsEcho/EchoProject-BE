@@ -10,9 +10,11 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-            .allowedOrigins("http://localhost:3000")
-            .allowedOrigins("http://sportsecho.life:3000")
-            .exposedHeaders(JwtUtil.AUTHORIZATION_HEADER, JwtUtil.REFRESH_AUTHORIZATION_HEADER);
+                .allowedOriginPatterns("http://localhost:3000", "http://sportsecho.life:3000")
+                .exposedHeaders(JwtUtil.AUTHORIZATION_HEADER, JwtUtil.REFRESH_AUTHORIZATION_HEADER)
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true);
     }
 }
 

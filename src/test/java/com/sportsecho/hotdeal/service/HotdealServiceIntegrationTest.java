@@ -52,8 +52,8 @@ public class HotdealServiceIntegrationTest implements MemberTest, ProductTest, H
 
     @AfterEach
     void tearDown() {
-        productRepository.deleteAll();
         hotdealRepository.deleteAll();
+        productRepository.deleteAll();
     }
 
     @Nested

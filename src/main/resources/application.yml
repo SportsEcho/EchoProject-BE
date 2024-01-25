@@ -8,6 +8,8 @@ spring:
       hibernate:
 #        format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
+        query:
+          in_clause_parameter_padding=true:defer-datasource-initialization: true
     defer-datasource-initialization: true
 
   datasource:
