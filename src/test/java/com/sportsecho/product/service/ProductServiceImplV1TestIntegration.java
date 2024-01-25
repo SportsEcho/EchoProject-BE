@@ -25,6 +25,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
 
     @Autowired
+    @Qualifier("V1")
     private ProductService productService;
 
     @Autowired
@@ -141,8 +143,9 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
                     .map(Product::getPrice)
                     .toList();
 
-                List<ProductResponseDto> productList = productService.getProductListWithPagiNation(
-                    pageable);
+                String keyword = "";
+                List<ProductResponseDto> productList = productService.getProductListWithPageNation(pageable, keyword);
+
                 assertEquals(pageSize, productList.size());
                 assertEquals(productList.get(0).getPrice(), allPrices.get(0));
             }
