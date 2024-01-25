@@ -44,11 +44,8 @@ public class HotdealServiceImplV1 implements HotdealService {
 
     @Override
     @Transactional
-    public HotdealResponseDto createHotdeal(Member member, Long productId,
+    public HotdealResponseDto createHotdeal(Long productId,
         HotdealRequestDto requestDto) {
-        if (!isAuthorized(member)) {
-            throw new GlobalException(HotdealErrorCode.NO_AUTHORIZATION);
-        }
 
         Product product = findProduct(productId);
         Hotdeal hotdeal = Hotdeal.of(requestDto.getStartDay(), requestDto.getDueDay(),
@@ -78,11 +75,8 @@ public class HotdealServiceImplV1 implements HotdealService {
 
     @Override
     @Transactional
-    public HotdealResponseDto updateHotdeal(Member member, Long hotdealId,
+    public HotdealResponseDto updateHotdeal(Long hotdealId,
         UpdateHotdealInfoRequestDto requestDto) {
-        if (!isAuthorized(member)) {
-            throw new GlobalException(HotdealErrorCode.NO_AUTHORIZATION);
-        }
         Hotdeal hotdeal = findHotdeal(hotdealId);
 
         hotdeal.updateHotdealInfo(requestDto.getStartDay(), requestDto.getDueDay(),
@@ -126,12 +120,8 @@ public class HotdealServiceImplV1 implements HotdealService {
 
     @Override
     @Transactional
-    public void deleteHotdeal(Member member, Long hotdealId) {
+    public void deleteHotdeal(Long hotdealId) {
         Hotdeal hotdeal = findHotdeal(hotdealId);
-
-        if (!isAuthorized(member)) {
-            throw new GlobalException(HotdealErrorCode.NO_AUTHORIZATION);
-        }
 
         hotdealRepository.delete(hotdeal);
     }
@@ -146,9 +136,4 @@ public class HotdealServiceImplV1 implements HotdealService {
             .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
     }
 
-    private Boolean isAuthorized(Member member) {
-        return member.getRole().equals(MemberRole.ADMIN);
-    }
-
-    //GlobalException(GameErrorCode.EXTERNAL_API_ERROR)
 }
