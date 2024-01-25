@@ -1,8 +1,8 @@
 package com.sportsecho.product.service;
 
 import com.sportsecho.member.entity.Member;
-import com.sportsecho.product.dto.request.ProductRequestDto;
-import com.sportsecho.product.dto.response.ProductResponseDto;
+import com.sportsecho.product.dto.ProductRequestDto;
+import com.sportsecho.product.dto.ProductResponseDto;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 

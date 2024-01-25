@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sportsecho.game.dto.GameResponseDto;
 import com.sportsecho.game.exception.GameErrorCode;
-import com.sportsecho.global.exception.GlobalException;
+import com.sportsecho.common.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.Dsl;

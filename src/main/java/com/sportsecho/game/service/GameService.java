@@ -4,6 +4,10 @@ import com.sportsecho.game.dto.GameResponseDto;
 import java.util.List;
 
 public interface GameService {
+    /**
+     * Game 정보 조회
+     * @param date 조회할 날짜
+     * */
     List<GameResponseDto> getGamesByDateAndLeague(String date);
 
     /**

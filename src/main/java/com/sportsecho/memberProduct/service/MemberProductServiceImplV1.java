@@ -1,8 +1,7 @@
 package com.sportsecho.memberProduct.service;
 
-import com.sportsecho.global.exception.GlobalException;
+import com.sportsecho.common.exception.GlobalException;
 import com.sportsecho.member.entity.Member;
-import com.sportsecho.member.repository.MemberRepository;
 import com.sportsecho.memberProduct.dto.MemberProductRequestDto;
 import com.sportsecho.memberProduct.dto.MemberProductResponseDto;
 import com.sportsecho.memberProduct.entity.MemberProduct;
@@ -11,13 +10,12 @@ import com.sportsecho.memberProduct.mapper.MemberProductMapper;
 import com.sportsecho.memberProduct.repository.MemberProductRepository;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.repository.ProductRepository;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @Qualifier("V1")
 @Service
@@ -26,7 +24,6 @@ public class MemberProductServiceImplV1 implements MemberProductService {
 
     private final MemberProductRepository memberProductRepository;
     private final ProductRepository productRepository;
-    private final MemberRepository memberRepository;
 
     @Override
     @Transactional
