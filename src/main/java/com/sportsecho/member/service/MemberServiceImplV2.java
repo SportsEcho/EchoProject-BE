@@ -68,13 +68,13 @@ public class MemberServiceImplV2 implements MemberService {
             throw new GlobalException(MemberErrorCode.INVALID_MEMBER_NAME);
 
         //MemberMapper를 이용한 Entity 생성
-        Member member = MemberMapper.MAPPER.toEntity(request, role);
+        Member member = MemberMapper.INSTANCE.toEntity(request, role);
         member.passwordEncode(passwordEncoder);
 
         memberRepository.save(member);
 
 
-        return MemberMapper.MAPPER.toResponseDto(member);
+        return MemberMapper.INSTANCE.toResponseDto(member);
     }
 
     @Override
@@ -148,14 +148,14 @@ public class MemberServiceImplV2 implements MemberService {
 
     @Override
     public MemberResponseDto readMember(Member member) {
-        return MemberMapper.MAPPER.toResponseDto(member);
+        return MemberMapper.INSTANCE.toResponseDto(member);
     }
 
     @Override
     @Transactional
     public MemberResponseDto deleteMember(Member member) {
         memberRepository.delete(member);
-        return MemberMapper.MAPPER.toResponseDto(member);
+        return MemberMapper.INSTANCE.toResponseDto(member);
     }
 
     @Override
