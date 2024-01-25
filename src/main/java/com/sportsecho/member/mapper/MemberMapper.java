@@ -10,7 +10,7 @@ import org.mapstruct.factory.Mappers;
 //@Mapper 어노테이션이 있어야 MapStruct을 활용할 수 있다.
 @Mapper
 public interface MemberMapper {
-    MemberMapper MAPPER = Mappers.getMapper(MemberMapper.class);
+    MemberMapper INSTANCE = Mappers.getMapper(MemberMapper.class);
 
     Member toEntity(MemberRequestDto request, MemberRole role);
 

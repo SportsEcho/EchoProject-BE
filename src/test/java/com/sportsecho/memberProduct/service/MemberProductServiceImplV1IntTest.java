@@ -141,9 +141,10 @@ class MemberProductServiceImplV1IntTest implements MemberTest, ProductTest {
         void deleteCartTest_success() {
             //given
             MemberProduct memberProduct = createMemberProduct();
+            memberProductRepository.save(memberProduct);
 
             //when
-            memberProductService.deleteCart(product.getId(), member);
+            memberProductService.deleteCart(memberProduct.getId(), member);
 
             //then
             assertTrue(memberProductRepository.findById(memberProduct.getId()).isEmpty());

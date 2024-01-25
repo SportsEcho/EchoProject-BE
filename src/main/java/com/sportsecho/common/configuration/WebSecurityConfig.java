@@ -80,7 +80,7 @@ public class WebSecurityConfig {
         return new OrRequestMatcher(
             //사용자(관리자) 로그인,회원가입 및 소셜로그인
             new AntPathRequestMatcher("/api/members/login", POST),
-            new AntPathRequestMatcher("/api/members/signup/**", GET),
+            new AntPathRequestMatcher("/api/members/signup/**", POST),
             new AntPathRequestMatcher("/api/members/**/callback", GET),
 
             //게임 전체 조회와 게임 단건조회
@@ -109,7 +109,12 @@ public class WebSecurityConfig {
             //상품 생성, 수정, 삭제
             new AntPathRequestMatcher("/api/products", POST),
             new AntPathRequestMatcher("/api/products/{productId}", PATCH),
-            new AntPathRequestMatcher("/api/products/{productId}", DELETE)
+            new AntPathRequestMatcher("/api/products/{productId}", DELETE),
+
+            //핫딜 생성, 수정, 삭제
+            new AntPathRequestMatcher("/api/products/{productId}/hotdeals", POST),
+            new AntPathRequestMatcher("/api/hotdeals/{hotdealId}", PATCH),
+            new AntPathRequestMatcher("/api/hotdeals/{hotdealId}", DELETE)
         );
     }
 }
