@@ -1,4 +1,4 @@
-package com.sportsecho.global.exception;
+package com.sportsecho.common.exception;
 
 import org.springframework.http.HttpStatus;
 

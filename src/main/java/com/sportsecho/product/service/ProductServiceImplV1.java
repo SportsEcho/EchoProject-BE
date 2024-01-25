@@ -1,10 +1,10 @@
 package com.sportsecho.product.service;
 
-import com.sportsecho.global.exception.GlobalException;
+import com.sportsecho.common.exception.GlobalException;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberRole;
-import com.sportsecho.product.dto.request.ProductRequestDto;
-import com.sportsecho.product.dto.response.ProductResponseDto;
+import com.sportsecho.product.dto.ProductRequestDto;
+import com.sportsecho.product.dto.ProductResponseDto;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.exception.ProductErrorCode;
 import com.sportsecho.product.mapper.ProductMapper;

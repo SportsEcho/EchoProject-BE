@@ -1,4 +1,4 @@
-package com.sportsecho.product.dto.request;
+package com.sportsecho.product.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
