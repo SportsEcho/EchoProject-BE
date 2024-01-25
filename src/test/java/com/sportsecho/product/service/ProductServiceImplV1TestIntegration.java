@@ -79,14 +79,6 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
 //            productService.createProduct(requestDto, adminMember);
             assertNotNull(productRepository);
         }
-
-        @Test
-        @DisplayName("실패 - 권한 없음(일반유저)")
-        void createProductFail_NOAUTHORIZATION() {
-            assertThrows(GlobalException.class, () -> {
-                productService.createProduct(requestDto, customerMember);
-            });
-        }
     }
 
     @Nested
@@ -165,8 +157,7 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
         @DisplayName("성공 - 상품 수정")
         void updateProductSuccess() {
             productRepository.save(product);
-            ProductResponseDto responseDto = productService.updateProduct(adminMember,
-                product.getId(), requestDto);
+            ProductResponseDto responseDto = productService.updateProduct(product.getId(), requestDto);
 
             assertEquals(requestDto.getTitle(), responseDto.getTitle());
             assertEquals(requestDto.getContent(), responseDto.getContent());
@@ -174,14 +165,6 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
             assertEquals(requestDto.getQuantity(), responseDto.getQuantity());
         }
 
-        @Test
-        @DisplayName("실패 - 권한 없음(일반유저)")
-        void updateProductFail_NOAUTHORIZATION() {
-            GlobalException thrown = assertThrows(GlobalException.class, () -> {
-                productService.updateProduct(customerMember, product.getId(), requestDto);
-            });
-            assertEquals(ProductErrorCode.NO_AUTHORIZATION, thrown.getErrorCode());
-        }
     }
 
     @Nested
@@ -192,7 +175,7 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
         @DisplayName("성공 - 상품 삭제")
         void deleteProductSuccess() {
             productRepository.save(product);
-            productService.deleteProduct(adminMember, product.getId());
+            productService.deleteProduct(product.getId());
             assertTrue(productRepository.findById(product.getId()).isEmpty());
         }
 
@@ -201,7 +184,7 @@ class ProductServiceImplV1TestIntegration implements MemberTest, ProductTest {
         void deleteProductFail_NOTFOUNDPRODUCT() {
             Long productId = 99L;
             GlobalException thrown = assertThrows(GlobalException.class, () -> {
-                productService.deleteProduct(adminMember, productId);
+                productService.deleteProduct(productId);
             });
             assertEquals(ProductErrorCode.NOT_FOUND_PRODUCT, thrown.getErrorCode());
         }
