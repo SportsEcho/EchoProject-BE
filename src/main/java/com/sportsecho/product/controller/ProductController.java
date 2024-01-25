@@ -51,7 +51,7 @@ public class ProductController {
 
     @GetMapping("")
     public ResponseEntity<List<ProductResponseDto>> getProductListWithPageNation(
-        @RequestParam("keyword") String keyword,
+        @RequestParam(value = "keyword", defaultValue = "") String keyword,
         Pageable pageable
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
