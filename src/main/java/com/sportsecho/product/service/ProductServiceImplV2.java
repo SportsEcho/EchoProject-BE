@@ -17,6 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * createProduct(): V1과 동일
+ * getProduct(): V1과 동일
+ * getProductListWithPageNation(): V1에서 ProductList 조회시 발생하는 1+N 문제 해결
+ * updateProduct(): V1과 동일
+ * deleteProduct(): V1과 동일
+ * */
 @Service
 @Qualifier("V2")
 @RequiredArgsConstructor
