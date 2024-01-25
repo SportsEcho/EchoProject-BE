@@ -41,9 +41,6 @@ public class Product extends TimeStamp {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
-    @OneToOne(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Hotdeal hotdeal;
-
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseProduct> PurchaseProductList = new ArrayList<>();
 
@@ -67,10 +64,6 @@ public class Product extends TimeStamp {
         this.price = price;
         this.quantity = quantity;
         return this;
-    }
-
-    public void unlinkHotdeal() {
-        this.hotdeal = null;
     }
 
     public void decreaseQuantity(int quantity) {

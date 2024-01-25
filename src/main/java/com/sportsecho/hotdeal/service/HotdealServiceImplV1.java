@@ -132,8 +132,6 @@ public class HotdealServiceImplV1 implements HotdealService {
         if (!isAuthorized(member)) {
             throw new GlobalException(HotdealErrorCode.NO_AUTHORIZATION);
         }
-        Product product = hotdeal.getProduct();
-        product.unlinkHotdeal();
 
         hotdealRepository.delete(hotdeal);
     }
