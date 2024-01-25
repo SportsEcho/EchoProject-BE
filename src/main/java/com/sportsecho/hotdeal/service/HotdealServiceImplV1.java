@@ -11,7 +11,6 @@ import com.sportsecho.hotdeal.exception.HotdealErrorCode;
 import com.sportsecho.hotdeal.mapper.HotdealMapper;
 import com.sportsecho.hotdeal.repository.HotdealRepository;
 import com.sportsecho.member.entity.Member;
-import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.exception.ProductErrorCode;
 import com.sportsecho.product.repository.ProductRepository;
@@ -21,6 +20,7 @@ import com.sportsecho.purchase.repository.PurchaseRepository;
 import com.sportsecho.purchaseProduct.entity.ProductRole;
 import com.sportsecho.purchaseProduct.entity.PurchaseProduct;
 import com.sportsecho.purchaseProduct.repository.PurchaseProductRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -87,8 +87,10 @@ public class HotdealServiceImplV1 implements HotdealService {
 
     @Override
     @Transactional
-    public PurchaseHotdealResponseDto purchaseHotdeal(Member member, PurchaseHotdealRequestDto requestDto) {
-        Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(requestDto.getHotdealId())
+    public PurchaseHotdealResponseDto purchaseHotdeal(Member member,
+        PurchaseHotdealRequestDto requestDto) {
+        Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(
+                requestDto.getHotdealId())
             .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
 
         if (hotdeal.getDealQuantity() == 0) {
@@ -96,14 +98,17 @@ public class HotdealServiceImplV1 implements HotdealService {
         }
 
         if (hotdeal.getDealQuantity() < requestDto.getQuantity()) {
-            throw new GlobalException(HotdealErrorCode.LACK_DEAL_QUANTITY); // 핫딜 구매시 재고보다 많은 수량 구매 시도
+            throw new GlobalException(
+                HotdealErrorCode.LACK_DEAL_QUANTITY); // 핫딜 구매시 재고보다 많은 수량 구매 시도
         }
 
         Product product = hotdeal.getProduct();
         int dicountedPrice = product.getPrice() - (product.getPrice() * hotdeal.getSale() / 100);
 
-        Purchase purchase = PurchaseMapper.INSTANCE.fromPurchaseHotdealReqeustDto(requestDto, dicountedPrice, member);
+        Purchase purchase = PurchaseMapper.INSTANCE.fromPurchaseHotdealReqeustDto(requestDto,
+            dicountedPrice, member);
         purchaseRepository.save(purchase);
+        purchase.setCreatedAt(LocalDateTime.now());
 
         PurchaseProduct purchaseProduct = PurchaseProduct.builder()
             .product(product)
@@ -112,7 +117,8 @@ public class HotdealServiceImplV1 implements HotdealService {
             .build();
         purchaseProductRepository.save(purchaseProduct);
 
-        hotdeal.updateDealQuantity(hotdeal.getDealQuantity() - requestDto.getQuantity()); // 앞에서 예외처리 완료
+        hotdeal.updateDealQuantity(
+            hotdeal.getDealQuantity() - requestDto.getQuantity()); // 앞에서 예외처리 완료
         hotdealRepository.save(hotdeal); // 더티 체킹
 
         return HotdealMapper.INSTANCE.toPurchaseResponseDto(hotdeal);
