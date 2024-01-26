@@ -1,7 +1,7 @@
-package com.sportsecho.global.util.s3.service;
+package com.sportsecho.common.util.s3.service;
 
-import com.sportsecho.global.exception.GlobalException;
-import com.sportsecho.global.util.s3.S3Uploader;
+import com.sportsecho.common.exception.GlobalException;
+import com.sportsecho.common.util.s3.S3Uploader;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.product.entity.Product;

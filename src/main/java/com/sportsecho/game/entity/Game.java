@@ -1,18 +1,14 @@
 package com.sportsecho.game.entity;
 
-import com.sportsecho.comment.entity.Comment;
 import com.sportsecho.common.time.TimeStamp;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import jdk.jfr.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,10 +35,8 @@ public class Game extends TimeStamp {
     private String venueName;
     private int homeGoal;
     private int awayGoal;
+    @Enumerated(EnumType.ORDINAL)
     private SportsType sportsType;
-
-    @OneToMany(mappedBy = "game", fetch = FetchType.LAZY)
-    private List<Comment> comments = new ArrayList<>();
 
     public static Game createGame(String homeTeamName, String homeTeamLogo, String awayTeamName,
         String awayTeamLogo, String leagueLogo, LocalDateTime date, String venueName, int homeGoal, int awayGoal, SportsType sportsType) {

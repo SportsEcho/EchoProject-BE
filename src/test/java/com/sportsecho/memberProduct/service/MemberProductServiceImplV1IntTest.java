@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.sportsecho.global.exception.GlobalException;
+import com.sportsecho.common.exception.GlobalException;
 import com.sportsecho.member.MemberTest;
 import com.sportsecho.member.MemberTestUtil;
 import com.sportsecho.member.entity.Member;
@@ -141,9 +141,10 @@ class MemberProductServiceImplV1IntTest implements MemberTest, ProductTest {
         void deleteCartTest_success() {
             //given
             MemberProduct memberProduct = createMemberProduct();
+            memberProductRepository.save(memberProduct);
 
             //when
-            memberProductService.deleteCart(product.getId(), member);
+            memberProductService.deleteCart(memberProduct.getId(), member);
 
             //then
             assertTrue(memberProductRepository.findById(memberProduct.getId()).isEmpty());

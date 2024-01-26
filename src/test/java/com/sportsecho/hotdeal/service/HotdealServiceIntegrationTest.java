@@ -1,8 +1,11 @@
 package com.sportsecho.hotdeal.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.sportsecho.global.exception.GlobalException;
+import com.sportsecho.common.exception.GlobalException;
 import com.sportsecho.hotdeal.HotdealTest;
 import com.sportsecho.hotdeal.HotdealTestUtil;
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
@@ -12,10 +15,6 @@ import com.sportsecho.hotdeal.entity.Hotdeal;
 import com.sportsecho.hotdeal.exception.HotdealErrorCode;
 import com.sportsecho.hotdeal.repository.HotdealRepository;
 import com.sportsecho.member.MemberTest;
-import com.sportsecho.member.MemberTestUtil;
-import com.sportsecho.member.entity.Member;
-import com.sportsecho.member.entity.MemberRole;
-import com.sportsecho.member.repository.MemberRepository;
 import com.sportsecho.product.ProductTest;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.repository.ProductRepository;
@@ -37,8 +36,6 @@ public class HotdealServiceIntegrationTest implements MemberTest, ProductTest, H
     @Qualifier("V1")
     HotdealService hotdealService;
 
-    @Autowired
-    MemberRepository memberRepository;
 
     @Autowired
     ProductRepository productRepository;
@@ -46,27 +43,17 @@ public class HotdealServiceIntegrationTest implements MemberTest, ProductTest, H
     @Autowired
     HotdealRepository hotdealRepository;
 
-    private Member customerMember, adminMember;
-
     private Product product;
-
 
     @BeforeEach
     void setUp() {
-        customerMember = memberRepository.save(
-            MemberTestUtil.getTestMember("customer", TEST_EMAIL, TEST_PASSWORD,
-                MemberRole.CUSTOMER));
-        adminMember = memberRepository.save(
-            MemberTestUtil.getTestMember("admin", ANOTHER_TEST_EMAIL, TEST_PASSWORD,
-                MemberRole.ADMIN));
         product = productRepository.save(TEST_PRODUCT);
     }
 
     @AfterEach
     void tearDown() {
-        memberRepository.deleteAll();
-        productRepository.deleteAll();
         hotdealRepository.deleteAll();
+        productRepository.deleteAll();
     }
 
     @Nested
@@ -81,26 +68,13 @@ public class HotdealServiceIntegrationTest implements MemberTest, ProductTest, H
                 TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY, TEST_SALE);
 
             // When
-            HotdealResponseDto result = hotdealService.createHotdeal(adminMember, product.getId(),
+            HotdealResponseDto result = hotdealService.createHotdeal(product.getId(),
                 requestDto);
 
             // Then
             assertNotNull(result);
             assertEquals(requestDto.getStartDay(), result.getStartDay());
 
-        }
-
-        @Test
-        @DisplayName("실패 - 권한 없는 사용자")
-        void failCreateHotdealUnauthorized() {
-            HotdealRequestDto requestDto = HotdealTestUtil.createTestHotdealReqeustDto(
-                TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY, TEST_SALE);
-
-            // When && Then
-            GlobalException thrown = assertThrows(GlobalException.class, () -> {
-                hotdealService.createHotdeal(customerMember, product.getId(), requestDto);
-            });
-            assertEquals(HotdealErrorCode.NO_AUTHORIZATION, thrown.getErrorCode());
         }
     }
 
@@ -196,8 +170,8 @@ public class HotdealServiceIntegrationTest implements MemberTest, ProductTest, H
                 TEST_SALE + 1);
 
             // When
-            HotdealResponseDto responseDto = hotdealService.updateHotdeal(adminMember,
-                hotdeal.getId(), updateHotdealInfoRequestDto);
+            HotdealResponseDto responseDto = hotdealService.updateHotdeal(hotdeal.getId(),
+                updateHotdealInfoRequestDto);
 
             // Then
             assertNotNull(responseDto);
@@ -208,21 +182,6 @@ public class HotdealServiceIntegrationTest implements MemberTest, ProductTest, H
         }
 
         @Test
-        @DisplayName("실패 - 권한 없는 사용자")
-        void updateHotdealFailUnauthorized() {
-            // Given
-            Hotdeal hotdeal = hotdealRepository.save(
-                HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
-                    TEST_SALE, product));
-
-            // When && Then
-            GlobalException thrown = assertThrows(GlobalException.class, () -> {
-                hotdealService.updateHotdeal(customerMember, hotdeal.getId(), updateHotdealInfoRequestDto);
-            });
-            assertEquals(HotdealErrorCode.NO_AUTHORIZATION, thrown.getErrorCode());
-        }
-
-        @Test
         @DisplayName("실패 - 존재하지 않는 핫딜")
         void updateHotdealFailNotFoundHotdeal() {
             // Given
@@ -230,7 +189,8 @@ public class HotdealServiceIntegrationTest implements MemberTest, ProductTest, H
 
             // When && Then
             GlobalException thrown = assertThrows(GlobalException.class, () -> {
-                hotdealService.updateHotdeal(adminMember, invalidHotdealId, updateHotdealInfoRequestDto);
+                hotdealService.updateHotdeal(invalidHotdealId,
+                    updateHotdealInfoRequestDto);
             });
             assertEquals(HotdealErrorCode.NOT_FOUND_HOTDEAL, thrown.getErrorCode());
         }
@@ -250,26 +210,11 @@ public class HotdealServiceIntegrationTest implements MemberTest, ProductTest, H
 
             // When
 
-            hotdealService.deleteHotdeal(adminMember, hotdeal.getId());
+            hotdealService.deleteHotdeal(hotdeal.getId());
 
             // Then
             assertNotNull(hotdeal.getId());
             assertTrue(hotdealRepository.findById(hotdeal.getId()).isEmpty());
-        }
-
-        @Test
-        @DisplayName("실패 - 권한 없는 사용자")
-        void deleteHotdealFailUnauthorized() {
-            // Given
-            Hotdeal hotdeal = hotdealRepository.save(
-                HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
-                    TEST_SALE, product));
-
-            // When && Then
-            GlobalException thrown = assertThrows(GlobalException.class, () -> {
-                hotdealService.deleteHotdeal(customerMember, hotdeal.getId());
-            });
-            assertEquals(HotdealErrorCode.NO_AUTHORIZATION, thrown.getErrorCode());
         }
 
         @Test
@@ -280,7 +225,7 @@ public class HotdealServiceIntegrationTest implements MemberTest, ProductTest, H
 
             // When && Then
             GlobalException thrown = assertThrows(GlobalException.class, () -> {
-                hotdealService.deleteHotdeal(adminMember, invalidHotdealId);
+                hotdealService.deleteHotdeal(invalidHotdealId);
             });
             assertEquals(HotdealErrorCode.NOT_FOUND_HOTDEAL, thrown.getErrorCode());
         }

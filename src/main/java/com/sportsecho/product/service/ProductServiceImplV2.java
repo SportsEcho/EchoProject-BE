@@ -6,24 +6,32 @@ import com.sportsecho.product.dto.ProductResponseDto;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.exception.ProductErrorCode;
 import com.sportsecho.product.mapper.ProductMapper;
+import com.sportsecho.product.repository.ProductQueryRepository;
 import com.sportsecho.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-@Qualifier("V1")
+/**
+ * createProduct(): V1과 동일
+ * getProduct(): V1과 동일
+ * getProductListWithPageNation(): V1에서 ProductList 조회시 발생하는 1+N 문제 해결
+ * updateProduct(): V1과 동일
+ * deleteProduct(): V1과 동일
+ * */
 @Service
+@Qualifier("V2")
 @RequiredArgsConstructor
-public class ProductServiceImplV1 implements ProductService {
+@Transactional(readOnly = true)
+public class ProductServiceImplV2 implements ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductQueryRepository productQueryRepository;
 
     @Override
     @Transactional
@@ -43,11 +51,11 @@ public class ProductServiceImplV1 implements ProductService {
 
     @Override
     public List<ProductResponseDto> getProductListWithPageNation(Pageable pageable, String keyword) {
-        Page<Product> productPage = productRepository.findAllByTitleContaining(pageable, keyword);
+        List<Product> productPage = productQueryRepository.findAllByKeywordWithPage(pageable, keyword);
 
         return productPage.stream()
-            .map(ProductMapper.INSTANCE::toResponseDto)
-            .collect(Collectors.toList());
+                .map(ProductMapper.INSTANCE::toResponseDto)
+                .toList();
     }
 
     @Override
@@ -56,7 +64,7 @@ public class ProductServiceImplV1 implements ProductService {
         Product product = findProduct(productId);
 
         product.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getPrice(),
-            requestDto.getQuantity());
+                requestDto.getQuantity());
 
         productRepository.save(product);
 
@@ -64,6 +72,7 @@ public class ProductServiceImplV1 implements ProductService {
     }
 
     @Override
+    @Transactional
     public void deleteProduct(Long productId) {
         Product product = findProduct(productId);
 

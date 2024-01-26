@@ -2,10 +2,13 @@ package com.sportsecho.common.configuration;
 
 import com.sportsecho.common.jwt.JwtAuthorizationFilter;
 import com.sportsecho.common.jwt.JwtExceptionFilter;
+import com.sportsecho.member.entity.MemberRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,6 +30,12 @@ public class WebSecurityConfig {
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
 
+    //@Bean 내부에서 사용할 변수이기 때문에 static final로 선언
+    private static final String GET = HttpMethod.GET.name();
+    private static final String POST = HttpMethod.POST.name();
+    private static final String PATCH = HttpMethod.PATCH.name();
+    private static final String DELETE = HttpMethod.DELETE.name();
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -41,14 +50,17 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.cors(Customizer.withDefaults())// CORS 활성화
+            .csrf(AbstractHttpConfigurer::disable);
 
         httpSecurity.sessionManagement(sess ->
             sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
         httpSecurity.authorizeHttpRequests(auth -> auth
+            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .requestMatchers(publicEndPoints()).permitAll()
+            .requestMatchers(adminEndPoints()).hasAuthority(MemberRole.ADMIN.name())
             .anyRequest().authenticated());
 
         //JwtFilter 설정
@@ -64,23 +76,45 @@ public class WebSecurityConfig {
         return httpSecurity.build();
     }
 
-    public RequestMatcher publicEndPoints() {
+    private RequestMatcher publicEndPoints() {
         return new OrRequestMatcher(
-            new AntPathRequestMatcher("/api/members/login"),
-            new AntPathRequestMatcher("/api/members/signup/**"),
-            new AntPathRequestMatcher("/api/members/**/callback"),
+            //사용자(관리자) 로그인,회원가입 및 소셜로그인
+            new AntPathRequestMatcher("/api/members/login", POST),
+            new AntPathRequestMatcher("/api/members/signup/**", POST),
+            new AntPathRequestMatcher("/api/members/**/callback", GET),
 
-            //game data load
-            new AntPathRequestMatcher("/api/games/football"),
-            new AntPathRequestMatcher("/api/games/baseball"),
-            new AntPathRequestMatcher("/api/games/basketball"),
-            new AntPathRequestMatcher("/api/games/details/**"),
+            //게임 전체 조회와 게임 단건조회
+            new AntPathRequestMatcher("/api/games", GET),
+            new AntPathRequestMatcher("/api/games/details/{gameId}", GET),
 
-            //웹소켓 endpoint
+            //상품 페이지 조회와 상품 단건조회
+            new AntPathRequestMatcher("/api/products", GET),
+            new AntPathRequestMatcher("/api/products/{productId}", GET),
+
+            //핫딜 페이지 조회와 핫딜 단건조회
+            new AntPathRequestMatcher("/api/hotdeals", GET),
+            new AntPathRequestMatcher("/api/hotdeals/{hotdealId}", GET),
+
+            //STOMP Connection
             new AntPathRequestMatcher("/websocket"),
 
+            //Swagger
             new AntPathRequestMatcher("/v3/**"),
             new AntPathRequestMatcher("/swagger-ui/**")
+        );
+    }
+
+    private RequestMatcher adminEndPoints() {
+        return new OrRequestMatcher(
+            //상품 생성, 수정, 삭제
+            new AntPathRequestMatcher("/api/products", POST),
+            new AntPathRequestMatcher("/api/products/{productId}", PATCH),
+            new AntPathRequestMatcher("/api/products/{productId}", DELETE),
+
+            //핫딜 생성, 수정, 삭제
+            new AntPathRequestMatcher("/api/products/{productId}/hotdeals", POST),
+            new AntPathRequestMatcher("/api/hotdeals/{hotdealId}", PATCH),
+            new AntPathRequestMatcher("/api/hotdeals/{hotdealId}", DELETE)
         );
     }
 }
