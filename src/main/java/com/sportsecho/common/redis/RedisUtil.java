@@ -43,8 +43,8 @@ public class RedisUtil {
 
 
     public void addQueue(Hotdeal hotdeal, Member user) {
-        //final String member = user.getMemberName();
-        final String member = Thread.currentThread().getName();
+        final String member = user.getMemberName();
+        //final String member = Thread.currentThread().getName();
         final long now = System.currentTimeMillis();
         hotdeatRedisTemplate.opsForZSet().add(String.valueOf(hotdeal.getId()), member, (int) now);
         log.info("대기열에 추가 - {} ({}초)", member, now);
@@ -72,7 +72,6 @@ public class RedisUtil {
         Set<Object> queue = hotdeatRedisTemplate.opsForZSet().range(hotdealId, start, end);
 
         for (Object member : queue) {
-            //hotdealService.purchaseHotdeal();
             log.info("{}님 핫딜 상품 구매가 완료되었습니다.", member);
             hotdeatRedisTemplate.opsForZSet().remove(hotdealId, member);
         }
@@ -82,11 +81,16 @@ public class RedisUtil {
         return this.eventCount == 0;
     }
 
-    public long getSize(Long hotdealId) {
+    public Long getSize(Long hotdealId) {
         return hotdeatRedisTemplate.opsForZSet().size(String.valueOf(hotdealId));
     }
 
     public void deleteAll(Long hotdealId) {
         hotdeatRedisTemplate.opsForZSet().removeRange(String.valueOf(hotdealId), 0, -1);
+    }
+
+    public Long getRank(Long hotdealId, String memberName) {
+        return hotdeatRedisTemplate.opsForZSet()
+            .rank(String.valueOf(hotdealId), Thread.currentThread().getName());
     }
 }

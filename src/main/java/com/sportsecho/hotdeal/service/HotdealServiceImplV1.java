@@ -93,22 +93,30 @@ public class HotdealServiceImplV1 implements HotdealService {
         return HotdealMapper.INSTANCE.toResponseDto(hotdeal);
     }
 
-    public void addQueue(Member member, PurchaseHotdealRequestDto requestDto) {
-        Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(
-                requestDto.getHotdealId())
-            .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
-
-        redisUtil.addQueue(hotdeal, member);
-    }
-
     @Transactional
     public PurchaseHotdealResponseDto purchaseHotdeal(Member member,
         PurchaseHotdealRequestDto requestDto) {
-        Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(
-                requestDto.getHotdealId())
+
+        Long hotdealId = requestDto.getHotdealId();
+
+        Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(hotdealId)
             .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
 
-        addQueue(member, requestDto);
+        redisUtil.addQueue(hotdeal, member);
+
+        Long position = redisUtil.getSize(hotdealId);
+        while (true) {
+            if (position > 0 && redisUtil.getRank(hotdealId, member.getMemberName()) == 0) {
+                break;
+            }
+
+            try {
+                Thread.sleep(1000); // 1000 밀리초(1초) 동안 대기
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
         if (hotdeal.getDealQuantity() == 0) {
             throw new GlobalException(HotdealErrorCode.SOLD_OUT); // 핫딜 재고 0일때
         }
