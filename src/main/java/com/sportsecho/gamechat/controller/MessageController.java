@@ -3,6 +3,10 @@ package com.sportsecho.gamechat.controller;
 import com.sportsecho.gamechat.dto.GameChatRequestDto;
 import com.sportsecho.gamechat.dto.GameChatResponseDto;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,14 +38,9 @@ public class MessageController {
         @DestinationVariable("gameId") Long gameId,
         GameChatRequestDto request
     ) {
-        // 현재 시간을 Date 객체로 얻기
-        Date now = new Date();
+        LocalDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
 
-        // SimpleDateFormat을 사용하여 형식 지정
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
-
-        // 현재 시간을 지정한 형식으로 문자열로 변환
-        String formattedTime = formatter.format(now);
+        String formattedTime = now.format(DateTimeFormatter.ofPattern("HH:mm"));
 
         return GameChatResponseDto.builder()
             .sender(request.getSender())
