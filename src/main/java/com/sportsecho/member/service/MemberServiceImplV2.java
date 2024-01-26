@@ -64,7 +64,7 @@ public class MemberServiceImplV2 implements MemberService {
         if(memberRepository.findByEmail(request.getEmail()).isPresent())
             throw new GlobalException(MemberErrorCode.DUPLICATED_EMAIL);
 
-        if(!request.getMemberName().matches("^[a-zA-Z0-9]{4,20}$"))
+        if(!request.getMemberName().matches("^[a-zA-Z0-9가-힣]{4,20}$"))
             throw new GlobalException(MemberErrorCode.INVALID_MEMBER_NAME);
 
         //MemberMapper를 이용한 Entity 생성
