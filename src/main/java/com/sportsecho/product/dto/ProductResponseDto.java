@@ -1,4 +1,4 @@
-package com.sportsecho.product.dto.response;
+package com.sportsecho.product.dto;
 
 import java.util.List;
 import lombok.AllArgsConstructor;

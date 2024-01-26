@@ -2,39 +2,29 @@ package com.sportsecho.member.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sportsecho.common.exception.GlobalException;
 import com.sportsecho.common.jwt.JwtUtil;
 import com.sportsecho.common.jwt.exception.JwtErrorCode;
+import com.sportsecho.common.oauth.OAuthUtil;
+import com.sportsecho.common.oauth.SocialType;
 import com.sportsecho.common.oauth.exception.OAuthErrorCode;
 import com.sportsecho.common.redis.RedisUtil;
-import com.sportsecho.global.exception.GlobalException;
 import com.sportsecho.member.dto.MemberRequestDto;
 import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.member.entity.MemberDetailsImpl;
-import com.sportsecho.common.oauth.SocialType;
 import com.sportsecho.member.entity.MemberRole;
 import com.sportsecho.member.exception.MemberErrorCode;
 import com.sportsecho.member.mapper.MemberMapper;
 import com.sportsecho.member.repository.MemberRepository;
-import com.sportsecho.common.oauth.OAuthUtil;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.Base64UrlCodec;
-import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
-import jakarta.persistence.TableGenerator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.Pattern;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.util.Base64;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.web.JsonPath;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -78,13 +68,13 @@ public class MemberServiceImplV2 implements MemberService {
             throw new GlobalException(MemberErrorCode.INVALID_MEMBER_NAME);
 
         //MemberMapper를 이용한 Entity 생성
-        Member member = MemberMapper.MAPPER.toEntity(request, role);
+        Member member = MemberMapper.INSTANCE.toEntity(request, role);
         member.passwordEncode(passwordEncoder);
 
         memberRepository.save(member);
 
 
-        return MemberMapper.MAPPER.toResponseDto(member);
+        return MemberMapper.INSTANCE.toResponseDto(member);
     }
 
     @Override
@@ -158,14 +148,14 @@ public class MemberServiceImplV2 implements MemberService {
 
     @Override
     public MemberResponseDto readMember(Member member) {
-        return MemberMapper.MAPPER.toResponseDto(member);
+        return MemberMapper.INSTANCE.toResponseDto(member);
     }
 
     @Override
     @Transactional
     public MemberResponseDto deleteMember(Member member) {
         memberRepository.delete(member);
-        return MemberMapper.MAPPER.toResponseDto(member);
+        return MemberMapper.INSTANCE.toResponseDto(member);
     }
 
     @Override

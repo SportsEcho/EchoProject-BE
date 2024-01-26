@@ -22,7 +22,7 @@ public class MemberDetailsImpl implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        //authority: CUSTOMER, SELLER
+        //authority: CUSTOMER, ADMIN
         String authority = member.getRole().toString();
 
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);

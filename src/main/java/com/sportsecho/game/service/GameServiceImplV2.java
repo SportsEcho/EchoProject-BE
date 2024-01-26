@@ -5,7 +5,7 @@ import com.sportsecho.game.entity.Game;
 import com.sportsecho.game.exception.GameErrorCode;
 import com.sportsecho.game.mapper.GameMapper;
 import com.sportsecho.game.repository.GameRepository;
-import com.sportsecho.global.exception.GlobalException;
+import com.sportsecho.common.exception.GlobalException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +24,6 @@ public class GameServiceImplV2 implements GameService{
     @Override
     public List<GameResponseDto> getGamesByDateAndLeague(String date) {
         List<Game> gameList = gameRepository.findByDate(date);
-        log.info("==========================================================");
-        log.info(gameList.toString());
         List<GameResponseDto>  gameResponseDtoList = new ArrayList<>();
 
         gameList.forEach(game -> {

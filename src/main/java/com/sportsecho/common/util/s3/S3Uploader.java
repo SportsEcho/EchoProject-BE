@@ -1,4 +1,4 @@
-package com.sportsecho.global.util.s3;
+package com.sportsecho.common.util.s3;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;

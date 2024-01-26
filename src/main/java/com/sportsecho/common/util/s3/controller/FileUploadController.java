@@ -1,6 +1,6 @@
-package com.sportsecho.global.util.s3.controller;
+package com.sportsecho.common.util.s3.controller;
 
-import com.sportsecho.global.util.s3.service.FileUploadService;
+import com.sportsecho.common.util.s3.service.FileUploadService;
 import com.sportsecho.member.entity.MemberDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

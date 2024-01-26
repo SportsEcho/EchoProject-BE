@@ -13,9 +13,18 @@ import org.springframework.stereotype.Component;
 public class TimeTraceAop {
 
     @Pointcut("execution(* com.sportsecho.member..*(..))")
-    public void user() {}
+    public void user() {
+    }
 
-    @Around("user()")
+    @Pointcut("execution(* com.sportsecho.memberProduct..*(..))")
+    public void memberProduct() {
+    }
+
+    @Pointcut("execution(* com.sportsecho.purchase..*(..))")
+    public void purchase() {
+    }
+
+    @Around("user() || memberProduct() || purchase()")
     public Object execute(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.currentTimeMillis();
 

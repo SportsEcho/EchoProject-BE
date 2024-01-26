@@ -1,6 +1,6 @@
 package com.sportsecho.purchase.service;
 
-import com.sportsecho.global.exception.GlobalException;
+import com.sportsecho.common.exception.GlobalException;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.memberProduct.entity.MemberProduct;
 import com.sportsecho.memberProduct.repository.MemberProductRepository;
@@ -15,6 +15,7 @@ import com.sportsecho.purchase.repository.PurchaseRepository;
 import com.sportsecho.purchaseProduct.entity.ProductRole;
 import com.sportsecho.purchaseProduct.entity.PurchaseProduct;
 import com.sportsecho.purchaseProduct.repository.PurchaseProductRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -48,6 +49,7 @@ public class PurchaseServiceImplV1 implements PurchaseService {
         // 구매 인스턴스 생성
         Purchase purchase = PurchaseMapper.INSTANCE.fromPurchaseRequestDto(requestDto, member);
         purchase = purchaseRepository.save(purchase);
+        purchase.setCreatedAt(LocalDateTime.now());
 
         // 구매 정보와 장바구니 상품 리스트로 purchaseProduct 엔티티 리스트 생성
         List<PurchaseProduct> purchaseProductList = createPList(memberProductList, purchase);

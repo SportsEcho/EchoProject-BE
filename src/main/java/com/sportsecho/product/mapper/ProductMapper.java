@@ -1,7 +1,7 @@
 package com.sportsecho.product.mapper;
 
-import com.sportsecho.product.dto.request.ProductRequestDto;
-import com.sportsecho.product.dto.response.ProductResponseDto;
+import com.sportsecho.product.dto.ProductRequestDto;
+import com.sportsecho.product.dto.ProductResponseDto;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.entity.ProductImage;
 import org.mapstruct.AfterMapping;

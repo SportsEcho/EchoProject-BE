@@ -28,10 +28,6 @@ public class HotdealScheduler {
     public void deleteClosedHotdeal() {
         LocalDateTime now = LocalDateTime.now();
         List<Hotdeal> expiredHotdeals = hotdealRepository.findAllByDueDayBefore(now);
-        expiredHotdeals.stream()
-            .map(Hotdeal::getProduct)
-            .filter(Objects::nonNull)
-            .forEach(Product::unlinkHotdeal); // deleteAll 메소드 호출 전에 Product 엔티티와의 관계를 끊기
 
         if (!expiredHotdeals.isEmpty()) {
             log.info("마감시간이 지난 HOTDEAL {}개를 삭제하겠습니다.", expiredHotdeals.size());
@@ -42,10 +38,6 @@ public class HotdealScheduler {
         }
 
         List<Hotdeal> hotdealsWithZeroQuantity = hotdealRepository.findAllByDealQuantity(0);
-        hotdealsWithZeroQuantity.stream()
-            .map(Hotdeal::getProduct)
-            .filter(Objects::nonNull)
-            .forEach(Product::unlinkHotdeal);
 
         if (!hotdealsWithZeroQuantity.isEmpty()) {
             log.info("한정수령이 모두 판매된 Hotdeal {}개를 삭제하겠습니다.", hotdealsWithZeroQuantity.size());

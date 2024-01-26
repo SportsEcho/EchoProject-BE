@@ -8,7 +8,7 @@ import static org.mockito.BDDMockito.given;
 import com.sportsecho.common.jwt.JwtUtil;
 import com.sportsecho.common.oauth.OAuthUtil;
 import com.sportsecho.common.redis.RedisUtil;
-import com.sportsecho.global.exception.GlobalException;
+import com.sportsecho.common.exception.GlobalException;
 import com.sportsecho.member.MemberTest;
 import com.sportsecho.member.dto.MemberResponseDto;
 import com.sportsecho.member.entity.MemberRole;

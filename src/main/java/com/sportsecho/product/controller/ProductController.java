@@ -1,17 +1,15 @@
 package com.sportsecho.product.controller;
 
-import com.sportsecho.common.dto.ApiResponse;
-import com.sportsecho.member.entity.MemberDetailsImpl;
-import com.sportsecho.product.dto.request.ProductRequestDto;
-import com.sportsecho.product.dto.response.ProductResponseDto;
+import com.sportsecho.product.dto.ProductRequestDto;
+import com.sportsecho.product.dto.ProductResponseDto;
 import com.sportsecho.product.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -21,81 +19,62 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/products")
 public class ProductController {
 
     private final ProductService productService;
 
     @Autowired
-    public ProductController(@Qualifier("V1") ProductService productService) {
+    public ProductController(@Qualifier("V2") ProductService productService) {
         this.productService = productService;
     }
 
-    @PostMapping("/products")
-    public ResponseEntity<ApiResponse<ProductResponseDto>> createProduct(
-        @AuthenticationPrincipal MemberDetailsImpl memberDetails,
-        @RequestBody ProductRequestDto requestDto
+    @PostMapping("")
+    public ResponseEntity<ProductResponseDto> createProduct(
+        @Valid @RequestBody ProductRequestDto requestDto
     ) {
-
-        ProductResponseDto responseDto = productService.createProduct(requestDto,
-            memberDetails.getMember());
-
         return ResponseEntity.status(HttpStatus.CREATED).body(
-            ApiResponse.of("상품 생성 성공", 201, responseDto)
+            productService.createProduct(requestDto)
         );
     }
 
-    @GetMapping("/products/{productId}")
-    public ResponseEntity<ApiResponse<ProductResponseDto>> getProduct(
-        @AuthenticationPrincipal MemberDetailsImpl memberDetails,
-        @PathVariable Long productId
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductResponseDto> getProduct(
+        @PathVariable("productId") Long productId
     ) {
-
-        ProductResponseDto responseDto = productService.getProduct(productId);
-
         return ResponseEntity.status(HttpStatus.OK).body(
-            ApiResponse.of("상품 단건 조회 성공", 200, responseDto)
+            productService.getProduct(productId)
         );
     }
 
-    @GetMapping("/products")
-    public ResponseEntity<ApiResponse<List<ProductResponseDto>>> getProductListWithPageNation(
+    @GetMapping("")
+    public ResponseEntity<List<ProductResponseDto>> getProductListWithPageNation(
+        @RequestParam(value = "keyword", defaultValue = "") String keyword,
         Pageable pageable
     ) {
-        List<ProductResponseDto> responseDtoList = productService.getProductListWithPagiNation(pageable);
-
         return ResponseEntity.status(HttpStatus.OK).body(
-            ApiResponse.of("상품 목록 조회 성공", 200, responseDtoList)
+            productService.getProductListWithPageNation(pageable, keyword)
         );
     }
 
-    @PatchMapping("/products/{productId}")
-    public ResponseEntity<ApiResponse<ProductResponseDto>> updateProduct(
-        @AuthenticationPrincipal MemberDetailsImpl memberDetails,
+    @PatchMapping("/{productId}")
+    public ResponseEntity<ProductResponseDto> updateProduct(
         @PathVariable Long productId,
-        @RequestBody ProductRequestDto requestDto
-    )  {
-
-        ProductResponseDto responseDto = productService.updateProduct(memberDetails.getMember(), productId, requestDto);
-
+        @Valid @RequestBody ProductRequestDto requestDto
+    ) {
         return ResponseEntity.status(HttpStatus.OK).body(
-            ApiResponse.of("상품 수정 성공", 200, responseDto)
+            productService.updateProduct(productId, requestDto)
         );
     }
 
-    @DeleteMapping("/products/{productId}")
-    public ResponseEntity<ApiResponse<Void>> deleteProduct(
-        @AuthenticationPrincipal MemberDetailsImpl memberDetails,
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Void> deleteProduct(
         @PathVariable Long productId
     ) {
-        productService.deleteProduct(memberDetails.getMember(), productId);
-
-        return ResponseEntity.status(HttpStatus.OK).body(
-            ApiResponse.of("상품 삭제 성공", 204, null)
-        );
+        productService.deleteProduct(productId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
 }
