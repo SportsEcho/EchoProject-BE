@@ -64,7 +64,7 @@ public class MemberServiceImplV2 implements MemberService {
         if(memberRepository.findByEmail(request.getEmail()).isPresent())
             throw new GlobalException(MemberErrorCode.DUPLICATED_EMAIL);
 
-        if(!request.getMemberName().matches("^[a-zA-Z0-9]{4,20}$"))
+        if(!request.getMemberName().matches("^[a-zA-Z0-9가-힣]{4,20}$"))
             throw new GlobalException(MemberErrorCode.INVALID_MEMBER_NAME);
 
         //MemberMapper를 이용한 Entity 생성
@@ -96,14 +96,7 @@ public class MemberServiceImplV2 implements MemberService {
 
             Member member = ((MemberDetailsImpl) authentication.getPrincipal()).getMember();
 
-            String accessToken = jwtUtil.generateAccessToken(member.getEmail(), member.getRole());
-            String refreshToken = jwtUtil.generateRefreshToken();
-
-            //ResponseHeader에 토큰 추가
-            jwtUtil.setJwtHeader(response, accessToken, refreshToken);
-
-            //Redis에 refreshToken 저장
-            redisUtil.saveRefreshToken(refreshToken, member.getEmail());
+            setTokenHeaderAndRedis(response, member);
 
         } catch(BadCredentialsException e) {
             throw new GlobalException(MemberErrorCode.INVALID_AUTH);
@@ -236,8 +229,10 @@ public class MemberServiceImplV2 implements MemberService {
         String aToken = jwtUtil.generateAccessToken(socialMember.getEmail(), socialMember.getRole());
         String rToken = jwtUtil.generateRefreshToken();
 
+        //ResponseHeader에 토큰 추가
         jwtUtil.setJwtHeader(response, aToken, rToken);
 
+        //Redis에 refreshToken 저장
         redisUtil.saveRefreshToken(rToken, socialMember.getEmail());
     }
 }
