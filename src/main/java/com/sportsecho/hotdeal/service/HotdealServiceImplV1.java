@@ -5,6 +5,7 @@ import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
+import com.sportsecho.hotdeal.dto.response.HotdealWaitResponse;
 import com.sportsecho.hotdeal.dto.response.PurchaseHotdealResponseDto;
 import com.sportsecho.hotdeal.entity.Hotdeal;
 import com.sportsecho.hotdeal.exception.HotdealErrorCode;
@@ -122,6 +123,26 @@ public class HotdealServiceImplV1 implements HotdealService {
         hotdealRepository.save(hotdeal); // 더티 체킹
 
         return HotdealMapper.INSTANCE.toPurchaseResponseDto(hotdeal);
+    }
+
+    @Override
+    public HotdealWaitResponse waitHotdeal(String hotdealId, Member member) {
+        return null;
+    }
+
+    @Override
+    public String getOldestHotdealWaitingMember(String hotdealId) {
+        return null;
+    }
+
+    @Override
+    public void deleteHotdealWaitingMember(Member member, String hotdealId) {
+
+    }
+
+    @Override
+    public boolean isMyHotdealTurn(Member member, String hotdealId) {
+        return false;
     }
 
     @Override
