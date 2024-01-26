@@ -4,6 +4,7 @@ import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
+import com.sportsecho.hotdeal.dto.response.HotdealWaitResponse;
 import com.sportsecho.hotdeal.dto.response.PurchaseHotdealResponseDto;
 import com.sportsecho.hotdeal.service.HotdealService;
 import com.sportsecho.member.entity.MemberDetailsImpl;
@@ -31,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HotdealController {
 
     @Autowired
-    private @Qualifier("V1") HotdealService hotdealService;
+    private @Qualifier("V2") HotdealService hotdealService;
 
     @PostMapping("/products/{productId}/hotdeals")
     public ResponseEntity<HotdealResponseDto> createHotdeal(
@@ -97,6 +98,32 @@ public class HotdealController {
         PurchaseHotdealResponseDto responseDto = hotdealService.purchaseHotdeal(
             memberDetails.getMember(), requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+    @PostMapping("/hotdeals/{hotdealId}/waiting")
+    public ResponseEntity<HotdealWaitResponse> waitingHotdeal(
+        @AuthenticationPrincipal MemberDetailsImpl memberDetails,
+        @PathVariable Long hotdealId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(hotdealService.waitHotdeal(hotdealId.toString(), memberDetails.getMember()));
+    }
+
+    @PostMapping("/hotdeals/{hotdealId}/waiting/cancel")
+    public void cancelWaiting(
+        @AuthenticationPrincipal MemberDetailsImpl memberDetails,
+        @RequestParam Long hotdealId
+    ) {
+        hotdealService.deleteHotdealWaitingMember(memberDetails.getMember(), hotdealId.toString());
+    }
+
+    @GetMapping("/hotdeal/{hotdealId}/isMyTurn")
+    public ResponseEntity<Boolean> isMyTurn(
+        @AuthenticationPrincipal MemberDetailsImpl memberDetails,
+        @PathVariable Long hotdealId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(hotdealService.isMyHotdealTurn(memberDetails.getMember(), hotdealId.toString()));
     }
 
 }
