@@ -4,6 +4,7 @@ import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
+import com.sportsecho.hotdeal.dto.response.HotdealWaitResponse;
 import com.sportsecho.hotdeal.dto.response.PurchaseHotdealResponseDto;
 import com.sportsecho.member.entity.Member;
 import java.util.List;
@@ -55,4 +56,35 @@ public interface HotdealService {
     * @return 구매된 Hotdeal 정보
      */
     PurchaseHotdealResponseDto purchaseHotdeal(Member member, PurchaseHotdealRequestDto requestDto);
+
+    /*
+    * Hotdeal 구매 대기
+    * @param hotdealId 구매 대기할 Hotdeal의 Id
+    * @param member 구매자 정보
+    * @return 성공 유무
+     */
+    HotdealWaitResponse waitHotdeal(String hotdealId, Member member);
+
+    /*
+    * Hotdeal 구매 대기 정보
+    * @param hotdealId 구매 대기 정보를 조회할 Hotdeal의 Id
+    * @return 구매 대기 정보
+     */
+    String getOldestHotdealWaitingMember(String hotdealId);
+
+    /*
+    * Hotdeal 구매 대기 취소
+    * @param hotdealId 구매 대기 취소할 Hotdeal의 Id
+    * @param member 구매자 정보
+     */
+    void deleteHotdealWaitingMember(Member member, String hotdealId);
+
+    /*
+    * Hotdeal 대기열 확인
+    * @param hotdealId 대기열을 확인할 Hotdeal의 Id
+    * @param member 구매자 정보
+    * @return 대기열에 순번이 왔는지 여부
+     */
+    boolean isMyHotdealTurn(Member member, String hotdealId);
+
 }
