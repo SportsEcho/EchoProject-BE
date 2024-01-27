@@ -38,6 +38,7 @@ public class Hotdeal {
     private int sale;
 
     @OneToOne
+    // @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 

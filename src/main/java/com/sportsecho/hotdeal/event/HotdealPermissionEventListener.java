@@ -41,12 +41,12 @@ public class HotdealPermissionEventListener {
         int quantity = event.getQuantity();
 
         if (hotdeal.getDealQuantity() == 0) {
-            throw new GlobalException(HotdealErrorCode.SOLD_OUT); // 핫딜 재고 0일때
+            throw new GlobalException(HotdealErrorCode.SOLD_OUT);
         }
 
         if (hotdeal.getDealQuantity() < quantity) {
             throw new GlobalException(
-                HotdealErrorCode.LACK_DEAL_QUANTITY); // 핫딜 구매시 재고보다 많은 수량 구매 시도
+                HotdealErrorCode.LACK_DEAL_QUANTITY);
         }
 
         Product product = hotdeal.getProduct();
@@ -55,7 +55,10 @@ public class HotdealPermissionEventListener {
         Member member = memberRepository.findById(memberId).orElse(null);
         Purchase purchase = Purchase.createEntity(event.getAddress(), event.getPhone(), member);
         purchase = purchaseRepository.save(purchase);
+
         purchase.setCreatedAt(LocalDateTime.now());
+        purchase.updateTotalPrice(discountedPrice * quantity);
+        purchase = purchaseRepository.save(purchase);
 
         PurchaseProduct purchaseProduct = PurchaseProduct.builder()
             .product(product)
