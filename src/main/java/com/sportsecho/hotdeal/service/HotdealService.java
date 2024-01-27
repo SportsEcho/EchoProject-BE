@@ -1,10 +1,8 @@
 package com.sportsecho.hotdeal.service;
 
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
-import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
-import com.sportsecho.member.entity.Member;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 
@@ -53,7 +51,6 @@ public interface HotdealService {
      * @param requestDto 구매할 Hotdeal 정보
      * @return 구매된 Hotdeal 정보
      */
-    void purchaseHotdeal(Member member, PurchaseHotdealRequestDto requestDto);
 
     /**
      * hotdeal 지정
