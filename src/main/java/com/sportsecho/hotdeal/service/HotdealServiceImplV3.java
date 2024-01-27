@@ -101,7 +101,7 @@ public class HotdealServiceImplV3 implements HotdealService {
 
     @Override
     @Transactional
-    public void hotdealSetting(Long hotdealId) {
+    public void setUpHotdeal(Long hotdealId) {
         Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(hotdealId)
             .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
 

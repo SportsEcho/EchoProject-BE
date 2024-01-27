@@ -91,7 +91,7 @@ public class PurchaseHotdealTestV3 implements MemberTest, ProductTest, HotdealTe
             PurchaseHotdealRequestDto requestDto = HotdealTestUtil.createTestPurchaseHotdealRequestDto(
                 hotdeal.getId(), purchaseQuantity);
 
-            hotdealService.hotdealSetting(hotdeal.getId());
+            hotdealService.setUpHotdeal(hotdeal.getId());
             memberRepository.deleteAll();
 
             int numberOfThreads = 80;

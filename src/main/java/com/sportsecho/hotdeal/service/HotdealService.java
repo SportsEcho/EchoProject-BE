@@ -60,6 +60,6 @@ public interface HotdealService {
      *
      * @param hotdealId
      */
-    void hotdealSetting(Long hotdealId);
+    void setUpHotdeal(Long hotdealId);
 
 }
