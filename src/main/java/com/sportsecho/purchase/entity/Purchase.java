@@ -48,4 +48,12 @@ public class Purchase extends TimeStamp {
     public void updateTotalPrice(int totalPrice) {
         this.totalPrice = totalPrice;
     }
+
+    public static Purchase createEntity(String address, String phone, Member member) {
+        return Purchase.builder()
+            .address(address)
+            .phone(phone)
+            .member(member)
+            .build();
+    }
 }

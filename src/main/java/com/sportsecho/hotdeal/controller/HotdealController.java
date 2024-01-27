@@ -4,7 +4,6 @@ import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
-import com.sportsecho.hotdeal.dto.response.PurchaseHotdealResponseDto;
 import com.sportsecho.hotdeal.service.HotdealService;
 import com.sportsecho.member.entity.MemberDetailsImpl;
 import java.util.List;
@@ -31,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HotdealController {
 
     @Autowired
-    private @Qualifier("V1") HotdealService hotdealService;
+    private @Qualifier("V2") HotdealService hotdealService;
 
     @PostMapping("/products/{productId}/hotdeals")
     public ResponseEntity<HotdealResponseDto> createHotdeal(
@@ -90,13 +89,12 @@ public class HotdealController {
     }
 
     @PostMapping("/hotdeals/purchase")
-    public ResponseEntity<PurchaseHotdealResponseDto> purchaseHotdeal(
+    public ResponseEntity<Void> purchaseHotdeal(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @RequestBody PurchaseHotdealRequestDto requestDto
     ) {
-        PurchaseHotdealResponseDto responseDto = hotdealService.purchaseHotdeal(
-            memberDetails.getMember(), requestDto);
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+        hotdealService.purchaseHotdeal(memberDetails.getMember(), requestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
 }

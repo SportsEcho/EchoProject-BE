@@ -3,7 +3,6 @@ package com.sportsecho.hotdeal.entity;
 import com.sportsecho.product.entity.Product;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,7 +37,7 @@ public class Hotdeal {
     @Column(name = "sale", nullable = false)
     private int sale;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 
@@ -67,7 +66,8 @@ public class Hotdeal {
         this.dealQuantity = dealQuantity;
     }
 
-    public void updateHotdealInfo(LocalDateTime startDay, LocalDateTime dueDay, int sale, int dealQuantity) {
+    public void updateHotdealInfo(LocalDateTime startDay, LocalDateTime dueDay, int sale,
+        int dealQuantity) {
         this.startDay = startDay;
         this.dueDay = dueDay;
         this.sale = sale;

@@ -3,13 +3,10 @@ package com.sportsecho.hotdeal.scheduler;
 import com.sportsecho.common.redis.RedisUtil;
 import com.sportsecho.hotdeal.entity.Hotdeal;
 import com.sportsecho.hotdeal.repository.HotdealRepository;
-import com.sportsecho.product.entity.Product;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,17 +43,16 @@ public class HotdealScheduler {
         }
     }
 
-    @Scheduled(fixedDelay = 1000)
+    //@Scheduled(fixedDelay = 1000)
     public void hotdealEventScheduler() {
         log.info("==== 이벤트 스케줄러 실행 =====");
+
         if (redisUtil.hotdealEnd()) {
             log.info("===== 선착순 이벤트가 종료되었습니다. =====");
             return;
         }
 
-        Hotdeal hotdeal = hotdealRepository.findAll().get(0);
-
-        redisUtil.publish(hotdeal);
-        redisUtil.getPurchase(hotdeal);
+        redisUtil.publish(2L);
+        redisUtil.getPurchase(2L);
     }
 }
