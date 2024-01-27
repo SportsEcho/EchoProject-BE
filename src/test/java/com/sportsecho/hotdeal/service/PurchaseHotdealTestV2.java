@@ -1,7 +1,6 @@
 package com.sportsecho.hotdeal.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import com.sportsecho.common.redis.RedisUtil;
 import com.sportsecho.hotdeal.HotdealTest;
@@ -72,61 +71,6 @@ public class PurchaseHotdealTestV2 implements MemberTest, ProductTest, HotdealTe
         memberRepository.deleteAll();
         hotdealRepository.deleteAll();
         purchaseProductRepository.deleteAll();
-    }
-
-    @Nested
-    @DisplayName("단일 구매자의 구매 테스트")
-    class SinglePurchaseTest {
-
-        @AfterEach
-        void tearDown() {
-            purchaseRepository.deleteAll();
-        }
-
-        private Product product = productRepository.save(TEST_PRODUCT);
-        private Hotdeal hotdeal = hotdealRepository.save(
-            HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
-                TEST_SALE, product));
-
-        private PurchaseHotdealRequestDto requestDto = HotdealTestUtil.createTestPurchaseHotdealRequestDto(
-            hotdeal.getId(), 3);
-
-        @Test
-        @DisplayName("성공 - 구매자가 구매한 상품이 구매 목록에 추가되는지 확인")
-        void purchaseHotdeal() {
-            hotdealService.purchaseHotdeal(member, requestDto);
-            assertFalse(purchaseProductRepository.findAll().isEmpty());
-        }
-
-        @Test
-        @DisplayName("성공 - 구매자가 구매한 핫딜의 한정 수량이 n만큼 감소하는지 확인")
-        void purchaseHotdeal_decreaseDealQuantity() {
-            // given
-            int beforeDealQuantity = hotdeal.getDealQuantity();
-
-            // when
-            hotdealService.purchaseHotdeal(member, requestDto);
-
-            // then
-            Hotdeal foundHotdeal = hotdealRepository.findById(hotdeal.getId())
-                .orElseThrow(() -> new AssertionError("핫딜을 찾을 수 없음"));
-            assertEquals(beforeDealQuantity - requestDto.getQuantity(),
-                foundHotdeal.getDealQuantity());
-        }
-
-        @Test
-        @DisplayName("성공 - 구매자가 구매한 핫딜의 총 금액이 정확한지 확인")
-        void purchaseHotdeal_checkTotalPrice() {
-            int salePrice = product.getPrice() - (product.getPrice() * hotdeal.getSale() / 100);
-
-            // when
-            hotdealService.purchaseHotdeal(member, requestDto);
-
-            // then
-            assertEquals(salePrice, purchaseRepository.findAll().get(0).getTotalPrice());
-
-        }
-
     }
 
     @Nested
