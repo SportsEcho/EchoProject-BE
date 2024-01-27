@@ -20,9 +20,6 @@ import com.sportsecho.product.repository.ProductRepository;
 import com.sportsecho.purchase.PurchaseTest;
 import com.sportsecho.purchase.repository.PurchaseRepository;
 import com.sportsecho.purchaseProduct.repository.PurchaseProductRepository;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -137,22 +134,23 @@ public class PurchaseHotdealTestV2 implements MemberTest, ProductTest, HotdealTe
     class MultipleUserPurchaseTest {
 
         @Test
-        @DisplayName("데이터 정합성 테스트 - 핫딜의 한정 수량이 정확히 감소하는지 확인")
-        void purchaseHotdealWithPessimisticLock() throws InterruptedException {
+        @DisplayName("redis sorted set 테스트 - 유저 대기열 생성 -> 접근 순서대로 구매")
+        void purchaseHotdealWithSortedset() throws InterruptedException {
 
             // given
             Product product = productRepository.save(TEST_PRODUCT);
             Hotdeal hotdeal = hotdealRepository.save(
-                HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
+                HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, 50,
                     TEST_SALE, product));
 
-            int beforeDealQuantity = hotdeal.getDealQuantity();
-
-            int purchaseQuantity = 3;
+            int purchaseQuantity = 1;
             PurchaseHotdealRequestDto requestDto = HotdealTestUtil.createTestPurchaseHotdealRequestDto(
                 hotdeal.getId(), purchaseQuantity);
 
-            int numberOfThreads = 10;
+            hotdealService.hotdealSetting(hotdeal.getId());
+            memberRepository.deleteAll();
+
+            int numberOfThreads = 100;
             ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
             CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
@@ -160,6 +158,9 @@ public class PurchaseHotdealTestV2 implements MemberTest, ProductTest, HotdealTe
             for (int i = 0; i < numberOfThreads; i++) {
                 service.execute(() -> {
                     try {
+                        member = memberRepository.save(
+                            MemberTestUtil.getTestMember("customer", TEST_EMAIL,
+                                TEST_PASSWORD, MemberRole.CUSTOMER));
                         hotdealService.purchaseHotdeal(member, requestDto);
                     } finally {
                         latch.countDown();
@@ -168,63 +169,19 @@ public class PurchaseHotdealTestV2 implements MemberTest, ProductTest, HotdealTe
             }
 
             latch.await(60, TimeUnit.SECONDS);
-            service.shutdown();
 
-            // then
-            Hotdeal foundHotdeal = hotdealRepository.findById(hotdeal.getId())
-                .orElseThrow(() -> new AssertionError("핫딜을 찾을 수 없음"));
-            assertEquals(beforeDealQuantity - numberOfThreads * purchaseQuantity,
-                foundHotdeal.getDealQuantity()); // 100 - 10 * 3 = 70
-        }
-
-        @Test
-        @DisplayName("redis sorted set 테스트 - 유저 대기열 생성 -> 접근 순서대로 구매")
-        void purchaseHotdealWithPessimisticLock_sortedset() throws InterruptedException {
-
-            // given
-            Product product = productRepository.save(TEST_PRODUCT);
-            Hotdeal hotdeal = hotdealRepository.save(
-                HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
-                    TEST_SALE, product));
-
-            int beforeDealQuantity = hotdeal.getDealQuantity();
-
-            int purchaseQuantity = 1;
-            PurchaseHotdealRequestDto requestDto = HotdealTestUtil.createTestPurchaseHotdealRequestDto(
-                hotdeal.getId(), purchaseQuantity);
-
-            int numberOfThreads = 20;
-            ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
-            CountDownLatch latch = new CountDownLatch(numberOfThreads);
-
-            memberRepository.deleteAll();
-
-            // when
-            List<CompletableFuture<Void>> futures = new ArrayList<>();
-
-            for (int i = 0; i < numberOfThreads; i++) {
-                CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                    try {
-                        member = memberRepository.save(
-                            MemberTestUtil.getTestMember("customer", TEST_EMAIL, TEST_PASSWORD,
-                                MemberRole.CUSTOMER));
-                        hotdealService.purchaseHotdeal(member, requestDto);
-                    } finally {
-                        latch.countDown();
-                    }
-                });
-
-                futures.add(future);
+            while (true) {
+                if (redisUtil.getSize(hotdeal.getId()) == 0) {
+                    break;
+                }
             }
 
-            CompletableFuture<Void> allOf = CompletableFuture.allOf(
-                futures.toArray(new CompletableFuture[0]));
-            allOf.join(); // 대기
+            service.shutdown();
+            Thread.sleep(1000);
 
             // then
             Hotdeal foundHotdeal = hotdealRepository.findById(hotdeal.getId()).orElse(null);
-            assertEquals(beforeDealQuantity - numberOfThreads * purchaseQuantity,
-                foundHotdeal.getDealQuantity());
+            assertEquals(0, foundHotdeal.getDealQuantity());
 
             redisUtil.deleteAll(hotdeal.getId());
         }
