@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HotdealController {
 
     @Autowired
-    private @Qualifier("V2") HotdealService hotdealService;
+    private @Qualifier("V3") HotdealService hotdealService;
 
     @PostMapping("/products/{productId}/hotdeals")
     public ResponseEntity<HotdealResponseDto> createHotdeal(

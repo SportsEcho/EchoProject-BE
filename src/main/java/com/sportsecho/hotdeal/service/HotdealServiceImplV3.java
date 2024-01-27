@@ -29,11 +29,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Qualifier("V2")
+@Qualifier("V3")
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class HotdealServiceImplV2 implements HotdealService {
+public class HotdealServiceImplV3 implements HotdealService {
 
     private final HotdealRepository hotdealRepository;
     private final ProductRepository productRepository;

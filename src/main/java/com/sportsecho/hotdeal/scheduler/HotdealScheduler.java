@@ -30,7 +30,7 @@ public class HotdealScheduler {
     }
 
     // 매분마다 시행
-    //@Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 * * * * *")
     @Transactional
     public void deleteClosedHotdeal() {
         LocalDateTime now = LocalDateTime.now();
@@ -56,7 +56,7 @@ public class HotdealScheduler {
     @Scheduled(fixedDelay = 1000)
     @Transactional
     public void hotdealEventScheduler() {
-        log.info("==== 이벤트 스케줄러 실행 =====");
+        log.info("==== Hotdeal 이벤트 스케줄러 실행 =====");
 
         if (hotdeal == null) {
             return;
@@ -64,7 +64,7 @@ public class HotdealScheduler {
 
         log.info("남은 핫딜 수량 : {}", hotdeal.getDealQuantity());
         if (hotdeal.getDealQuantity() == 0) {
-            log.info("===== 선착순 이벤트가 종료되었습니다. =====");
+            log.info("===== 이벤트가 종료되었습니다. =====");
             redisUtil.deleteAll(hotdeal.getId());
             return;
         }

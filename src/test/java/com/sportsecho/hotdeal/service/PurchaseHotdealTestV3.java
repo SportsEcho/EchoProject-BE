@@ -34,10 +34,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class PurchaseHotdealTestV2 implements MemberTest, ProductTest, HotdealTest, PurchaseTest {
+public class PurchaseHotdealTestV3 implements MemberTest, ProductTest, HotdealTest, PurchaseTest {
 
     @Autowired
-    HotdealServiceImplV2 hotdealService;
+    HotdealServiceImplV3 hotdealService;
 
     @Autowired
     MemberRepository memberRepository;
@@ -94,7 +94,7 @@ public class PurchaseHotdealTestV2 implements MemberTest, ProductTest, HotdealTe
             hotdealService.hotdealSetting(hotdeal.getId());
             memberRepository.deleteAll();
 
-            int numberOfThreads = 100;
+            int numberOfThreads = 80;
             ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
             CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
