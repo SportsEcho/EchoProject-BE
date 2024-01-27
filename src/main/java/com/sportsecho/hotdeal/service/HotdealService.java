@@ -54,4 +54,11 @@ public interface HotdealService {
      * @return 구매된 Hotdeal 정보
      */
     void purchaseHotdeal(Member member, PurchaseHotdealRequestDto requestDto);
+
+    /**
+     * hotdeal 지정
+     *
+     * @param hotdealId
+     */
+    void hotdealSetting(Long hotdealId);
 }

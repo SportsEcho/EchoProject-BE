@@ -124,6 +124,11 @@ public class HotdealServiceImplV1 implements HotdealService {
     }
 
     @Override
+    public void hotdealSetting(Long hotdealId) {
+
+    }
+
+    @Override
     @Transactional
     public void deleteHotdeal(Long hotdealId) {
         Hotdeal hotdeal = findHotdeal(hotdealId);
