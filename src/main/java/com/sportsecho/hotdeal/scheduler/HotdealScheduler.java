@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,15 @@ public class HotdealScheduler {
     private final HotdealRepository hotdealRepository;
     private final RedisUtil redisUtil;
 
+    private Hotdeal hotdeal;
+    private LocalDateTime startDay;
+    private LocalDateTime dueDay;
+
+    public void HotdealSetting(Hotdeal hotdeal) {
+        this.hotdeal = hotdeal;
+        this.startDay = hotdeal.getStartDay();
+        this.dueDay = hotdeal.getDueDay();
+    }
 
     // 매분마다 시행
     //@Scheduled(cron = "0 * * * * *")
@@ -43,16 +53,23 @@ public class HotdealScheduler {
         }
     }
 
-    //@Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 1000)
+    @Transactional
     public void hotdealEventScheduler() {
         log.info("==== 이벤트 스케줄러 실행 =====");
 
-        if (redisUtil.hotdealEnd()) {
-            log.info("===== 선착순 이벤트가 종료되었습니다. =====");
+        if (hotdeal == null) {
             return;
         }
 
-        redisUtil.publish(2L);
-        redisUtil.getPurchase(2L);
+        log.info("남은 핫딜 수량 : {}", hotdeal.getDealQuantity());
+        if (hotdeal.getDealQuantity() == 0) {
+            log.info("===== 선착순 이벤트가 종료되었습니다. =====");
+            redisUtil.deleteAll(hotdeal.getId());
+            return;
+        }
+
+        redisUtil.publish(hotdeal);
+        redisUtil.getPurchase(hotdeal);
     }
 }
