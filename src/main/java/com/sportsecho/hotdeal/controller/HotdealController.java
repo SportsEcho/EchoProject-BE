@@ -97,4 +97,11 @@ public class HotdealController {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
+    @PostMapping("/hotdeals/{hotdealId}/set")
+    public ResponseEntity<Void> settingHotdeal(
+        @PathVariable Long hotdealId
+    ) {
+        hotdealService.hotdealSetting(hotdealId);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
 }

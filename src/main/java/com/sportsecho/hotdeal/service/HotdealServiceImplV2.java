@@ -11,6 +11,7 @@ import com.sportsecho.hotdeal.event.HotdealPermissionEventListener;
 import com.sportsecho.hotdeal.exception.HotdealErrorCode;
 import com.sportsecho.hotdeal.mapper.HotdealMapper;
 import com.sportsecho.hotdeal.repository.HotdealRepository;
+import com.sportsecho.hotdeal.scheduler.HotdealScheduler;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.exception.ProductErrorCode;
@@ -41,6 +42,7 @@ public class HotdealServiceImplV2 implements HotdealService {
     private final RedisUtil redisUtil;
     private final ApplicationEventPublisher eventPublisher;
     private final HotdealPermissionEventListener eventListener;
+    private final HotdealScheduler hotdealScheduler;
 
     @Override
     @Transactional
@@ -85,10 +87,6 @@ public class HotdealServiceImplV2 implements HotdealService {
         return HotdealMapper.INSTANCE.toResponseDto(hotdeal);
     }
 
-//    public void notifyUserGrantedPermission(Hotdeal hotdeal, Long memberId) {
-//        eventPublisher.publishEvent(new HotdealPermissionEvent(hotdeal, memberId, requestDto.));
-//    }
-
     @Override
     @Transactional
     public void purchaseHotdeal(Member member, PurchaseHotdealRequestDto requestDto) {
@@ -99,6 +97,16 @@ public class HotdealServiceImplV2 implements HotdealService {
             .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
 
         redisUtil.addQueue(hotdeal, member, requestDto);
+    }
+
+    @Override
+    @Transactional
+    public void hotdealSetting(Long hotdealId) {
+        Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(hotdealId)
+            .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
+
+        redisUtil.deleteAll(hotdealId);
+        hotdealScheduler.HotdealSetting(hotdeal);
     }
 
     @Override
