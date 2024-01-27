@@ -17,10 +17,10 @@ public class TimeStamp {
 
     @Setter
     @CreatedDate
-    @Column(name = "created_at", nullable = true)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(name = "modified_at", nullable = true)
+    @Column(name = "modified_at", nullable = false)
     private LocalDateTime modifiedAt;
 }
