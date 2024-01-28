@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SetUpHotdealRequestDto {
 
-    @NotNull(message = "대기열 주문 가능 인원수를 입력해주세요")
+    @NotNull(message = "주문 가능 인원수를 입력해주세요")
     private int publishedSize;
 
 }

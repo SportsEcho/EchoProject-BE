@@ -64,6 +64,6 @@ public class HotdealScheduler {
         }
 
         redisUtil.publish(hotdeal);
-        redisUtil.getPurchase(hotdeal);
+        redisUtil.waiting(hotdeal);
     }
 }

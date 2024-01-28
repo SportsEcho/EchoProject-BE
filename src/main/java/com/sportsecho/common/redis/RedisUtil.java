@@ -68,11 +68,10 @@ public class RedisUtil {
         log.info("대기열에 추가 - {} ({}초)", member, now);
     }
 
-    public void getPurchase(Hotdeal hotdeal) {
+    public void waiting(Hotdeal hotdeal) {
         String hotdealId = String.valueOf(hotdeal.getId());
 
         Set<Object> queue = hotdealRedisTemplate.opsForZSet().range(hotdealId, start, -1);
-        HashOperations<String, String, Object> hashOperations = hotdealRedisTemplate.opsForHash();
 
         for (Object member : queue) {
             Long rank = hotdealRedisTemplate.opsForZSet().rank(hotdealId, member);
