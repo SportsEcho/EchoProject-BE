@@ -88,6 +88,9 @@ public class RedisUtil {
         HashOperations<String, String, Object> hashOperations = hotdealRedisTemplate.opsForHash();
 
         for (Object member : queue) {
+            if (hotdeal.getDealQuantity() == 0) {
+                break;
+            }
             hotdealRedisTemplate.opsForZSet().remove(hotdealId, member);
             String memberId = (String) member;
 
