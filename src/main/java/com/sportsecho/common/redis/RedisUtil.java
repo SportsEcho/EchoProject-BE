@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 public class RedisUtil {
 
     private final RedisTemplate<String, String> userRedisTemplate;
-    private final RedisTemplate<String, Object> hotdeatRedisTemplate;
+    private final RedisTemplate<String, Object> hotdealRedisTemplate;
     private final ApplicationEventPublisher eventPublisher;
 
     private final Long REFRESH_TIME = 7 * 24 * 60 * 60 * 1000L;
@@ -50,7 +50,7 @@ public class RedisUtil {
         final String member = String.valueOf(user.getId());
         String hotdealId = String.valueOf(hotdeal.getId());
 
-        HashOperations<String, String, Object> hashOperations = hotdeatRedisTemplate.opsForHash();
+        HashOperations<String, String, Object> hashOperations = hotdealRedisTemplate.opsForHash();
 
         hashOperations.put(member, "hotdeal", hotdealId);
         hashOperations.put(member, "memberName", user.getMemberName());
@@ -59,7 +59,7 @@ public class RedisUtil {
         hashOperations.put(member, "phone", requestDto.getPhone());
 
         final long now = System.currentTimeMillis();
-        hotdeatRedisTemplate.opsForZSet().add(hotdealId, member, (int) now);
+        hotdealRedisTemplate.opsForZSet().add(hotdealId, member, (int) now);
 
         log.info("대기열에 추가 - {} ({}초)", member, now);
     }
@@ -67,11 +67,11 @@ public class RedisUtil {
     public void getPurchase(Hotdeal hotdeal) {
         String hotdealId = String.valueOf(hotdeal.getId());
 
-        Set<Object> queue = hotdeatRedisTemplate.opsForZSet().range(hotdealId, 0, -1);
-        HashOperations<String, String, Object> hashOperations = hotdeatRedisTemplate.opsForHash();
+        Set<Object> queue = hotdealRedisTemplate.opsForZSet().range(hotdealId, 0, -1);
+        HashOperations<String, String, Object> hashOperations = hotdealRedisTemplate.opsForHash();
 
         for (Object member : queue) {
-            Long rank = hotdeatRedisTemplate.opsForZSet().rank(hotdealId, member);
+            Long rank = hotdealRedisTemplate.opsForZSet().rank(hotdealId, member);
             log.info("{}님의 현재 대기번호는 {}번 입니다.", member, rank);
         }
     }
@@ -81,11 +81,11 @@ public class RedisUtil {
         final long end = PUBLISH_SIZE - 1;
         String hotdealId = String.valueOf(hotdeal.getId());
 
-        Set<Object> queue = hotdeatRedisTemplate.opsForZSet().range(hotdealId, start, end);
-        HashOperations<String, String, Object> hashOperations = hotdeatRedisTemplate.opsForHash();
+        Set<Object> queue = hotdealRedisTemplate.opsForZSet().range(hotdealId, start, end);
+        HashOperations<String, String, Object> hashOperations = hotdealRedisTemplate.opsForHash();
 
         for (Object member : queue) {
-            hotdeatRedisTemplate.opsForZSet().remove(hotdealId, member);
+            hotdealRedisTemplate.opsForZSet().remove(hotdealId, member);
             String memberId = (String) member;
 
             eventPublisher.publishEvent(new HotdealPermissionEvent(
@@ -99,11 +99,11 @@ public class RedisUtil {
     }
 
     public void deleteAll(Long hotdealId) {
-        hotdeatRedisTemplate.opsForZSet().removeRange(String.valueOf(hotdealId), 0, -1);
+        hotdealRedisTemplate.opsForZSet().removeRange(String.valueOf(hotdealId), 0, -1);
     }
 
     public Long getSize(Long hotdealId) {
-        return hotdeatRedisTemplate.opsForZSet().size(String.valueOf(hotdealId));
+        return hotdealRedisTemplate.opsForZSet().size(String.valueOf(hotdealId));
     }
 
 //    public Long getRank(Long hotdealId, String memberName) {
