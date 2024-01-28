@@ -141,11 +141,16 @@ class PurchaseServiceImplV1Test implements MemberTest, ProductTest, PurchaseTest
             //given
             purchaseService.purchase(requestDto, member);
 
+            memberProduct = MemberProductTestUtil.getMemberProduct(member, product);
+            memberProductRepository.save(memberProduct);
+            purchaseService.purchase(requestDto, member);
+
             //when
             List<PurchaseResponseDto> responseDtoList = purchaseService.getPurchaseList(member);
 
             //then
-            assertEquals(1, responseDtoList.size());
+            assertEquals(2, responseDtoList.size());
+
             assertEquals(requestDto.getAddress(), responseDtoList.get(0).getAddress());
             assertEquals(memberProduct.getProductsQuantity() * product.getPrice(),
                 responseDtoList.get(0).getTotalPrice());
@@ -153,6 +158,10 @@ class PurchaseServiceImplV1Test implements MemberTest, ProductTest, PurchaseTest
                 responseDtoList.get(0).getPurchaseProductList().get(0).getTitle());
             assertEquals(memberProduct.getProductsQuantity(),
                 responseDtoList.get(0).getPurchaseProductList().get(0).getProductsQuantity());
+
+            assertEquals(requestDto.getAddress(), responseDtoList.get(1).getAddress());
+            assertEquals(product.getTitle(),
+                responseDtoList.get(1).getPurchaseProductList().get(0).getTitle());
         }
 
         @Test
