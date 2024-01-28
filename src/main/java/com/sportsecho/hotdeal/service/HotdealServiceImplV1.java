@@ -3,6 +3,7 @@ package com.sportsecho.hotdeal.service;
 import com.sportsecho.common.exception.GlobalException;
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
+import com.sportsecho.hotdeal.dto.request.SetUpHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
 import com.sportsecho.hotdeal.entity.Hotdeal;
@@ -124,7 +125,7 @@ public class HotdealServiceImplV1 implements HotdealService {
     }
 
     @Override
-    public void setUpHotdeal(Long hotdealId) {
+    public void setUpHotdeal(Long hotdealId, SetUpHotdealRequestDto requestDto) {
     }
 
     @Override

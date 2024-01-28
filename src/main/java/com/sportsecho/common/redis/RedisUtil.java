@@ -7,6 +7,7 @@ import com.sportsecho.member.entity.Member;
 import java.time.Duration;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.HashOperations;
@@ -23,7 +24,10 @@ public class RedisUtil {
     private final ApplicationEventPublisher eventPublisher;
 
     private final Long REFRESH_TIME = 7 * 24 * 60 * 60 * 1000L;
-    private static final long PUBLISH_SIZE = 5;
+    private final int start = 0;
+
+    @Setter
+    private int publishedSize;
 
     public void saveRefreshToken(String refreshToken, String email) {
         //redis에 refreshToken 저장
@@ -67,7 +71,7 @@ public class RedisUtil {
     public void getPurchase(Hotdeal hotdeal) {
         String hotdealId = String.valueOf(hotdeal.getId());
 
-        Set<Object> queue = hotdealRedisTemplate.opsForZSet().range(hotdealId, 0, -1);
+        Set<Object> queue = hotdealRedisTemplate.opsForZSet().range(hotdealId, start, -1);
         HashOperations<String, String, Object> hashOperations = hotdealRedisTemplate.opsForHash();
 
         for (Object member : queue) {
@@ -77,8 +81,7 @@ public class RedisUtil {
     }
 
     public void publish(Hotdeal hotdeal) {
-        final long start = 0;
-        final long end = PUBLISH_SIZE - 1;
+        final long end = publishedSize - 1;
         String hotdealId = String.valueOf(hotdeal.getId());
 
         Set<Object> queue = hotdealRedisTemplate.opsForZSet().range(hotdealId, start, end);
@@ -98,7 +101,7 @@ public class RedisUtil {
     }
 
     public void clearQueue(Long hotdealId) {
-        hotdealRedisTemplate.opsForZSet().removeRange(String.valueOf(hotdealId), 0, -1);
+        hotdealRedisTemplate.opsForZSet().removeRange(String.valueOf(hotdealId), start, -1);
     }
 
     public Long getSize(Long hotdealId) {

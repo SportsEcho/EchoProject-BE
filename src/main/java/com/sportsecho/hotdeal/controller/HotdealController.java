@@ -2,6 +2,7 @@ package com.sportsecho.hotdeal.controller;
 
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
+import com.sportsecho.hotdeal.dto.request.SetUpHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
 import com.sportsecho.hotdeal.service.HotdealService;
@@ -99,9 +100,10 @@ public class HotdealController {
 
     @PostMapping("/hotdeals/{hotdealId}/set")
     public ResponseEntity<Void> setUpHotdeal(
-        @PathVariable Long hotdealId
+        @PathVariable Long hotdealId,
+        @RequestBody SetUpHotdealRequestDto requestDto
     ) {
-        hotdealService.setUpHotdeal(hotdealId);
+        hotdealService.setUpHotdeal(hotdealId, requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }

@@ -4,6 +4,7 @@ import com.sportsecho.common.exception.GlobalException;
 import com.sportsecho.common.redis.RedisUtil;
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
+import com.sportsecho.hotdeal.dto.request.SetUpHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
 import com.sportsecho.hotdeal.entity.Hotdeal;
@@ -101,11 +102,12 @@ public class HotdealServiceImplV3 implements HotdealService {
 
     @Override
     @Transactional
-    public void setUpHotdeal(Long hotdealId) {
+    public void setUpHotdeal(Long hotdealId, SetUpHotdealRequestDto requestDto) {
         Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(hotdealId)
             .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
 
         redisUtil.clearQueue(hotdealId);
+        redisUtil.setPublishedSize(requestDto.getPublishedSize());
         hotdealScheduler.setHotdeal(hotdeal);
     }
 

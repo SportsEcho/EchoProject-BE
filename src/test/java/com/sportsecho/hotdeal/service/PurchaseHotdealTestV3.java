@@ -6,6 +6,7 @@ import com.sportsecho.common.redis.RedisUtil;
 import com.sportsecho.hotdeal.HotdealTest;
 import com.sportsecho.hotdeal.HotdealTestUtil;
 import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
+import com.sportsecho.hotdeal.dto.request.SetUpHotdealRequestDto;
 import com.sportsecho.hotdeal.entity.Hotdeal;
 import com.sportsecho.hotdeal.repository.HotdealRepository;
 import com.sportsecho.member.MemberTest;
@@ -90,8 +91,9 @@ public class PurchaseHotdealTestV3 implements MemberTest, ProductTest, HotdealTe
             int purchaseQuantity = 1;
             PurchaseHotdealRequestDto requestDto = HotdealTestUtil.createTestPurchaseHotdealRequestDto(
                 hotdeal.getId(), purchaseQuantity);
+            SetUpHotdealRequestDto setUpRequestDto = HotdealTestUtil.createTestSetUpRequestDto(5);
 
-            hotdealService.setUpHotdeal(hotdeal.getId());
+            hotdealService.setUpHotdeal(hotdeal.getId(), setUpRequestDto);
             memberRepository.deleteAll();
 
             int numberOfThreads = 80;

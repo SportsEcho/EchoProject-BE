@@ -2,6 +2,7 @@ package com.sportsecho.hotdeal.service;
 
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
+import com.sportsecho.hotdeal.dto.request.SetUpHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
 import com.sportsecho.member.entity.Member;
@@ -56,10 +57,11 @@ public interface HotdealService {
     void purchaseHotdeal(Member member, PurchaseHotdealRequestDto requestDto);
 
     /**
-     * hotdeal 지정
+     * hotdeal 세팅
      *
-     * @param hotdealId
+     * @param hotdealId  이벤트를 진행할 핫딜 Id
+     * @param requestDto 대기열에서 주문창으로 넘길 인원수
      */
-    void setUpHotdeal(Long hotdealId);
+    void setUpHotdeal(Long hotdealId, SetUpHotdealRequestDto requestDto);
 
 }
