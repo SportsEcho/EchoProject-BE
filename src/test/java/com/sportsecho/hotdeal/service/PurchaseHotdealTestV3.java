@@ -127,7 +127,7 @@ public class PurchaseHotdealTestV3 implements MemberTest, ProductTest, HotdealTe
             Hotdeal foundHotdeal = hotdealRepository.findById(hotdeal.getId()).orElse(null);
             assertEquals(0, foundHotdeal.getDealQuantity());
 
-            redisUtil.deleteAll(hotdeal.getId());
+            redisUtil.clearQueue(hotdeal.getId());
         }
 
     }

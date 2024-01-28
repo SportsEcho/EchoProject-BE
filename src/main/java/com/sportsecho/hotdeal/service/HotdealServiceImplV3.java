@@ -105,7 +105,7 @@ public class HotdealServiceImplV3 implements HotdealService {
         Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(hotdealId)
             .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
 
-        redisUtil.deleteAll(hotdealId);
+        redisUtil.clearQueue(hotdealId);
         hotdealScheduler.setHotdeal(hotdeal);
     }
 

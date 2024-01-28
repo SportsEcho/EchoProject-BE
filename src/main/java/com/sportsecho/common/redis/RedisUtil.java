@@ -97,7 +97,7 @@ public class RedisUtil {
         }
     }
 
-    public void deleteAll(Long hotdealId) {
+    public void clearQueue(Long hotdealId) {
         hotdealRedisTemplate.opsForZSet().removeRange(String.valueOf(hotdealId), 0, -1);
     }
 
