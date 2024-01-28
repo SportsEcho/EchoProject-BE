@@ -7,6 +7,7 @@ import com.sportsecho.hotdeal.exception.HotdealErrorCode;
 import com.sportsecho.hotdeal.mapper.HotdealMapper;
 import com.sportsecho.hotdeal.repository.HotdealRepository;
 import com.sportsecho.member.entity.Member;
+import com.sportsecho.member.exception.MemberErrorCode;
 import com.sportsecho.member.repository.MemberRepository;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.purchase.entity.Purchase;
@@ -52,10 +53,11 @@ public class HotdealPermissionEventListener {
         Product product = hotdeal.getProduct();
         int discountedPrice = product.getPrice() - (product.getPrice() * hotdeal.getSale() / 100);
 
-        Member member = memberRepository.findById(memberId).orElse(null);
+        Member member = memberRepository.findById(memberId).orElseThrow(() ->
+            new GlobalException(MemberErrorCode.USER_NOT_FOUND));
+
         Purchase purchase = Purchase.createEntity(event.getAddress(), event.getPhone(), member);
         purchase = purchaseRepository.save(purchase);
-
         purchase.setCreatedAt(LocalDateTime.now());
         purchase.updateTotalPrice(discountedPrice * quantity);
         purchase = purchaseRepository.save(purchase);
