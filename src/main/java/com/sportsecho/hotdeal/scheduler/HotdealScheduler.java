@@ -6,6 +6,7 @@ import com.sportsecho.hotdeal.repository.HotdealRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -19,15 +20,8 @@ public class HotdealScheduler {
     private final HotdealRepository hotdealRepository;
     private final RedisUtil redisUtil;
 
+    @Setter
     private Hotdeal hotdeal;
-    private LocalDateTime startDay;
-    private LocalDateTime dueDay;
-
-    public void HotdealSetting(Hotdeal hotdeal) {
-        this.hotdeal = hotdeal;
-        this.startDay = hotdeal.getStartDay();
-        this.dueDay = hotdeal.getDueDay();
-    }
 
     // 매분마다 시행
     @Scheduled(cron = "0 * * * * *")

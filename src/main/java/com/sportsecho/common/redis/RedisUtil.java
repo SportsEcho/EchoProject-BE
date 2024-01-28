@@ -89,8 +89,7 @@ public class RedisUtil {
             String memberId = (String) member;
 
             eventPublisher.publishEvent(new HotdealPermissionEvent(
-                hotdeal,
-                Long.parseLong(memberId),
+                hotdeal, Long.parseLong(memberId),
                 (int) hashOperations.get(memberId, "quantity"),
                 (String) hashOperations.get(memberId, "address"),
                 (String) hashOperations.get(memberId, "phone")
@@ -105,9 +104,4 @@ public class RedisUtil {
     public Long getSize(Long hotdealId) {
         return hotdealRedisTemplate.opsForZSet().size(String.valueOf(hotdealId));
     }
-
-//    public Long getRank(Long hotdealId, String memberName) {
-//        return hotdeatRedisTemplate.opsForZSet()
-//            .rank(String.valueOf(hotdealId), Thread.currentThread().getName());
-//    }
 }

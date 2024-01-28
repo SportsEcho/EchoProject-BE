@@ -106,7 +106,7 @@ public class HotdealServiceImplV3 implements HotdealService {
             .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
 
         redisUtil.deleteAll(hotdealId);
-        hotdealScheduler.HotdealSetting(hotdeal);
+        hotdealScheduler.setHotdeal(hotdeal);
     }
 
     @Override
