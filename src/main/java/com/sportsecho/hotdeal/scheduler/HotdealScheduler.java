@@ -60,6 +60,7 @@ public class HotdealScheduler {
         if (hotdeal.getDealQuantity() == 0) {
             log.info("===== 이벤트가 종료되었습니다. =====");
             redisUtil.clearQueue(hotdeal.getId());
+            this.hotdeal = null;
             return;
         }
 
