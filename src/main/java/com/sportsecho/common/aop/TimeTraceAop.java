@@ -24,7 +24,7 @@ public class TimeTraceAop {
     public void purchase() {
     }
 
-    @Around("user()")
+    @Around("user() || memberProduct() || purchase()")
     public Object execute(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.currentTimeMillis();
 
