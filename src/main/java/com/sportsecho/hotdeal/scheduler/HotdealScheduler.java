@@ -1,7 +1,9 @@
 package com.sportsecho.hotdeal.scheduler;
 
+import com.sportsecho.common.exception.GlobalException;
 import com.sportsecho.common.redis.RedisUtil;
 import com.sportsecho.hotdeal.entity.Hotdeal;
+import com.sportsecho.hotdeal.exception.HotdealErrorCode;
 import com.sportsecho.hotdeal.repository.HotdealRepository;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,7 +23,7 @@ public class HotdealScheduler {
     private final RedisUtil redisUtil;
 
     @Setter
-    private Hotdeal hotdeal;
+    private Long hotdealId;
 
     // 매분마다 시행
     @Scheduled(cron = "0 * * * * *")
@@ -52,15 +54,18 @@ public class HotdealScheduler {
     public void hotdealEventScheduler() {
         log.info("==== Hotdeal 이벤트 스케줄러 실행 =====");
 
-        if (hotdeal == null) {
+        if (hotdealId == null) {
             return;
         }
+
+        Hotdeal hotdeal = hotdealRepository.findById(hotdealId)
+            .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
 
         log.info("남은 핫딜 수량 : {}", hotdeal.getDealQuantity());
         if (hotdeal.getDealQuantity() == 0) {
             log.info("===== 이벤트가 종료되었습니다. =====");
             redisUtil.clearQueue(hotdeal.getId());
-            this.hotdeal = null;
+            this.hotdealId = null;
             return;
         }
 

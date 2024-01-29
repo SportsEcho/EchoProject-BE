@@ -37,7 +37,8 @@ public class HotdealPermissionEventListener {
     public PurchaseHotdealResponseDto handleUserPermissionGrantedEvent(
         HotdealPermissionEvent event) {
 
-        Hotdeal hotdeal = event.getHotdeal();
+        Hotdeal hotdeal = hotdealRepository.findById(event.getHotdeal().getId())
+            .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
         Long memberId = event.getMemberId();
         int quantity = event.getQuantity();
 

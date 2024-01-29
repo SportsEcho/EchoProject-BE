@@ -108,7 +108,7 @@ public class HotdealServiceImplV3 implements HotdealService {
 
         redisUtil.clearQueue(hotdealId);
         redisUtil.setPublishedSize(requestDto.getPublishedSize());
-        hotdealScheduler.setHotdeal(hotdeal);
+        hotdealScheduler.setHotdealId(hotdealId);
     }
 
     @Override
