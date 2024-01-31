@@ -18,5 +18,5 @@ public interface MemberProductRepository extends JpaRepository<MemberProduct, Lo
 
     @Modifying
     @Query("DELETE FROM MemberProduct mp WHERE mp.member.id = :memberId")
-    void deleteAllByMemberId(@Param("memberId") Long memberId);
+    void deleteByMemberId(@Param("memberId") Long memberId);
 }
