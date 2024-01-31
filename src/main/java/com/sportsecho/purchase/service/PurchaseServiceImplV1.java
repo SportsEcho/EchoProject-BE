@@ -59,7 +59,7 @@ public class PurchaseServiceImplV1 implements PurchaseService {
         purchaseRepository.save(purchase);
 
         // 장바구니 비우기
-        memberProductRepository.deleteAllByMemberId(member.getId());
+        memberProductRepository.deleteByMemberId(member.getId());
 
         return PurchaseMapper.INSTANCE.toResponseDto(purchase);
     }
@@ -82,8 +82,8 @@ public class PurchaseServiceImplV1 implements PurchaseService {
     @Transactional
     public void cancelPurchase(Long purchaseId, Member member) {
 
-        Purchase purchase = purchaseRepository.findById(purchaseId).orElseThrow(
-            () -> new GlobalException(PurchaseErrorCode.NOT_FOUND_PURCHASE)
+        Purchase purchase = purchaseRepository.findByIdWithProducts(purchaseId).orElseThrow(() ->
+            new GlobalException(PurchaseErrorCode.NOT_FOUND_PURCHASE)
         );
         checkMember(purchase, member);
         increaseStock(purchase);
