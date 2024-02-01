@@ -66,13 +66,6 @@ public class PurchaseHotdealTest implements MemberTest, ProductTest, HotdealTest
     @Autowired
     RedisUtil redisUtil;
 
-//    @BeforeEach
-//    void setUp() {
-//        member = memberRepository.save(
-//            MemberTestUtil.getTestMember("customer", TEST_EMAIL, TEST_PASSWORD,
-//                MemberRole.CUSTOMER));
-//    }
-
     @AfterEach
     void tearDown() {
         memberRepository.deleteAll();

@@ -131,11 +131,6 @@ public class HotdealServiceImplV1 implements HotdealService {
     }
 
     @Override
-    public String getOldestHotdealWaitingMember(String hotdealId) {
-        return null;
-    }
-
-    @Override
     public void deleteHotdealWaitingMember(Member member, String hotdealId) {
 
     }
