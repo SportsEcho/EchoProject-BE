@@ -4,6 +4,7 @@ import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
 import com.sportsecho.hotdeal.dto.response.PurchaseHotdealResponseDto;
 import com.sportsecho.hotdeal.entity.Hotdeal;
+import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.entity.ProductImage;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -18,8 +19,7 @@ public interface HotdealMapper {
 
     HotdealMapper INSTANCE = Mappers.getMapper(HotdealMapper.class);
 
-    @Mapping(target = "product", ignore = true)
-    Hotdeal toEntity(HotdealRequestDto requestDto);
+    Hotdeal toEntity(HotdealRequestDto requestDto, Product product);
 
     @Mapping(source = "product.title", target = "title")
     @Mapping(source = "product.content", target = "content")

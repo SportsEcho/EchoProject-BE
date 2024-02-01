@@ -66,13 +66,6 @@ public interface HotdealService {
     HotdealWaitResponse waitHotdeal(String hotdealId, Member member);
 
     /*
-    * Hotdeal 구매 대기 정보
-    * @param hotdealId 구매 대기 정보를 조회할 Hotdeal의 Id
-    * @return 구매 대기 정보
-     */
-    String getOldestHotdealWaitingMember(String hotdealId);
-
-    /*
     * Hotdeal 구매 대기 취소
     * @param hotdealId 구매 대기 취소할 Hotdeal의 Id
     * @param member 구매자 정보
