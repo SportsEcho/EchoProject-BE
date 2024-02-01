@@ -52,12 +52,6 @@ public class RedisUtil {
         return Objects.requireNonNull(zSetOperations.size(queueName)).intValue();
     }
 
-    // 가장 최근 큐 꺼내서 내 이메일이랑 비교 (이메일은 unique)
-    public Set<String> getOldHotdealWait(String queueName) {
-        ZSetOperations<String, String> zSetOperations = stringRedisTemplate.opsForZSet();
-        return zSetOperations.range(queueName, 0, 0);
-    }
-
     public Set<String> getOldHotdealWaitSet(String queueName, int size) {
         ZSetOperations<String, String> zSetOperations = stringRedisTemplate.opsForZSet();
         return zSetOperations.range(queueName, 0, size - 1); // 남은 인원보다 더 많은 인원을 뽑아도 상관없음
