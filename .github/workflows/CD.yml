@@ -56,14 +56,14 @@ jobs:
             echo BASEBALL_API_KEY=${{ secrets.BASEBALL_API_KEY }} | sudo tee -a .env_b
             echo BASKETBALL_API_KEY=${{ secrets.BASKETBALL_API_KEY }} | sudo tee -a .env_b
             echo FOOTBALL_API_KEY=${{ secrets.FOOTBALL_API_KEY }} | sudo tee -a .env_b
-            echo GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }} >> | sudo tee -a .env_b
+            echo GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }} | sudo tee -a .env_b
             echo GOOGLE_API_SECRET=${{ secrets.GOOGLE_API_SECRET }} | sudo tee -a .env_b
-            echo JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} >> | sudo tee -a .env_b
-            echo KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }} >> | sudo tee -a .env_b
-            echo NAVER_API_KEY=${{ secrets.NAVER_API_KEY }} >> | sudo tee -a .env_b
-            echo NAVER_API_SECRET=${{ secrets.NAVER_API_SECRET }} >> | sudo tee -a .env_b
-            echo RDS_USERNAME=${{ secrets.RDS_USERNAME }} >> | sudo tee -a .env_b
-            echo RDS_PASSWORD=${{ secrets.RDS_PASSWORD }} >> | sudo tee -a .env_b
-            echo ${{ secrets.PORT }}:${{ secrets.PORT }} >> | sudo tee -a .env_b
+            echo JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} | sudo tee -a .env_b
+            echo KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }} | sudo tee -a .env_b
+            echo NAVER_API_KEY=${{ secrets.NAVER_API_KEY }} | sudo tee -a .env_b
+            echo NAVER_API_SECRET=${{ secrets.NAVER_API_SECRET }} | sudo tee -a .env_b
+            echo RDS_USERNAME=${{ secrets.RDS_USERNAME }} | sudo tee -a .env_b
+            echo RDS_PASSWORD=${{ secrets.RDS_PASSWORD }} | sudo tee -a .env_b
+            echo ${{ secrets.PORT }}:${{ secrets.PORT }} | sudo tee -a .env_b
             
             sudo docker-compose up -d
