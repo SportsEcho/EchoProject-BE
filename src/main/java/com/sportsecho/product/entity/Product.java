@@ -43,7 +43,9 @@ public class Product extends TimeStamp {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
-    @Version
+//    @Version
+    //@Version 애너테이션의 정확한 동작 방식을 알아보기
+    //관련 없는 쿼리를 날렸을때 어떤 영향이 발생하는지
     private Long version;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
