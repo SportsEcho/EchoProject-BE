@@ -45,25 +45,26 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
 
           script: |
-            sudo docker-compose down
+            sudo docker kill ${{ secrets.PROJECT_NAME }}
+            sudo docker rm -f ${{ secrets.PROJECT_NAME }}
             sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
-            sudo rm .env_b
-            sudo touch .env_b
-
-            echo ADMIN_SECRET_KEY=${{ secrets.ADMIN_SECRET_KEY }} | sudo tee -a .env_b
-            echo AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} | sudo tee -a .env_b
-            echo AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} | sudo tee -a .env_b
-            echo BASEBALL_API_KEY=${{ secrets.BASEBALL_API_KEY }} | sudo tee -a .env_b
-            echo BASKETBALL_API_KEY=${{ secrets.BASKETBALL_API_KEY }} | sudo tee -a .env_b
-            echo FOOTBALL_API_KEY=${{ secrets.FOOTBALL_API_KEY }} | sudo tee -a .env_b
-            echo GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }} | sudo tee -a .env_b
-            echo GOOGLE_API_SECRET=${{ secrets.GOOGLE_API_SECRET }} | sudo tee -a .env_b
-            echo JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} | sudo tee -a .env_b
-            echo KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }} | sudo tee -a .env_b
-            echo NAVER_API_KEY=${{ secrets.NAVER_API_KEY }} | sudo tee -a .env_b
-            echo NAVER_API_SECRET=${{ secrets.NAVER_API_SECRET }} | sudo tee -a .env_b
-            echo RDS_USERNAME=${{ secrets.RDS_USERNAME }} | sudo tee -a .env_b
-            echo RDS_PASSWORD=${{ secrets.RDS_PASSWORD }} | sudo tee -a .env_b
-            echo ${{ secrets.PORT }}:${{ secrets.PORT }} | sudo tee -a .env_b
-            
-            sudo docker-compose up -d
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
+           
+            sudo docker run \
+            -e ADMIN_SECRET_KEY=${{ secrets.ADMIN_SECRET_KEY }} \
+            -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
+            -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} \
+            -e BASEBALL_API_KEY=${{ secrets.BASEBALL_API_KEY }} \
+            -e BASKETBALL_API_KEY=${{ secrets.BASKETBALL_API_KEY }} \
+            -e FOOTBALL_API_KEY=${{ secrets.FOOTBALL_API_KEY }} \
+            -e GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }} \
+            -e GOOGLE_API_SECRET=${{ secrets.GOOGLE_API_SECRET }} \
+            -e JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
+            -e KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }} \
+            -e NAVER_API_KEY=${{ secrets.NAVER_API_KEY }} \
+            -e NAVER_API_SECRET=${{ secrets.NAVER_API_SECRET }} \
+            -e RDS_USERNAME=${{ secrets.RDS_USERNAME }} \
+            -e RDS_PASSWORD=${{ secrets.RDS_PASSWORD }} \
+            -p ${{ secrets.PORT }}:${{ secrets.PORT }} \
+            --name ${{ secrets.PROJECT_NAME }} \
+            -d ${{ secrets.DOCKERHUB_USERNAME}}/${{ secrets.PROJECT_NAME }}
