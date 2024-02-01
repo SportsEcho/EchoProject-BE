@@ -45,7 +45,7 @@ public class PurchaseServiceImplV1 implements PurchaseService {
         }
 
         // 재고 확인 후 차감
-        updateStock(memberProductList);
+        decreaseStock(memberProductList);
 
         // 구매 인스턴스 생성
         Purchase purchase = PurchaseMapper.INSTANCE.fromPurchaseRequestDto(requestDto, member);
@@ -60,7 +60,7 @@ public class PurchaseServiceImplV1 implements PurchaseService {
         purchaseRepository.save(purchase);
 
         // 장바구니 비우기
-        memberProductRepository.deleteAllByMemberId(member.getId());
+        memberProductRepository.deleteByMemberId(member.getId());
 
         return PurchaseMapper.INSTANCE.toResponseDto(purchase);
     }
@@ -83,11 +83,11 @@ public class PurchaseServiceImplV1 implements PurchaseService {
     @Transactional
     public void cancelPurchase(Long purchaseId, Member member) {
 
-        Purchase purchase = purchaseRepository.findById(purchaseId).orElseThrow(
-            () -> new GlobalException(PurchaseErrorCode.NOT_FOUND_PURCHASE)
+        Purchase purchase = purchaseRepository.findByIdWithProducts(purchaseId).orElseThrow(() ->
+            new GlobalException(PurchaseErrorCode.NOT_FOUND_PURCHASE)
         );
         checkMember(purchase, member);
-        updateStock(purchase);
+        increaseStock(purchase);
 
         purchaseProductRepository.deleteByPurchaseId(purchaseId);
         purchaseRepository.deleteById(purchaseId);
@@ -118,17 +118,7 @@ public class PurchaseServiceImplV1 implements PurchaseService {
         return pList;
     }
 
-    private void updateStock(Purchase purchase) {
-        List<PurchaseProduct> purchaseProductList = purchase.getPurchaseProductList();
-
-        for (PurchaseProduct purchaseProduct : purchaseProductList) {
-            Product product = purchaseProduct.getProduct();
-            product.increaseQuantity(purchaseProduct.getProductsQuantity());
-            productRepository.save(product);
-        }
-    }
-
-    private void updateStock(List<MemberProduct> memberProductList) {
+    private void decreaseStock(List<MemberProduct> memberProductList) {
 
         for (MemberProduct memberProduct : memberProductList) {
             Product product = memberProduct.getProduct();
@@ -137,8 +127,16 @@ public class PurchaseServiceImplV1 implements PurchaseService {
                 throw new GlobalException(PurchaseErrorCode.OUT_OF_STOCK);
             } else {
                 product.decreaseQuantity(memberProduct.getProductsQuantity());
-                productRepository.save(product);
             }
+        }
+    }
+
+    private void increaseStock(Purchase purchase) {
+        List<PurchaseProduct> purchaseProductList = purchase.getPurchaseProductList();
+
+        for (PurchaseProduct purchaseProduct : purchaseProductList) {
+            Product product = purchaseProduct.getProduct();
+            product.increaseQuantity(purchaseProduct.getProductsQuantity());
         }
     }
 
