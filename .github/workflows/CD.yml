@@ -50,20 +50,20 @@ jobs:
             sudo rm .env_b
             sudo touch .env_b
             
-            echo ADMIN_SECRET_KEY=${{ secrets.ADMIN_SECRET_KEY }} >> .env_b
-            echo AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} >> .env_b
-            echo AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} >> .env_b
-            echo BASEBALL_API_KEY=${{ secrets.BASEBALL_API_KEY }} >> .env_b
-            echo BASKETBALL_API_KEY=${{ secrets.BASKETBALL_API_KEY }} >> .env_b
-            echo FOOTBALL_API_KEY=${{ secrets.FOOTBALL_API_KEY }} >> .env_b
-            echo GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }} >> .env_b
-            echo GOOGLE_API_SECRET=${{ secrets.GOOGLE_API_SECRET }} >> .env_b
-            echo JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} >> .env_b
-            echo KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }} >> .env_b
-            echo NAVER_API_KEY=${{ secrets.NAVER_API_KEY }} >> .env_b
-            echo NAVER_API_SECRET=${{ secrets.NAVER_API_SECRET }} >> .env_b
-            echo RDS_USERNAME=${{ secrets.RDS_USERNAME }} >> .env_b
-            echo RDS_PASSWORD=${{ secrets.RDS_PASSWORD }} >> .env_b
-            echo ${{ secrets.PORT }}:${{ secrets.PORT }} >> .env_b
+            sudo echo ADMIN_SECRET_KEY=${{ secrets.ADMIN_SECRET_KEY }} >> .env_b
+            sudo echo AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} >> .env_b
+            sudo echo AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} >> .env_b
+            sudo echo BASEBALL_API_KEY=${{ secrets.BASEBALL_API_KEY }} >> .env_b
+            sudo echo BASKETBALL_API_KEY=${{ secrets.BASKETBALL_API_KEY }} >> .env_b
+            sudo echo FOOTBALL_API_KEY=${{ secrets.FOOTBALL_API_KEY }} >> .env_b
+            sudo echo GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }} >> .env_b
+            sudo echo GOOGLE_API_SECRET=${{ secrets.GOOGLE_API_SECRET }} >> .env_b
+            sudo echo JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} >> .env_b
+            sudo echo KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }} >> .env_b
+            sudo echo NAVER_API_KEY=${{ secrets.NAVER_API_KEY }} >> .env_b
+            sudo echo NAVER_API_SECRET=${{ secrets.NAVER_API_SECRET }} >> .env_b
+            sudo echo RDS_USERNAME=${{ secrets.RDS_USERNAME }} >> .env_b
+            sudo echo RDS_PASSWORD=${{ secrets.RDS_PASSWORD }} >> .env_b
+            sudo echo ${{ secrets.PORT }}:${{ secrets.PORT }} >> .env_b
             
             sudo docker-compose up -d
