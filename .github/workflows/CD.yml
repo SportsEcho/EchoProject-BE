@@ -45,17 +45,11 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
 
           script: |
-#           실행중인 서버 다운
             sudo docker-compose down
-            
-#           백엔드 도커 이미지 삭제
             sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
-            
-#           백엔드 환경변수 파일 삭제 및 생성
             sudo rm .env_b
             sudo touch .env_b
             
-#           백엔드 환경변수 파일 작성
             echo ADMIN_SECRET_KEY=${{ secrets.ADMIN_SECRET_KEY }} >> .env_b
             echo AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} >> .env_b
             echo AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} >> .env_b
@@ -72,5 +66,4 @@ jobs:
             echo RDS_PASSWORD=${{ secrets.RDS_PASSWORD }} >> .env_b
             echo ${{ secrets.PORT }}:${{ secrets.PORT }} >> .env_b
             
-#           백엔드 도커 이미지 pull 및 도커 컴포즈 실행
             sudo docker-compose up -d
