@@ -9,6 +9,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.NamedSubgraph;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +22,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@NamedEntityGraph(
+    name = "graph.MemberProduct",
+    attributeNodes = {
+        @NamedAttributeNode(value = "product", subgraph = "productGraph")
+    }, subgraphs = {
+    @NamedSubgraph(name = "productGraph", attributeNodes = @NamedAttributeNode("productImageList"))
+})
 public class MemberProduct {
 
     @Id
