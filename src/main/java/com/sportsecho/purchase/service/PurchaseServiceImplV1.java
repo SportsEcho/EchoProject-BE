@@ -38,7 +38,7 @@ public class PurchaseServiceImplV1 implements PurchaseService {
 
         // 장바구니 목록 찾아오기
         List<MemberProduct> memberProductList = memberProductRepository
-            .findByMemberIdJoinProductWithOptLock(member.getId());
+            .findByMemberId(member.getId());
 
         if (memberProductList.isEmpty()) {
             throw new GlobalException(PurchaseErrorCode.EMPTY_CART);

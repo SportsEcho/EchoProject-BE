@@ -18,10 +18,6 @@ public interface MemberProductRepository extends JpaRepository<MemberProduct, Lo
     @EntityGraph(value = "graph.MemberProduct", type = EntityGraph.EntityGraphType.FETCH)
     List<MemberProduct> findByMemberId(Long memberId);
 
-    @Lock(LockModeType.OPTIMISTIC)
-    @Query("select mp from MemberProduct mp join fetch mp.product p where mp.member.id = :memberId")
-    List<MemberProduct> findByMemberIdJoinProductWithOptLock(@Param("memberId") Long memberId);
-
     @Modifying
     @Query("DELETE FROM MemberProduct mp WHERE mp.member.id = :memberId")
     void deleteByMemberId(@Param("memberId") Long memberId);
