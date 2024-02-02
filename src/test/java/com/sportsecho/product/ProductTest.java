@@ -15,10 +15,4 @@ public interface ProductTest {
         .price(TEST_PRICE)
         .quantity(TEST_QUANTITY)
         .build();
-    Product ANOTHER_TEST_PRODUCT = Product.builder()
-        .title(TEST_PRODUCT_TITLE)
-        .content(TEST_PRODUCT_CONTENT)
-        .price(TEST_PRICE)
-        .quantity(TEST_QUANTITY)
-        .build();
 }
