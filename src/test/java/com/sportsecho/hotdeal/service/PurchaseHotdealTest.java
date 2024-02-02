@@ -80,7 +80,7 @@ public class PurchaseHotdealTest implements MemberTest, ProductTest, HotdealTest
             purchaseRepository.deleteAll();
         }
 
-        private Product product = productRepository.save(TEST_PRODUCT);
+        private Product product = productRepository.save(ANOTHER_TEST_PRODUCT);
         private Hotdeal hotdeal = hotdealRepository.save(
             HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
                 TEST_SALE, product));
