@@ -90,9 +90,9 @@ public class PurchaseHotdealTest implements MemberTest, ProductTest, HotdealTest
                     .build()
             );
             hotdeal = hotdealRepository.save(
-                HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
+                HotdealTestUtil.getHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
                     TEST_SALE, product));
-            requestDto = HotdealTestUtil.createTestPurchaseHotdealRequestDto(
+            requestDto = HotdealTestUtil.getTestPurchaseHotdealRequestDto(
                 hotdeal.getId(), 3);
         }
 
@@ -149,13 +149,13 @@ public class PurchaseHotdealTest implements MemberTest, ProductTest, HotdealTest
             // given
             Product product = productRepository.save(TEST_PRODUCT);
             Hotdeal hotdeal = hotdealRepository.save(
-                HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
+                HotdealTestUtil.getHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
                     TEST_SALE, product));
 
             int beforeDealQuantity = hotdeal.getDealQuantity();
 
             int purchaseQuantity = 3;
-            PurchaseHotdealRequestDto requestDto = HotdealTestUtil.createTestPurchaseHotdealRequestDto(
+            PurchaseHotdealRequestDto requestDto = HotdealTestUtil.getTestPurchaseHotdealRequestDto(
                 hotdeal.getId(), purchaseQuantity);
 
             int numberOfThreads = 10;
