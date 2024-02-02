@@ -78,22 +78,25 @@ public class PurchaseHotdealTest implements MemberTest, ProductTest, HotdealTest
     @DisplayName("단일 구매자의 구매 테스트")
     class SinglePurchaseTest {
 
-        private Member member = memberRepository.save(
-            MemberTestUtil.getTestMember("customer", TEST_EMAIL, TEST_PASSWORD,
-                MemberRole.CUSTOMER));
-
-        private Product product = productRepository.save(TEST_PRODUCT);
-        private Hotdeal hotdeal = hotdealRepository.save(
-            HotdealTestUtil.getHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
-                TEST_SALE, product));
-        private PurchaseHotdealRequestDto requestDto = HotdealTestUtil.getTestPurchaseHotdealRequestDto(
-            hotdeal.getId(), 3);
+        private Product product;
+        private Hotdeal hotdeal;
+        private PurchaseHotdealRequestDto requestDto;
 
         @BeforeEach
-        void setMemberPurchaseWait() {
-            // 단일 유저 구매 대기열 등록
-            redisUtil.addPurchaseHotdealMemberToQueueString(hotdeal.getId().toString(),
-                member.getEmail(), System.currentTimeMillis());
+        void setUp() {
+            product = productRepository.save(
+                Product.builder()
+                    .title(TEST_PRODUCT_TITLE)
+                    .content(TEST_PRODUCT_CONTENT)
+                    .price(TEST_PRICE)
+                    .quantity(TEST_QUANTITY)
+                    .build()
+            );
+            hotdeal = hotdealRepository.save(
+                HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
+                    TEST_SALE, product));
+            requestDto = HotdealTestUtil.createTestPurchaseHotdealRequestDto(
+                hotdeal.getId(), 3);
         }
 
         @AfterEach
