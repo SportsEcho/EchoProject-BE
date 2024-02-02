@@ -75,18 +75,31 @@ public class PurchaseHotdealTest implements MemberTest, ProductTest, HotdealTest
     @DisplayName("단일 구매자의 구매 테스트")
     class SinglePurchaseTest {
 
+        private Product product;
+        private Hotdeal hotdeal;
+        private PurchaseHotdealRequestDto requestDto;
+
+        @BeforeEach
+        void setUp() {
+            product = productRepository.save(
+                Product.builder()
+                    .title(TEST_PRODUCT_TITLE)
+                    .content(TEST_PRODUCT_CONTENT)
+                    .price(TEST_PRICE)
+                    .quantity(TEST_QUANTITY)
+                    .build()
+            );
+            hotdeal = hotdealRepository.save(
+                HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
+                    TEST_SALE, product));
+            requestDto = HotdealTestUtil.createTestPurchaseHotdealRequestDto(
+                hotdeal.getId(), 3);
+        }
+
         @AfterEach
         void tearDown() {
             purchaseRepository.deleteAll();
         }
-
-        private Product product = productRepository.save(TEST_PRODUCT);
-        private Hotdeal hotdeal = hotdealRepository.save(
-            HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
-                TEST_SALE, product));
-
-        private PurchaseHotdealRequestDto requestDto = HotdealTestUtil.createTestPurchaseHotdealRequestDto(
-            hotdeal.getId(), 3);
 
         @Test
         @DisplayName("성공 - 구매자가 구매한 상품이 구매 목록에 추가되는지 확인")
