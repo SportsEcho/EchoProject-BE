@@ -4,6 +4,7 @@ import com.sportsecho.common.exception.GlobalException;
 import com.sportsecho.common.redis.RedisUtil;
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
+import com.sportsecho.hotdeal.dto.request.SetUpHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
 import com.sportsecho.hotdeal.dto.response.HotdealWaitResponse;
@@ -35,10 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * V2 업데이트 내용
- * SortedSet을 이용한 대기열 구현
- * 구매 완료후 해당 유저를 대기열에서 삭제
- * 0개의 재고가 남았을 때 대기열 삭제
+ * V2 업데이트 내용 SortedSet을 이용한 대기열 구현 구매 완료후 해당 유저를 대기열에서 삭제 0개의 재고가 남았을 때 대기열 삭제
  */
 @Qualifier("V2")
 @Service
@@ -173,13 +171,13 @@ public class HotdealServiceImplV2 implements HotdealService {
     @Override
     @Transactional
     public boolean isMyHotdealTurn(Member member, String hotdealId) {
-        Set<String> oldHotdealWaitSet = redisUtil.getOldHotdealWaitSet(hotdealId, 10); // 대기열에서 10명씩 허가
+        Set<String> oldHotdealWaitSet = redisUtil.getOldHotdealWaitSet(hotdealId,
+            10); // 대기열에서 10명씩 허가
         if (oldHotdealWaitSet == null) {
             throw new GlobalException(HotdealErrorCode.SOLD_OUT);
         }
         return oldHotdealWaitSet.contains(member.getEmail());
     }
-
 
     @Override
     @Transactional
@@ -198,4 +196,13 @@ public class HotdealServiceImplV2 implements HotdealService {
             .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
     }
 
+    @Override
+    public void purchaseHotdealV3(Member member, PurchaseHotdealRequestDto requestDto) {
+
+    }
+
+    @Override
+    public void setUpHotdeal(Long hotdealId, SetUpHotdealRequestDto requestDto) {
+
+    }
 }
