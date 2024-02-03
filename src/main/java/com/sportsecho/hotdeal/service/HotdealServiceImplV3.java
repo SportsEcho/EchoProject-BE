@@ -7,6 +7,8 @@ import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.SetUpHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
+import com.sportsecho.hotdeal.dto.response.HotdealWaitResponse;
+import com.sportsecho.hotdeal.dto.response.PurchaseHotdealResponseDto;
 import com.sportsecho.hotdeal.entity.Hotdeal;
 import com.sportsecho.hotdeal.event.HotdealPermissionEventListener;
 import com.sportsecho.hotdeal.exception.HotdealErrorCode;
@@ -40,10 +42,10 @@ public class HotdealServiceImplV3 implements HotdealService {
     private final ProductRepository productRepository;
     private final PurchaseProductRepository purchaseProductRepository;
     private final PurchaseRepository purchaseRepository;
-    private final RedisUtil redisUtil;
     private final ApplicationEventPublisher eventPublisher;
     private final HotdealPermissionEventListener eventListener;
     private final HotdealScheduler hotdealScheduler;
+    private final RedisUtil redisUtil;
 
     @Override
     @Transactional
@@ -90,7 +92,7 @@ public class HotdealServiceImplV3 implements HotdealService {
 
     @Override
     @Transactional
-    public void purchaseHotdeal(Member member, PurchaseHotdealRequestDto requestDto) {
+    public void purchaseHotdealV3(Member member, PurchaseHotdealRequestDto requestDto) {
 
         Long hotdealId = requestDto.getHotdealId();
 
@@ -129,4 +131,24 @@ public class HotdealServiceImplV3 implements HotdealService {
             .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
     }
 
+    @Override
+    public PurchaseHotdealResponseDto purchaseHotdeal(Member member,
+        PurchaseHotdealRequestDto requestDto) {
+        return null;
+    }
+
+    @Override
+    public HotdealWaitResponse waitHotdeal(String hotdealId, Member member) {
+        return null;
+    }
+
+    @Override
+    public void deleteHotdealWaitingMember(Member member, String hotdealId) {
+
+    }
+
+    @Override
+    public boolean isMyHotdealTurn(Member member, String hotdealId) {
+        return false;
+    }
 }

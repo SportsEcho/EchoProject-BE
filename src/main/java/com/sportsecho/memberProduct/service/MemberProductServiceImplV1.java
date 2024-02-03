@@ -71,7 +71,7 @@ public class MemberProductServiceImplV1 implements MemberProductService {
     @Override
     @Transactional
     public void deleteAllCart(Member member) {
-        memberProductRepository.deleteAllByMemberId(member.getId());
+        memberProductRepository.deleteByMemberId(member.getId());
     }
 
     private Product findProduct(Long productId) {

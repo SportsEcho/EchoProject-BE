@@ -64,7 +64,7 @@ public class HotdealServiceIntegrationTest implements MemberTest, ProductTest, H
         @DisplayName("성공 - 핫딜 생성")
         void successCreateHotdeal() {
             // Given
-            HotdealRequestDto requestDto = HotdealTestUtil.createTestHotdealReqeustDto(
+            HotdealRequestDto requestDto = HotdealTestUtil.getTestHotdealReqeustDto(
                 TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY, TEST_SALE);
 
             // When
@@ -87,7 +87,7 @@ public class HotdealServiceIntegrationTest implements MemberTest, ProductTest, H
         void getHotdealSuccess() {
             // Given
             Hotdeal hotdeal = hotdealRepository.save(
-                HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
+                HotdealTestUtil.getHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
                     TEST_SALE, product));
 
             // When
@@ -123,7 +123,7 @@ public class HotdealServiceIntegrationTest implements MemberTest, ProductTest, H
         void getHotdealListSuccess() {
             // Given
             Hotdeal hotdeal = hotdealRepository.save(
-                HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
+                HotdealTestUtil.getHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
                     TEST_SALE, product));
 
             // When
@@ -154,7 +154,7 @@ public class HotdealServiceIntegrationTest implements MemberTest, ProductTest, H
     @DisplayName("핫딜 수정")
     class updateHotdeal {
 
-        private final UpdateHotdealInfoRequestDto updateHotdealInfoRequestDto = HotdealTestUtil.createTestUpdateHotdealInfoRequestDto(
+        private final UpdateHotdealInfoRequestDto updateHotdealInfoRequestDto = HotdealTestUtil.getTestUpdateHotdealInfoRequestDto(
             TEST_START_DAY.plusDays(1), TEST_DUE_DAY.plusDays(1), TEST_DEAL_QUANTITY + 1,
             TEST_SALE + 1);
 
@@ -163,9 +163,9 @@ public class HotdealServiceIntegrationTest implements MemberTest, ProductTest, H
         void updateHotdealSuccess() {
             // Given
             Hotdeal hotdeal = hotdealRepository.save(
-                HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
+                HotdealTestUtil.getHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
                     TEST_SALE, product));
-            HotdealRequestDto requestDto = HotdealTestUtil.createTestHotdealReqeustDto(
+            HotdealRequestDto requestDto = HotdealTestUtil.getTestHotdealReqeustDto(
                 TEST_START_DAY.plusDays(1), TEST_DUE_DAY.plusDays(1), TEST_DEAL_QUANTITY + 1,
                 TEST_SALE + 1);
 
@@ -205,7 +205,7 @@ public class HotdealServiceIntegrationTest implements MemberTest, ProductTest, H
         void deleteHotdealSuccess() {
             // Given
             Hotdeal hotdeal = hotdealRepository.save(
-                HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
+                HotdealTestUtil.getHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
                     TEST_SALE, product));
 
             // When

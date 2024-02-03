@@ -5,6 +5,7 @@ import com.sportsecho.hotdeal.entity.Hotdeal;
 import com.sportsecho.hotdeal.event.HotdealPermissionEvent;
 import com.sportsecho.member.entity.Member;
 import java.time.Duration;
+import java.util.Objects;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,6 +25,7 @@ public class RedisUtil {
     private final RedisTemplate<String, String> userRedisTemplate;
     private final RedisTemplate<String, Object> hotdealRedisTemplate;
     private final ApplicationEventPublisher eventPublisher;
+    private final StringRedisTemplate stringRedisTemplate;
 
     private final Long REFRESH_TIME = 7 * 24 * 60 * 60 * 1000L;
     private final int start = 0;
@@ -29,6 +33,7 @@ public class RedisUtil {
     @Setter
     private int publishedSize;
 
+    // login
     public void saveRefreshToken(String refreshToken, String email) {
         //redis에 refreshToken 저장
         userRedisTemplate.opsForValue().set(refreshToken, email);
@@ -49,7 +54,40 @@ public class RedisUtil {
         userRedisTemplate.delete(refreshToken);
     }
 
+    // hotdeal v2
+    // 넣기
+    public void addPurchaseHotdealMemberToQueueString(String queueName, String memberName,
+        double score) {
+        ZSetOperations<String, String> zSetOperations = stringRedisTemplate.opsForZSet();
+        zSetOperations.add(queueName, memberName, score);
+    }
 
+    //
+    public int getQueueSize(String queueName) {
+        ZSetOperations<String, String> zSetOperations = stringRedisTemplate.opsForZSet();
+        return Objects.requireNonNull(zSetOperations.size(queueName)).intValue();
+    }
+
+    public Set<String> getOldHotdealWaitSet(String queueName, int size) {
+        ZSetOperations<String, String> zSetOperations = stringRedisTemplate.opsForZSet();
+        return zSetOperations.range(queueName, 0, size - 1); // 남은 인원보다 더 많은 인원을 뽑아도 상관없음
+    }
+
+    public void removePurchaseRequestFromQueue(String queueName, String memberEmail) {
+        ZSetOperations<String, String> zSetOperations = stringRedisTemplate.opsForZSet();
+        zSetOperations.remove(queueName, memberEmail);
+    }
+
+    public Boolean deleteOldHotdealWaitSet(String queueName) {
+        return stringRedisTemplate.delete(queueName);
+    }
+
+    public boolean isInWaitQueue(String queueName, String memberEmail) {
+        log.info("queueName: {}, memberEmail: {}", queueName, memberEmail);
+        return stringRedisTemplate.opsForZSet().score(queueName, memberEmail) != null;
+    }
+
+    // hotdeal v3
     public void addQueue(Hotdeal hotdeal, Member user, PurchaseHotdealRequestDto requestDto) {
         final String member = String.valueOf(user.getId());
         String hotdealId = String.valueOf(hotdeal.getId());
