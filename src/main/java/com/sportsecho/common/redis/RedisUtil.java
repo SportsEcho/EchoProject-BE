@@ -103,7 +103,7 @@ public class RedisUtil {
         final long now = System.currentTimeMillis();
         hotdealRedisTemplate.opsForZSet().add(hotdealId, member, (int) now);
 
-        log.info("대기열에 추가 - {} ({}초)", member, now);
+        //log.info("대기열에 추가 - {} ({}초)", member, now);
     }
 
     public void waiting(Hotdeal hotdeal) {
@@ -113,7 +113,7 @@ public class RedisUtil {
 
         for (Object member : queue) {
             Long rank = hotdealRedisTemplate.opsForZSet().rank(hotdealId, member);
-            log.info("{}님의 현재 대기번호는 {}번 입니다.", member, rank);
+            //log.info("{}님의 현재 대기번호는 {}번 입니다.", member, rank);
         }
     }
 

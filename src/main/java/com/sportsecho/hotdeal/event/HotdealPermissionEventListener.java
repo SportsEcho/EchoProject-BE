@@ -73,8 +73,8 @@ public class HotdealPermissionEventListener {
         hotdeal.updateDealQuantity(hotdeal.getDealQuantity() - quantity);
         hotdealRepository.save(hotdeal);
 
-        log.info("{}님 핫딜 상품 구매가 완료되었습니다.", memberId);
-        log.info("남은 핫딜 수량 : {}", hotdeal.getDealQuantity());
+        //log.info("{}님 핫딜 상품 구매가 완료되었습니다.", memberId);
+        //log.info("남은 핫딜 수량 : {}", hotdeal.getDealQuantity());
 
         return HotdealMapper.INSTANCE.toPurchaseResponseDto(hotdeal);
     }
