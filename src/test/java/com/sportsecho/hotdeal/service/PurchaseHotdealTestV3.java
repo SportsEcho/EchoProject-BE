@@ -85,13 +85,13 @@ public class PurchaseHotdealTestV3 implements MemberTest, ProductTest, HotdealTe
             // given
             Product product = productRepository.save(TEST_PRODUCT);
             Hotdeal hotdeal = hotdealRepository.save(
-                HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, 50,
+                HotdealTestUtil.getHotdeal(TEST_START_DAY, TEST_DUE_DAY, 50,
                     TEST_SALE, product));
 
             int purchaseQuantity = 1;
-            PurchaseHotdealRequestDto requestDto = HotdealTestUtil.createTestPurchaseHotdealRequestDto(
+            PurchaseHotdealRequestDto requestDto = HotdealTestUtil.getTestPurchaseHotdealRequestDto(
                 hotdeal.getId(), purchaseQuantity);
-            SetUpHotdealRequestDto setUpRequestDto = HotdealTestUtil.createTestSetUpRequestDto(5);
+            SetUpHotdealRequestDto setUpRequestDto = HotdealTestUtil.getTestSetUpRequestDto(5);
 
             hotdealService.setUpHotdeal(hotdeal.getId(), setUpRequestDto);
             memberRepository.deleteAll();

@@ -61,7 +61,7 @@ public class HotdealTestUtil implements MemberTest, HotdealTest {
         return purchaseHotdealRequestDto;
     }
 
-    public static SetUpHotdealRequestDto createTestSetUpRequestDto(int publishedSize) {
+    public static SetUpHotdealRequestDto getTestSetUpRequestDto(int publishedSize) {
         SetUpHotdealRequestDto setUpHotdealRequestDto = new SetUpHotdealRequestDto();
         ReflectionTestUtils.setField(setUpHotdealRequestDto, "publishedSize", publishedSize);
         return setUpHotdealRequestDto;
