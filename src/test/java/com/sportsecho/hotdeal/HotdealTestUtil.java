@@ -2,6 +2,7 @@ package com.sportsecho.hotdeal;
 
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
+import com.sportsecho.hotdeal.dto.request.SetUpHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.entity.Hotdeal;
 import com.sportsecho.member.MemberTest;
@@ -11,7 +12,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 public class HotdealTestUtil implements MemberTest, HotdealTest {
 
-    public static Hotdeal createHotdeal(LocalDateTime startDay, LocalDateTime dueDay,
+    public static Hotdeal getHotdeal(LocalDateTime startDay, LocalDateTime dueDay,
         int dealQuantity, int sale, Product product) {
         return Hotdeal.builder()
             .startDay(startDay)
@@ -22,7 +23,7 @@ public class HotdealTestUtil implements MemberTest, HotdealTest {
             .build();
     }
 
-    public static HotdealRequestDto createTestHotdealReqeustDto(LocalDateTime startDay,
+    public static HotdealRequestDto getTestHotdealReqeustDto(LocalDateTime startDay,
         LocalDateTime dueDay, int dealQuantity, int sale) {
 
         HotdealRequestDto hotdealRequestDto = new HotdealRequestDto();
@@ -34,7 +35,7 @@ public class HotdealTestUtil implements MemberTest, HotdealTest {
         return hotdealRequestDto;
     }
 
-    public static UpdateHotdealInfoRequestDto createTestUpdateHotdealInfoRequestDto(
+    public static UpdateHotdealInfoRequestDto getTestUpdateHotdealInfoRequestDto(
         LocalDateTime startDay,
         LocalDateTime dueDay, int dealQuantity, int sale) {
 
@@ -50,7 +51,7 @@ public class HotdealTestUtil implements MemberTest, HotdealTest {
         return updateHotdealInfoRequestDto;
     }
 
-    public static PurchaseHotdealRequestDto createTestPurchaseHotdealRequestDto(Long hotdealId,
+    public static PurchaseHotdealRequestDto getTestPurchaseHotdealRequestDto(Long hotdealId,
         int quantity) {
         PurchaseHotdealRequestDto purchaseHotdealRequestDto = new PurchaseHotdealRequestDto();
 
@@ -58,5 +59,11 @@ public class HotdealTestUtil implements MemberTest, HotdealTest {
         ReflectionTestUtils.setField(purchaseHotdealRequestDto, "quantity", quantity, int.class);
 
         return purchaseHotdealRequestDto;
+    }
+
+    public static SetUpHotdealRequestDto getTestSetUpRequestDto(int publishedSize) {
+        SetUpHotdealRequestDto setUpHotdealRequestDto = new SetUpHotdealRequestDto();
+        ReflectionTestUtils.setField(setUpHotdealRequestDto, "publishedSize", publishedSize);
+        return setUpHotdealRequestDto;
     }
 }

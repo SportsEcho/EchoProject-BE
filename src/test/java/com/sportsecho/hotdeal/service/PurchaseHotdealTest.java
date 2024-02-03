@@ -1,7 +1,9 @@
 package com.sportsecho.hotdeal.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import com.sportsecho.common.redis.RedisUtil;
 import com.sportsecho.hotdeal.HotdealTest;
 import com.sportsecho.hotdeal.HotdealTestUtil;
 import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
@@ -28,7 +30,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -37,8 +38,7 @@ import org.springframework.test.context.ActiveProfiles;
 public class PurchaseHotdealTest implements MemberTest, ProductTest, HotdealTest, PurchaseTest {
 
     @Autowired
-    @Qualifier("V1")
-    HotdealService hotdealService;
+    HotdealServiceImplV1 hotdealService;
 
     @Autowired
     MemberRepository memberRepository;
@@ -54,6 +54,9 @@ public class PurchaseHotdealTest implements MemberTest, ProductTest, HotdealTest
 
     @Autowired
     PurchaseRepository purchaseRepository;
+
+    @Autowired
+    RedisUtil redisUtil;
 
     private Member member;
 
@@ -75,18 +78,31 @@ public class PurchaseHotdealTest implements MemberTest, ProductTest, HotdealTest
     @DisplayName("단일 구매자의 구매 테스트")
     class SinglePurchaseTest {
 
+        private Product product;
+        private Hotdeal hotdeal;
+        private PurchaseHotdealRequestDto requestDto;
+
+        @BeforeEach
+        void setUp() {
+            product = productRepository.save(
+                Product.builder()
+                    .title(TEST_PRODUCT_TITLE)
+                    .content(TEST_PRODUCT_CONTENT)
+                    .price(TEST_PRICE)
+                    .quantity(TEST_QUANTITY)
+                    .build()
+            );
+            hotdeal = hotdealRepository.save(
+                HotdealTestUtil.getHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
+                    TEST_SALE, product));
+            requestDto = HotdealTestUtil.getTestPurchaseHotdealRequestDto(
+                hotdeal.getId(), 3);
+        }
+
         @AfterEach
         void tearDown() {
             purchaseRepository.deleteAll();
         }
-
-        private Product product = productRepository.save(TEST_PRODUCT);
-        private Hotdeal hotdeal = hotdealRepository.save(
-            HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
-                TEST_SALE, product));
-
-        private PurchaseHotdealRequestDto requestDto = HotdealTestUtil.createTestPurchaseHotdealRequestDto(
-            hotdeal.getId(), 3);
 
         @Test
         @DisplayName("성공 - 구매자가 구매한 상품이 구매 목록에 추가되는지 확인")
@@ -128,21 +144,22 @@ public class PurchaseHotdealTest implements MemberTest, ProductTest, HotdealTest
 
     @Nested
     @DisplayName("다중 구매자의 구매 테스트")
-    class MultipleUserPurchaseTets {
+    class MultipleUserPurchaseTest {
 
         @Test
         @DisplayName("데이터 정합성 테스트 - 핫딜의 한정 수량이 정확히 감소하는지 확인")
         void purchaseHotdealWithPessimisticLock() throws InterruptedException {
+
             // given
             Product product = productRepository.save(TEST_PRODUCT);
             Hotdeal hotdeal = hotdealRepository.save(
-                HotdealTestUtil.createHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
+                HotdealTestUtil.getHotdeal(TEST_START_DAY, TEST_DUE_DAY, TEST_DEAL_QUANTITY,
                     TEST_SALE, product));
 
             int beforeDealQuantity = hotdeal.getDealQuantity();
 
             int purchaseQuantity = 3;
-            PurchaseHotdealRequestDto requestDto = HotdealTestUtil.createTestPurchaseHotdealRequestDto(
+            PurchaseHotdealRequestDto requestDto = HotdealTestUtil.getTestPurchaseHotdealRequestDto(
                 hotdeal.getId(), purchaseQuantity);
 
             int numberOfThreads = 10;

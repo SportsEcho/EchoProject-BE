@@ -1,6 +1,7 @@
 package com.sportsecho.hotdeal.service;
 
 import com.sportsecho.common.exception.GlobalException;
+import com.sportsecho.common.redis.RedisUtil;
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.SetUpHotdealRequestDto;
@@ -24,6 +25,7 @@ import com.sportsecho.purchaseProduct.entity.PurchaseProduct;
 import com.sportsecho.purchaseProduct.repository.PurchaseProductRepository;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,16 +35,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Qualifier("V1")
+/**
+ * V2 업데이트 내용 SortedSet을 이용한 대기열 구현 구매 완료후 해당 유저를 대기열에서 삭제 0개의 재고가 남았을 때 대기열 삭제
+ */
+@Qualifier("V2")
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class HotdealServiceImplV1 implements HotdealService {
+public class HotdealServiceImplV2 implements HotdealService {
 
     private final HotdealRepository hotdealRepository;
     private final ProductRepository productRepository;
     private final PurchaseProductRepository purchaseProductRepository;
     private final PurchaseRepository purchaseRepository;
+    private final RedisUtil redisUtil;
 
     @Override
     @Transactional
@@ -50,8 +56,7 @@ public class HotdealServiceImplV1 implements HotdealService {
         HotdealRequestDto requestDto) {
 
         Product product = findProduct(productId);
-        Hotdeal hotdeal = Hotdeal.of(requestDto.getStartDay(), requestDto.getDueDay(),
-            requestDto.getDealQuantity(), requestDto.getSale(), product);
+        Hotdeal hotdeal = HotdealMapper.INSTANCE.toEntity(requestDto, product);
         hotdealRepository.save(hotdeal);
 
         return HotdealMapper.INSTANCE.toResponseDto(hotdeal);
@@ -91,6 +96,7 @@ public class HotdealServiceImplV1 implements HotdealService {
     @Transactional
     public PurchaseHotdealResponseDto purchaseHotdeal(Member member,
         PurchaseHotdealRequestDto requestDto) {
+
         Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(
                 requestDto.getHotdealId())
             .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
@@ -102,6 +108,12 @@ public class HotdealServiceImplV1 implements HotdealService {
         if (hotdeal.getDealQuantity() < requestDto.getQuantity()) {
             throw new GlobalException(
                 HotdealErrorCode.LACK_DEAL_QUANTITY); // 핫딜 구매시 재고보다 많은 수량 구매 시도
+        }
+
+        Long hotdealId = hotdeal.getId();
+        if (!redisUtil.getOldHotdealWaitSet(String.valueOf(hotdealId),
+            redisUtil.getQueueSize(String.valueOf(hotdealId))).contains(member.getEmail())) {
+            throw new GlobalException(HotdealErrorCode.NOT_IN_WAIT_QUEUE); // 대기열에 없는 유저의 구매 시도 방지
         }
 
         Product product = hotdeal.getProduct();
@@ -123,33 +135,54 @@ public class HotdealServiceImplV1 implements HotdealService {
             hotdeal.getDealQuantity() - requestDto.getQuantity()); // 앞에서 예외처리 완료
         hotdealRepository.save(hotdeal); // 더티 체킹
 
+        redisUtil.removePurchaseRequestFromQueue(String.valueOf(hotdeal.getId()),
+            member.getEmail());
+
+        if (hotdeal.getDealQuantity() == 0) {
+            redisUtil.deleteOldHotdealWaitSet(String.valueOf(hotdeal.getId()));
+        }
+
         return HotdealMapper.INSTANCE.toPurchaseResponseDto(hotdeal);
     }
 
     @Override
-    public void setUpHotdeal(Long hotdealId, SetUpHotdealRequestDto requestDto) {
-    }
-
-    @Override
+    @Transactional
     public HotdealWaitResponse waitHotdeal(String hotdealId, Member member) {
-        return null;
+
+        Hotdeal hotdeal = findHotdeal(Long.parseLong(hotdealId));
+        int waitCount = redisUtil.getQueueSize(hotdealId);
+
+        if (hotdeal.getDealQuantity() < waitCount * 10) { // 발급 전에 재고 확인후 대기열 추가
+            return new HotdealWaitResponse("현재 구매 요청이 많아 대기열에 추가할 수 없습니다", waitCount);
+        }
+
+        redisUtil.addPurchaseHotdealMemberToQueueString(hotdealId, member.getEmail(),
+            System.currentTimeMillis());
+
+        return new HotdealWaitResponse("success", waitCount + 1);
     }
 
     @Override
+    @Transactional
     public void deleteHotdealWaitingMember(Member member, String hotdealId) {
-
+        redisUtil.removePurchaseRequestFromQueue(hotdealId, member.getEmail());
     }
 
     @Override
+    @Transactional
     public boolean isMyHotdealTurn(Member member, String hotdealId) {
-        return false;
+        Set<String> oldHotdealWaitSet = redisUtil.getOldHotdealWaitSet(hotdealId,
+            10); // 대기열에서 10명씩 허가
+        if (oldHotdealWaitSet == null) {
+            throw new GlobalException(HotdealErrorCode.SOLD_OUT);
+        }
+        return oldHotdealWaitSet.contains(member.getEmail());
     }
 
     @Override
     @Transactional
     public void deleteHotdeal(Long hotdealId) {
         Hotdeal hotdeal = findHotdeal(hotdealId);
-
         hotdealRepository.delete(hotdeal);
     }
 
@@ -165,6 +198,11 @@ public class HotdealServiceImplV1 implements HotdealService {
 
     @Override
     public void purchaseHotdealV3(Member member, PurchaseHotdealRequestDto requestDto) {
+
+    }
+
+    @Override
+    public void setUpHotdeal(Long hotdealId, SetUpHotdealRequestDto requestDto) {
 
     }
 }

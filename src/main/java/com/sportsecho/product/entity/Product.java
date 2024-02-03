@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Version;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -42,13 +43,16 @@ public class Product extends TimeStamp {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
+    @Version
+    private Long version;
+
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<PurchaseProduct> PurchaseProductList = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<MemberProduct> memberProductList = new ArrayList<>();
 
-    @BatchSize(size = 20)
+    @BatchSize(size = 32)
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<ProductImage> productImageList = new ArrayList<>();
 
