@@ -105,8 +105,8 @@ public class HotdealServiceImplV3 implements HotdealService {
     @Override
     @Transactional
     public void setUpHotdeal(Long hotdealId, SetUpHotdealRequestDto requestDto) {
-        Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(hotdealId)
-            .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
+        hotdealRepository.findById(hotdealId).orElseThrow(() ->
+            new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
 
         redisUtil.clearQueue(hotdealId);
         redisUtil.setPublishedSize(requestDto.getPublishedSize());
