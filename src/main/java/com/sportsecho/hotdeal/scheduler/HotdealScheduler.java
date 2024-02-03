@@ -5,10 +5,8 @@ import com.sportsecho.common.redis.RedisUtil;
 import com.sportsecho.hotdeal.entity.Hotdeal;
 import com.sportsecho.hotdeal.exception.HotdealErrorCode;
 import com.sportsecho.hotdeal.repository.HotdealRepository;
-import com.sportsecho.product.entity.Product;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +63,7 @@ public class HotdealScheduler {
             return;
         }
 
-        Hotdeal hotdeal = hotdealRepository.findById(hotdealId)
+        Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(hotdealId)
             .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
 
         log.info("남은 핫딜 수량 : {}", hotdeal.getDealQuantity());
