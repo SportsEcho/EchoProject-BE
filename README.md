@@ -51,7 +51,7 @@
 - nginx 1.24.0: 고성능 웹 서버 및 리버스 프록시 서버
 - AWS: 클라우드 기반 인프라 서비스
 - GitHub Actions: 지속적 통합 및 배포를 위한 워크플로우 자동화 도구
-- nGrinder: 성능 테스트를 위한 오픈소스 로드 테스트 도구
+- nGrinder && Jmeter: 성능 테스트를 위한 오픈소스 로드 테스트 도구
 
 ### Tools
 - IntelliJ: Java 개발을 위한 통합 개발 환경(IDE)
