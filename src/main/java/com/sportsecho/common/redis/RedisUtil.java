@@ -3,7 +3,6 @@ package com.sportsecho.common.redis;
 import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
 import com.sportsecho.hotdeal.entity.Hotdeal;
 import com.sportsecho.hotdeal.event.HotdealPermissionEvent;
-import com.sportsecho.member.entity.Member;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.Set;
@@ -88,14 +87,13 @@ public class RedisUtil {
     }
 
     // hotdeal v3
-    public void addQueue(Hotdeal hotdeal, Member user, PurchaseHotdealRequestDto requestDto) {
-        final String member = String.valueOf(user.getId());
+    public void addQueue(Hotdeal hotdeal, int memberId, PurchaseHotdealRequestDto requestDto) {
+        final String member = String.valueOf(memberId);
         String hotdealId = String.valueOf(hotdeal.getId());
 
         HashOperations<String, String, Object> hashOperations = hotdealRedisTemplate.opsForHash();
 
         hashOperations.put(member, "hotdeal", hotdealId);
-        hashOperations.put(member, "memberName", user.getMemberName());
         hashOperations.put(member, "quantity", requestDto.getQuantity());
         hashOperations.put(member, "address", requestDto.getAddress());
         hashOperations.put(member, "phone", requestDto.getPhone());

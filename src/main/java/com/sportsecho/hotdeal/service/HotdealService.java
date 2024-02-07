@@ -94,11 +94,10 @@ public interface HotdealService {
     /**
      * Hotdeal 구매 V3
      *
-     * @param member     구매자 정보
      * @param requestDto 구매할 Hotdeal 정보
      * @return 구매된 Hotdeal 정보
      */
-    void purchaseHotdealV3(Member member, PurchaseHotdealRequestDto requestDto);
+    void purchaseHotdealV3(PurchaseHotdealRequestDto requestDto);
 
     /**
      * 스케줄러에 hotdeal 세팅

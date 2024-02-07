@@ -92,14 +92,15 @@ public class HotdealServiceImplV3 implements HotdealService {
 
     @Override
     @Transactional
-    public void purchaseHotdealV3(Member member, PurchaseHotdealRequestDto requestDto) {
+    public void purchaseHotdealV3(PurchaseHotdealRequestDto requestDto) {
 
         Long hotdealId = requestDto.getHotdealId();
+        int memberId = requestDto.getThreadNumber();
 
         Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(hotdealId)
             .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
 
-        redisUtil.addQueue(hotdeal, member, requestDto);
+        redisUtil.addQueue(hotdeal, memberId, requestDto);
     }
 
     @Override

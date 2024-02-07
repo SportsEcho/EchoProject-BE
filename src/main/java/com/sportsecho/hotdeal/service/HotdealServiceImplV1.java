@@ -165,7 +165,7 @@ public class HotdealServiceImplV1 implements HotdealService {
     }
 
     @Override
-    public void purchaseHotdealV3(Member member, PurchaseHotdealRequestDto requestDto) {
+    public void purchaseHotdealV3(PurchaseHotdealRequestDto requestDto) {
 
     }
 }

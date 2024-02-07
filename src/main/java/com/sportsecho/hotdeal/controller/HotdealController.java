@@ -138,10 +138,9 @@ public class HotdealController {
 
     @PostMapping("/hotdeals/purchase/sortedset")
     public ResponseEntity<Void> purchaseHotdealV3(
-        @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @RequestBody PurchaseHotdealRequestDto requestDto
     ) {
-        hotdealService.purchaseHotdealV3(memberDetails.getMember(), requestDto);
+        hotdealService.purchaseHotdealV3(requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
