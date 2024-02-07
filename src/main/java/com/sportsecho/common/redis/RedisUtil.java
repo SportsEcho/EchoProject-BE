@@ -87,9 +87,9 @@ public class RedisUtil {
     }
 
     // hotdeal v3
-    public void addQueue(Hotdeal hotdeal, int memberId, PurchaseHotdealRequestDto requestDto) {
+    public void addQueue(Long hotdeal, int memberId, PurchaseHotdealRequestDto requestDto) {
         final String member = String.valueOf(memberId);
-        String hotdealId = String.valueOf(hotdeal.getId());
+        String hotdealId = String.valueOf(hotdeal);
 
         HashOperations<String, String, Object> hashOperations = hotdealRedisTemplate.opsForHash();
 
