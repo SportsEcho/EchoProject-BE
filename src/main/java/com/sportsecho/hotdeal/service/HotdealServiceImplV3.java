@@ -1,6 +1,7 @@
 package com.sportsecho.hotdeal.service;
 
 import com.sportsecho.common.exception.GlobalException;
+import com.sportsecho.common.redis.RedisUtil;
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.SetUpHotdealRequestDto;
@@ -9,40 +10,42 @@ import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
 import com.sportsecho.hotdeal.dto.response.HotdealWaitResponse;
 import com.sportsecho.hotdeal.dto.response.PurchaseHotdealResponseDto;
 import com.sportsecho.hotdeal.entity.Hotdeal;
+import com.sportsecho.hotdeal.event.HotdealPermissionEventListener;
 import com.sportsecho.hotdeal.exception.HotdealErrorCode;
 import com.sportsecho.hotdeal.mapper.HotdealMapper;
 import com.sportsecho.hotdeal.repository.HotdealRepository;
+import com.sportsecho.hotdeal.scheduler.HotdealScheduler;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.exception.ProductErrorCode;
 import com.sportsecho.product.repository.ProductRepository;
-import com.sportsecho.purchase.entity.Purchase;
-import com.sportsecho.purchase.mapper.PurchaseMapper;
 import com.sportsecho.purchase.repository.PurchaseRepository;
-import com.sportsecho.purchaseProduct.entity.ProductRole;
-import com.sportsecho.purchaseProduct.entity.PurchaseProduct;
 import com.sportsecho.purchaseProduct.repository.PurchaseProductRepository;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Qualifier("V1")
+@Qualifier("V3")
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class HotdealServiceImplV1 implements HotdealService {
+public class HotdealServiceImplV3 implements HotdealService {
 
     private final HotdealRepository hotdealRepository;
     private final ProductRepository productRepository;
     private final PurchaseProductRepository purchaseProductRepository;
     private final PurchaseRepository purchaseRepository;
+    private final ApplicationEventPublisher eventPublisher;
+    private final HotdealPermissionEventListener eventListener;
+    private final HotdealScheduler hotdealScheduler;
+    private final RedisUtil redisUtil;
 
     @Override
     @Transactional
@@ -89,61 +92,25 @@ public class HotdealServiceImplV1 implements HotdealService {
 
     @Override
     @Transactional
-    public PurchaseHotdealResponseDto purchaseHotdeal(Member member,
-        PurchaseHotdealRequestDto requestDto) {
-        Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(
-                requestDto.getHotdealId())
+    public void purchaseHotdealV3(Member member, PurchaseHotdealRequestDto requestDto) {
+
+        Long hotdealId = requestDto.getHotdealId();
+
+        Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(hotdealId)
             .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
 
-        if (hotdeal.getDealQuantity() == 0) {
-            throw new GlobalException(HotdealErrorCode.SOLD_OUT); // 핫딜 재고 0일때
-        }
-
-        if (hotdeal.getDealQuantity() < requestDto.getQuantity()) {
-            throw new GlobalException(
-                HotdealErrorCode.LACK_DEAL_QUANTITY); // 핫딜 구매시 재고보다 많은 수량 구매 시도
-        }
-
-        Product product = hotdeal.getProduct();
-        int dicountedPrice = product.getPrice() - (product.getPrice() * hotdeal.getSale() / 100);
-
-        Purchase purchase = PurchaseMapper.INSTANCE.fromPurchaseHotdealReqeustDto(requestDto,
-            dicountedPrice, member);
-        purchaseRepository.save(purchase);
-        purchase.setCreatedAt(LocalDateTime.now());
-
-        PurchaseProduct purchaseProduct = PurchaseProduct.builder()
-            .purchase(purchase)
-            .product(product)
-            .productsQuantity(requestDto.getQuantity())
-            .role(ProductRole.HOTDEAL)
-            .build();
-        purchaseProductRepository.save(purchaseProduct);
-
-        hotdeal.updateDealQuantity(
-            hotdeal.getDealQuantity() - requestDto.getQuantity()); // 앞에서 예외처리 완료
-        hotdealRepository.save(hotdeal); // 더티 체킹
-
-        return HotdealMapper.INSTANCE.toPurchaseResponseDto(hotdeal);
+        redisUtil.addQueue(hotdeal, member, requestDto);
     }
 
     @Override
+    @Transactional
     public void setUpHotdeal(Long hotdealId, SetUpHotdealRequestDto requestDto) {
-    }
+        hotdealRepository.findById(hotdealId).orElseThrow(() ->
+            new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
 
-    @Override
-    public HotdealWaitResponse waitHotdeal(String hotdealId, Member member) {
-        return null;
-    }
-
-    @Override
-    public void deleteHotdealWaitingMember(Member member, String hotdealId) {
-
-    }
-
-    @Override
-    public boolean isMyHotdealTurn(Member member, String hotdealId) {
-        return false;
+        redisUtil.clearQueue(hotdealId);
+        redisUtil.setPublishedSize(requestDto.getPublishedSize());
+        hotdealScheduler.setHotdealId(hotdealId);
     }
 
     @Override
@@ -165,7 +132,23 @@ public class HotdealServiceImplV1 implements HotdealService {
     }
 
     @Override
-    public void purchaseHotdealV3(Member member, PurchaseHotdealRequestDto requestDto) {
+    public PurchaseHotdealResponseDto purchaseHotdeal(Member member,
+        PurchaseHotdealRequestDto requestDto) {
+        return null;
+    }
 
+    @Override
+    public HotdealWaitResponse waitHotdeal(String hotdealId, Member member) {
+        return null;
+    }
+
+    @Override
+    public void deleteHotdealWaitingMember(Member member, String hotdealId) {
+
+    }
+
+    @Override
+    public boolean isMyHotdealTurn(Member member, String hotdealId) {
+        return false;
     }
 }

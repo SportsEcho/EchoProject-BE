@@ -114,7 +114,8 @@ public class WebSecurityConfig {
             //핫딜 생성, 수정, 삭제
             new AntPathRequestMatcher("/api/products/{productId}/hotdeals", POST),
             new AntPathRequestMatcher("/api/hotdeals/{hotdealId}", PATCH),
-            new AntPathRequestMatcher("/api/hotdeals/{hotdealId}", DELETE)
+            new AntPathRequestMatcher("/api/hotdeals/{hotdealId}", DELETE),
+            new AntPathRequestMatcher("/api/hotdeals/{hotdealId}/set", POST)
         );
     }
 }

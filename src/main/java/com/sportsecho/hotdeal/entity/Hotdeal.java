@@ -67,7 +67,8 @@ public class Hotdeal {
         this.dealQuantity = dealQuantity;
     }
 
-    public void updateHotdealInfo(LocalDateTime startDay, LocalDateTime dueDay, int sale, int dealQuantity) {
+    public void updateHotdealInfo(LocalDateTime startDay, LocalDateTime dueDay, int sale,
+        int dealQuantity) {
         this.startDay = startDay;
         this.dueDay = dueDay;
         this.sale = sale;

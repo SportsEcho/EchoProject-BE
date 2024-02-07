@@ -5,7 +5,6 @@ import com.sportsecho.member.entity.Member;
 import com.sportsecho.memberProduct.entity.MemberProduct;
 import com.sportsecho.memberProduct.repository.MemberProductRepository;
 import com.sportsecho.product.entity.Product;
-import com.sportsecho.product.repository.ProductRepository;
 import com.sportsecho.purchase.dto.PurchaseRequestDto;
 import com.sportsecho.purchase.dto.PurchaseResponseDto;
 import com.sportsecho.purchase.entity.Purchase;
@@ -27,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PurchaseServiceImplV1 implements PurchaseService {
 
-    private final ProductRepository productRepository;
     private final PurchaseRepository purchaseRepository;
     private final PurchaseProductRepository purchaseProductRepository;
     private final MemberProductRepository memberProductRepository;

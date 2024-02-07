@@ -2,6 +2,7 @@ package com.sportsecho.hotdeal.controller;
 
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
+import com.sportsecho.hotdeal.dto.request.SetUpHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.dto.response.HotdealResponseDto;
 import com.sportsecho.hotdeal.dto.response.HotdealWaitResponse;
@@ -126,7 +127,7 @@ public class HotdealController {
 
     // client단에서 구매 대기열 확인후 핫딜 구매 요청
     @PostMapping("/hotdeals/purchase")
-    public ResponseEntity<PurchaseHotdealResponseDto> purchaseHotdeal(
+    public ResponseEntity<PurchaseHotdealResponseDto> purchaseHotdealV2(
         @AuthenticationPrincipal MemberDetailsImpl memberDetails,
         @RequestBody PurchaseHotdealRequestDto requestDto
     ) {
@@ -135,5 +136,21 @@ public class HotdealController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
+    @PostMapping("/hotdeals/purchase/sortedset")
+    public ResponseEntity<Void> purchaseHotdealV3(
+        @AuthenticationPrincipal MemberDetailsImpl memberDetails,
+        @RequestBody PurchaseHotdealRequestDto requestDto
+    ) {
+        hotdealService.purchaseHotdealV3(memberDetails.getMember(), requestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
 
+    @PostMapping("/hotdeals/{hotdealId}/set")
+    public ResponseEntity<Void> setUpHotdeal(
+        @PathVariable Long hotdealId,
+        @RequestBody SetUpHotdealRequestDto requestDto
+    ) {
+        hotdealService.setUpHotdeal(hotdealId, requestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
 }

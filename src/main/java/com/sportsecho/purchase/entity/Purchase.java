@@ -3,7 +3,6 @@ package com.sportsecho.purchase.entity;
 import com.sportsecho.common.time.TimeStamp;
 import com.sportsecho.member.entity.Member;
 import com.sportsecho.purchaseProduct.entity.PurchaseProduct;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -53,10 +52,18 @@ public class Purchase extends TimeStamp {
     private Member member;
 
     @Builder.Default
-    @OneToMany(mappedBy = "purchase", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "purchase", fetch = FetchType.LAZY)
     private final List<PurchaseProduct> purchaseProductList = new ArrayList<>();
 
     public void updateTotalPrice(int totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public static Purchase createEntity(String address, String phone, Member member) {
+        return Purchase.builder()
+            .address(address)
+            .phone(phone)
+            .member(member)
+            .build();
     }
 }

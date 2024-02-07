@@ -51,7 +51,7 @@
 - nginx 1.24.0: 고성능 웹 서버 및 리버스 프록시 서버
 - AWS: 클라우드 기반 인프라 서비스
 - GitHub Actions: 지속적 통합 및 배포를 위한 워크플로우 자동화 도구
-- nGrinder: 성능 테스트를 위한 오픈소스 로드 테스트 도구
+- nGrinder/Jmeter: 성능 테스트를 위한 오픈소스 로드 테스트 도구
 
 ### Tools
 - IntelliJ: Java 개발을 위한 통합 개발 환경(IDE)
@@ -59,7 +59,7 @@
 ---
 ## 프로젝트 구조
 ### 아키텍쳐
-![스크린샷 2024-01-15 오후 8.41.27.png](src%2Fmain%2Fresources%2Fstatic%2F%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202024-01-15%20%EC%98%A4%ED%9B%84%208.41.27.png)
+![FigJam Basics (한국어) (Community) (1) 복사본.png](src%2Fmain%2Fresources%2Fstatic%2FFigJam%20Basics%20%28%ED%95%9C%EA%B5%AD%EC%96%B4%29%20%28Community%29%20%281%29%20%EB%B3%B5%EC%82%AC%EB%B3%B8.png)
 ### ERD
 ![Screenshot 2024-01-10 at 12.13.56 PM.png](src%2Fmain%2Fresources%2Fstatic%2FScreenshot%202024-01-10%20at%2012.13.56%20PM.png)
 ---

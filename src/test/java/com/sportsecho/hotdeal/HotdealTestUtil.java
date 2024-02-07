@@ -2,6 +2,7 @@ package com.sportsecho.hotdeal;
 
 import com.sportsecho.hotdeal.dto.request.HotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.PurchaseHotdealRequestDto;
+import com.sportsecho.hotdeal.dto.request.SetUpHotdealRequestDto;
 import com.sportsecho.hotdeal.dto.request.UpdateHotdealInfoRequestDto;
 import com.sportsecho.hotdeal.entity.Hotdeal;
 import com.sportsecho.member.MemberTest;
@@ -58,5 +59,11 @@ public class HotdealTestUtil implements MemberTest, HotdealTest {
         ReflectionTestUtils.setField(purchaseHotdealRequestDto, "quantity", quantity, int.class);
 
         return purchaseHotdealRequestDto;
+    }
+
+    public static SetUpHotdealRequestDto getTestSetUpRequestDto(int publishedSize) {
+        SetUpHotdealRequestDto setUpHotdealRequestDto = new SetUpHotdealRequestDto();
+        ReflectionTestUtils.setField(setUpHotdealRequestDto, "publishedSize", publishedSize);
+        return setUpHotdealRequestDto;
     }
 }
