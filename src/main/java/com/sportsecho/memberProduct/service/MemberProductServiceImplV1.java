@@ -75,7 +75,7 @@ public class MemberProductServiceImplV1 implements MemberProductService {
     }
 
     private Product findProduct(Long productId) {
-        return productRepository.findById(productId)
+        return productRepository.findByIdWithImages(productId)
             .orElseThrow(() -> new GlobalException(MemberProductErrorCode.NOT_FOUND_PRODUCT)
             );
     }
