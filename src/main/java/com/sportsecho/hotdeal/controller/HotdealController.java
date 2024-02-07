@@ -125,6 +125,14 @@ public class HotdealController {
         }
     }
 
+    @PostMapping("/hotdeals/purchase/test")
+    public ResponseEntity<Void> purchaseHotdealV1(
+        @RequestBody PurchaseHotdealRequestDto requestDto
+    ) {
+        hotdealService.purchaseHotdealV1(requestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
     // client단에서 구매 대기열 확인후 핫딜 구매 요청
     @PostMapping("/hotdeals/purchase")
     public ResponseEntity<PurchaseHotdealResponseDto> purchaseHotdealV2(

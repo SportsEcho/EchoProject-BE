@@ -132,6 +132,10 @@ public class HotdealServiceImplV1 implements HotdealService {
     }
 
     @Override
+    public void purchaseHotdealV1(PurchaseHotdealRequestDto requestDto) {
+    }
+
+    @Override
     public HotdealWaitResponse waitHotdeal(String hotdealId, Member member) {
         return null;
     }

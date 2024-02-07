@@ -97,6 +97,7 @@ public class WebSecurityConfig {
 
             // 테스트용 핫딜 구매
             new AntPathRequestMatcher("/api/hotdeals/purchase/sortedset", POST),
+            new AntPathRequestMatcher("/api/hotdeals/purchase/test", POST),
 
             //STOMP Connection
             new AntPathRequestMatcher("/websocket"),

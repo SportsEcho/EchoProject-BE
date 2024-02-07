@@ -107,4 +107,10 @@ public interface HotdealService {
      */
     void setUpHotdeal(Long hotdealId, SetUpHotdealRequestDto requestDto);
 
+    /**
+     * 테스트용
+     *
+     * @param requestDto
+     */
+    void purchaseHotdealV1(PurchaseHotdealRequestDto requestDto);
 }

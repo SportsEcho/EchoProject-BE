@@ -19,8 +19,13 @@ import com.sportsecho.member.entity.Member;
 import com.sportsecho.product.entity.Product;
 import com.sportsecho.product.exception.ProductErrorCode;
 import com.sportsecho.product.repository.ProductRepository;
+import com.sportsecho.purchase.entity.Purchase;
+import com.sportsecho.purchase.mapper.PurchaseMapper;
 import com.sportsecho.purchase.repository.PurchaseRepository;
+import com.sportsecho.purchaseProduct.entity.ProductRole;
+import com.sportsecho.purchaseProduct.entity.PurchaseProduct;
 import com.sportsecho.purchaseProduct.repository.PurchaseProductRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -112,6 +117,43 @@ public class HotdealServiceImplV3 implements HotdealService {
         redisUtil.clearQueue(hotdealId);
         redisUtil.setPublishedSize(requestDto.getPublishedSize());
         hotdealScheduler.setHotdealId(hotdealId);
+    }
+
+    @Override
+    @Transactional
+    public void purchaseHotdealV1(PurchaseHotdealRequestDto requestDto) {
+        Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(
+                requestDto.getHotdealId())
+            .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
+
+        if (hotdeal.getDealQuantity() == 0) {
+            throw new GlobalException(HotdealErrorCode.SOLD_OUT);
+        }
+
+        if (hotdeal.getDealQuantity() < requestDto.getQuantity()) {
+            throw new GlobalException(
+                HotdealErrorCode.LACK_DEAL_QUANTITY);
+        }
+
+        Product product = hotdeal.getProduct();
+        int dicountedPrice = product.getPrice() - (product.getPrice() * hotdeal.getSale() / 100);
+
+        Member member = null;
+        Purchase purchase = PurchaseMapper.INSTANCE.fromPurchaseHotdealReqeustDto(requestDto,
+            dicountedPrice, member);
+        purchaseRepository.save(purchase);
+        purchase.setCreatedAt(LocalDateTime.now());
+
+        PurchaseProduct purchaseProduct = PurchaseProduct.builder()
+            .purchase(purchase)
+            .product(product)
+            .productsQuantity(requestDto.getQuantity())
+            .role(ProductRole.HOTDEAL)
+            .build();
+        purchaseProductRepository.save(purchaseProduct);
+
+        hotdeal.updateDealQuantity(hotdeal.getDealQuantity() - requestDto.getQuantity());
+        hotdealRepository.save(hotdeal);
     }
 
     @Override

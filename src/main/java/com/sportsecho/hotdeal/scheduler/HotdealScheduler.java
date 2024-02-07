@@ -66,7 +66,7 @@ public class HotdealScheduler {
         Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(hotdealId)
             .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
 
-        //log.info("남은 핫딜 수량 : {}", hotdeal.getDealQuantity());
+        log.info("남은 핫딜 수량 : {}", hotdeal.getDealQuantity());
         if (hotdeal.getDealQuantity() == 0) {
             //log.info("===== 이벤트가 종료되었습니다. =====");
             redisUtil.clearQueue(hotdeal.getId());

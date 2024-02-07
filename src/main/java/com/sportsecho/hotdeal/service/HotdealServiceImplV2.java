@@ -206,4 +206,9 @@ public class HotdealServiceImplV2 implements HotdealService {
     public void setUpHotdeal(Long hotdealId, SetUpHotdealRequestDto requestDto) {
 
     }
+
+    @Override
+    public void purchaseHotdealV1(PurchaseHotdealRequestDto requestDto) {
+
+    }
 }
