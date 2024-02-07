@@ -101,6 +101,7 @@ public class PurchaseHotdealTest implements MemberTest, ProductTest, HotdealTest
 
         @AfterEach
         void tearDown() {
+            purchaseProductRepository.deleteAll();
             purchaseRepository.deleteAll();
         }
 
@@ -145,6 +146,12 @@ public class PurchaseHotdealTest implements MemberTest, ProductTest, HotdealTest
     @Nested
     @DisplayName("다중 구매자의 구매 테스트")
     class MultipleUserPurchaseTest {
+
+        @AfterEach
+        void tearDown() {
+            purchaseProductRepository.deleteAll();
+            purchaseRepository.deleteAll();
+        }
 
         @Test
         @DisplayName("데이터 정합성 테스트 - 핫딜의 한정 수량이 정확히 감소하는지 확인")
