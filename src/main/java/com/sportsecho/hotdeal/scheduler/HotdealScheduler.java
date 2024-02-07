@@ -68,7 +68,7 @@ public class HotdealScheduler {
 
         //log.info("남은 핫딜 수량 : {}", hotdeal.getDealQuantity());
         if (hotdeal.getDealQuantity() == 0) {
-            log.info("===== 이벤트가 종료되었습니다. =====");
+            //log.info("===== 이벤트가 종료되었습니다. =====");
             redisUtil.clearQueue(hotdeal.getId());
             this.hotdealId = null;
             return;

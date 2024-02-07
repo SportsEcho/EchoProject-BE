@@ -64,6 +64,7 @@ public class HotdealPermissionEventListener {
         purchase = purchaseRepository.save(purchase);
 
         PurchaseProduct purchaseProduct = PurchaseProduct.builder()
+            .purchase(purchase)
             .product(product)
             .productsQuantity(quantity)
             .role(ProductRole.HOTDEAL)

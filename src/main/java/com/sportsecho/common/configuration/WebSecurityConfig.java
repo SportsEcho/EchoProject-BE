@@ -95,6 +95,9 @@ public class WebSecurityConfig {
             new AntPathRequestMatcher("/api/hotdeals", GET),
             new AntPathRequestMatcher("/api/hotdeals/{hotdealId}", GET),
 
+            // 테스트용 핫딜 구매
+            new AntPathRequestMatcher("/api/hotdeals/purchase/sortedset", POST),
+
             //STOMP Connection
             new AntPathRequestMatcher("/websocket"),
 

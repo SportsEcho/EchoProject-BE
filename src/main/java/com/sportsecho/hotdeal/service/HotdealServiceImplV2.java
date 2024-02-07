@@ -125,6 +125,7 @@ public class HotdealServiceImplV2 implements HotdealService {
         purchase.setCreatedAt(LocalDateTime.now());
 
         PurchaseProduct purchaseProduct = PurchaseProduct.builder()
+            .purchase(purchase)
             .product(product)
             .productsQuantity(requestDto.getQuantity())
             .role(ProductRole.HOTDEAL)
@@ -197,7 +198,7 @@ public class HotdealServiceImplV2 implements HotdealService {
     }
 
     @Override
-    public void purchaseHotdealV3(Member member, PurchaseHotdealRequestDto requestDto) {
+    public void purchaseHotdealV3(PurchaseHotdealRequestDto requestDto) {
 
     }
 
