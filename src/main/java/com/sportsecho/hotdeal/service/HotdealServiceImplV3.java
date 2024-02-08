@@ -95,11 +95,7 @@ public class HotdealServiceImplV3 implements HotdealService {
     public void purchaseHotdealV3(Member member, PurchaseHotdealRequestDto requestDto) {
 
         Long hotdealId = requestDto.getHotdealId();
-
-        Hotdeal hotdeal = hotdealRepository.findByIdWithPessimisticWriteLock(hotdealId)
-            .orElseThrow(() -> new GlobalException(HotdealErrorCode.NOT_FOUND_HOTDEAL));
-
-        redisUtil.addQueue(hotdeal, member, requestDto);
+        redisUtil.addQueue(hotdealId, member, requestDto);
     }
 
     @Override
