@@ -30,6 +30,8 @@ spring:
     redis:
       host: 13.125.46.61
       port: 6379
+    mongodb:
+      uri: mongodb://localhost:27017/echo_db
 
 jwt:
   secret_key: ${JWT_SECRET_KEY}
