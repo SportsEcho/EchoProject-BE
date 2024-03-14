@@ -1,4 +1,4 @@
-package com.sportsecho.common.configuration.kafka;
+package com.sportsecho.common.kafka;
 
 import java.util.UUID;
 

@@ -16,8 +16,8 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
 @Controller
-@Slf4j(topic = "MessageController")
 @RequiredArgsConstructor
+@Slf4j(topic = "MessageController")
 public class MessageController {
 
     @MessageMapping("/gameChat/{gameId}/enter")
@@ -49,3 +49,4 @@ public class MessageController {
             .build();
     }
 }
+
